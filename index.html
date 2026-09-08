@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>Thai Restroom Cert - รับรองมาตรฐานห้องน้ำ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <style>
+    body { font-family: 'Sarabun', sans-serif; background-color: #f8f9fa; color: #333; }
+    .header-bar { background-color: white; border-bottom: 1px solid #e0e0e0; padding: 15px 0; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+    .logo-box { background-color: #4285f4; color: white; width: 45px; height: 45px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-right: 15px; flex-shrink: 0; }
+    .app-title { font-weight: 700; color: #1a73e8; margin: 0; font-size: 1.25rem; line-height: 1.2; }
+    .app-subtitle { color: #5f6368; font-size: 0.9rem; margin: 0; }
+    
+    .card-custom { border-radius: 12px; border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
+    .status-badge { padding: 6px 12px; border-radius: 20px; font-weight: 500; font-size: 0.85rem; display: inline-block; text-align: center; white-space: nowrap; }
+    .bg-pending { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+    .bg-processing { background-color: #cce5ff; color: #004085; border: 1px solid #b8daff; }
+    .bg-approved { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .bg-incomplete { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    
+    .floating-contact { position: fixed; bottom: 25px; right: 25px; background-color: #28a745; color: white; border-radius: 50px; padding: 12px 20px; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 12px rgba(40,167,69,0.4); cursor: pointer; z-index: 1000; transition: all 0.3s ease; }
+    .floating-contact:hover { background-color: #218838; transform: translateY(-3px); }
+
+    .table-responsive { -webkit-overflow-scrolling: touch; }
+    .table th { white-space: nowrap; }
+    .table td { vertical-align: middle; }
+    
+    @media (max-width: 575.98px) {
+      .header-bar { padding: 10px 0; margin-bottom: 15px; }
+      .logo-box { width: 35px; height: 35px; font-size: 1.2rem; margin-right: 10px; }
+      .app-title { font-size: 1.1rem; }
+      .app-subtitle { font-size: 0.75rem; }
+      .btn-admin-login { padding: 5px 10px; font-size: 0.8rem; }
+      .card-custom { padding: 15px !important; margin-bottom: 15px; }
+      .alert-heading { font-size: 1.1rem; }
+      .alert ul { padding-left: 1rem; font-size: 0.9rem; }
+      .dashboard-icon { width: 45px !important; height: 45px !important; font-size: 1.2rem !important; }
+      .dashboard-title { font-size: 0.85rem !important; }
+      .dashboard-number { font-size: 1.5rem !important; }
+      .section-title { font-size: 1.1rem; }
+      .btn-new-request { padding: 8px 12px; font-size: 0.9rem; }
+      .floating-contact { padding: 10px 15px; font-size: 0.9rem; bottom: 15px; right: 15px; }
+      .wrap-text-mobile { min-width: 150px; white-space: normal; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header-bar">
+    <div class="container d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center">
+        <div class="logo-box"><i class="fas fa-building"></i></div>
+        <div>
+          <h1 class="app-title">Thai Restroom Cert</h1>
+          <p class="app-subtitle">ระบบรับคำร้องใบรับรองมาตรฐานห้องน้ำ</p>
+        </div>
+      </div>
+      <button class="btn btn-light border rounded-pill text-secondary fw-bold btn-admin-login" onclick="requireAdminPassword()">
+        <i class="fas fa-lock me-1"></i> <span class="d-none d-sm-inline">สำหรับเจ้าหน้าที่</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="alert alert-warning card-custom" role="alert" style="background-color: #fff8e1; border-color: #ffecb3;">
+      <h5 class="alert-heading text-warning-emphasis"><i class="fas fa-info-circle"></i> เอกสารที่สามารถเตรียมมาแนบได้ (ถ้ามี)</h5>
+      <ul class="mb-0 text-dark">
+        <li>ใบรับแจ้งเกี่ยวกับบ้าน จำนวน 1 ฉบับ (แนบเป็นไฟล์ภาพหรือ PDF)</li>
+        <li>สำเนาบัตรประชาชน จำนวน 1 ฉบับ (พร้อมเซ็นรับรองสำเนาถูกต้อง)</li>
+        <li>สำเนาทะเบียนบ้าน จำนวน 1 ฉบับ (พร้อมเซ็นรับรองสำเนาถูกต้อง)</li>
+        <li>รูปถ่ายตัวบ้านและห้องน้ำ จำนวน 1 แผ่น (ถ่ายให้เห็นภาพรวมชัดเจน)</li>
+      </ul>
+      <hr style="border-color: #ffe082;">
+      <p class="mb-0 text-muted" style="font-size: 0.9em;"><i class="fas fa-lightbulb text-warning"></i> <strong>หมายเหตุ:</strong> หากยังไม่สะดวกแนบไฟล์ สามารถกดยื่นคำร้องโดยไม่แนบไฟล์ได้ครับ และทางเจ้าหน้าที่จะประสานขอเพิ่มเติมในภายหลัง</p>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3 mt-4">
+      <h4 class="mb-0 fw-bold section-title">แผงควบคุมและรายการคำร้อง</h4>
+      <button class="btn btn-primary btn-new-request shadow-sm" style="background-color: #3b82f6; border: none; border-radius: 8px;" onclick="openFormModal()">
+        <i class="fas fa-plus"></i> ยื่นคำร้องใหม่
+      </button>
+    </div>
+
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-3 col-xl">
+        <div class="card card-custom p-3 text-center h-100 d-flex flex-column flex-sm-row align-items-center justify-content-center gap-2 gap-sm-3 mb-0">
+          <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center dashboard-icon" style="width: 50px; height: 50px; font-size: 1.3rem;"><i class="fas fa-file-alt"></i></div>
+          <div class="text-center text-sm-start">
+            <h6 class="text-muted mb-1 dashboard-title" style="font-size: 0.85rem;">ทั้งหมด</h6>
+            <h3 class="mb-0 fw-bold dashboard-number" id="countAll">0</h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 col-xl">
+        <div class="card card-custom p-3 text-center h-100 d-flex flex-column flex-sm-row align-items-center justify-content-center gap-2 gap-sm-3 mb-0">
+          <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-flex align-items-center justify-content-center dashboard-icon" style="width: 50px; height: 50px; font-size: 1.3rem;"><i class="fas fa-clock"></i></div>
+          <div class="text-center text-sm-start">
+            <h6 class="text-muted mb-1 dashboard-title" style="font-size: 0.85rem;">รอตรวจ</h6>
+            <h3 class="mb-0 fw-bold dashboard-number" id="countPending">0</h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 col-xl">
+        <div class="card card-custom p-3 text-center h-100 d-flex flex-column flex-sm-row align-items-center justify-content-center gap-2 gap-sm-3 mb-0">
+          <div class="bg-info bg-opacity-10 text-info rounded-circle d-flex align-items-center justify-content-center dashboard-icon" style="width: 50px; height: 50px; font-size: 1.3rem;"><i class="fas fa-spinner"></i></div>
+          <div class="text-center text-sm-start">
+            <h6 class="text-muted mb-1 dashboard-title" style="font-size: 0.85rem;">ดำเนินการ</h6>
+            <h3 class="mb-0 fw-bold dashboard-number" id="countProcessing">0</h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 col-xl">
+        <div class="card card-custom p-3 text-center h-100 d-flex flex-column flex-sm-row align-items-center justify-content-center gap-2 gap-sm-3 mb-0">
+          <div class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center dashboard-icon" style="width: 50px; height: 50px; font-size: 1.3rem;"><i class="fas fa-check-circle"></i></div>
+          <div class="text-center text-sm-start">
+            <h6 class="text-muted mb-1 dashboard-title" style="font-size: 0.85rem;">ผ่านมาตรฐาน</h6>
+            <h3 class="mb-0 fw-bold dashboard-number" id="countApproved">0</h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-12 col-xl">
+        <div class="card card-custom p-3 text-center h-100 d-flex flex-column flex-sm-row align-items-center justify-content-center gap-2 gap-sm-3 mb-0">
+          <div class="bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center dashboard-icon" style="width: 50px; height: 50px; font-size: 1.3rem;"><i class="fas fa-exclamation-triangle"></i></div>
+          <div class="text-center text-sm-start">
+            <h6 class="text-muted mb-1 dashboard-title" style="font-size: 0.85rem;">เอกสารไม่ครบ</h6>
+            <h3 class="mb-0 fw-bold dashboard-number" id="countIncomplete">0</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-custom p-3 p-md-4" id="userTableView">
+      <h5 class="mb-3 fw-bold text-secondary section-title">รายการคำร้องล่าสุด <span id="syncIndicator" class="spinner-border spinner-border-sm text-primary ms-2 d-none" role="status"></span></h5>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th class="text-secondary fw-normal py-2">รหัสคำร้อง</th>
+              <th class="text-secondary fw-normal py-2">ชื่อผู้ยื่น</th>
+              <th class="text-secondary fw-normal py-2">วันที่ยื่น</th>
+              <th class="text-secondary fw-normal py-2">สถานะ/หมายเหตุ</th>
+              <th class="text-secondary fw-normal py-2">การจัดการ</th>
+            </tr>
+          </thead>
+          <tbody id="userTableBody">
+            <tr><td colspan="5" class="text-center text-muted py-5">กำลังโหลดข้อมูล...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- แผงควบคุมเจ้าหน้าที่ -->
+    <div class="card card-custom p-3 p-md-4 mt-4 bg-white" id="adminPanel" style="display: none; border-top: 4px solid #dc3545;">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-2">
+        <h5 class="mb-0 text-danger fw-bold section-title"><i class="fas fa-user-shield me-2"></i> ระบบจัดการสำหรับเจ้าหน้าที่</h5>
+        <div class="d-flex flex-wrap gap-2 w-100 w-md-auto">
+          <button class="btn btn-success btn-sm flex-fill" onclick="exportCSV()"><i class="fas fa-file-csv"></i> Export CSV</button>
+          <button class="btn btn-warning btn-sm flex-fill" onclick="showChangePassword()"><i class="fas fa-key"></i> เปลี่ยนรหัส</button>
+          <button class="btn btn-outline-secondary btn-sm flex-fill" onclick="document.getElementById('adminPanel').style.display='none'"><i class="fas fa-times"></i> ปิด</button>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle" style="font-size: 0.9em; min-width: 800px;">
+          <thead class="table-dark">
+            <tr>
+              <th width="15%">รหัส/วันที่/PIN</th>
+              <th width="20%">ข้อมูลผู้ยื่น</th>
+              <th width="25%">สถานที่/พิกัด</th>
+              <th width="20%">ไฟล์แนบ</th>
+              <th width="20%">อัปเดตสถานะ</th>
+            </tr>
+          </thead>
+          <tbody id="adminTableBody">
+             <tr><td colspan="5" class="text-center text-muted">กำลังโหลดข้อมูล...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="floating-contact" onclick="showContactModal()">
+    <i class="fas fa-phone-volume"></i> <span class="d-none d-sm-inline">ติดต่อรพ.โพนสวรรค์</span><span class="d-inline d-sm-none">ติดต่อเรา</span>
+  </div>
+
+  <!-- Modal ฟอร์มยื่นคำร้อง/แก้ไขคำร้อง -->
+  <div class="modal fade" id="formModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header text-white" style="background-color: #3b82f6;">
+          <h5 class="modal-title fw-bold" id="formModalLabel"><i class="fas fa-edit me-2"></i> ยื่นคำร้องใบรับรองมาตรฐานห้องน้ำ</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-3 p-md-4">
+          <form id="requestForm" onsubmit="handleFormSubmit(event)">
+            <input type="hidden" id="editRowIndex" value="">
+            
+            <div class="row mb-3 g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-bold">ชื่อ-นามสกุล ผู้ยื่นคำร้อง <span class="text-danger">*</span></label>
+                <input type="text" class="form-control bg-light" id="applicantName" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">เบอร์โทรศัพท์ติดต่อ <span class="text-danger">*</span></label>
+                <input type="tel" class="form-control bg-light" id="phone" required>
+              </div>
+            </div>
+
+            <div class="row mb-3 g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-bold">ประเภทสถานที่ <span class="text-danger">*</span></label>
+                <select class="form-select bg-light" id="placeType" required>
+                  <option value="">-- เลือกประเภท --</option>
+                  <option value="บ้านพักอาศัย">บ้านพักอาศัย</option>
+                  <option value="ร้านอาหาร">ร้านอาหาร</option>
+                  <option value="สถานที่สาธารณะ">สถานที่สาธารณะ</option>
+                  <option value="อื่นๆ">อื่นๆ</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">จำนวนห้องน้ำ (ห้อง) <span class="text-danger">*</span></label>
+                <input type="number" class="form-control bg-light" id="toiletCount" min="1" required>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-bold">ที่อยู่ / บ้านเลขที่ / หมู่ที่ <span class="text-danger">*</span></label>
+              <textarea class="form-control bg-light" id="address" rows="2" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold">จุดสังเกตใกล้เคียง</label>
+              <input type="text" class="form-control bg-light" id="nearbyLocation">
+            </div>
+
+            <div class="p-3 mt-4 mb-2 rounded" style="background-color: #f1f5f9;">
+              <h6 class="fw-bold mb-3"><i class="fas fa-paperclip text-secondary"></i> เอกสารแนบ (ถ้ามี) <br><small class="text-muted fw-normal mt-1 d-block">- หากแก้ไขและใช้รูปเดิม ไม่ต้องเลือกไฟล์ใหม่</small></h6>
+              <div class="row g-2">
+                <div class="col-12 col-md-6">
+                  <label class="form-label text-muted mb-1" style="font-size:0.85em;">ใบรับแจ้งเกี่ยวกับบ้าน</label>
+                  <input type="file" class="form-control form-control-sm" id="docHouse" accept="image/*,application/pdf">
+                </div>
+                <div class="col-12 col-md-6">
+                  <label class="form-label text-muted mb-1" style="font-size:0.85em;">สำเนาบัตรประชาชน</label>
+                  <input type="file" class="form-control form-control-sm" id="docIdCard" accept="image/*,application/pdf">
+                </div>
+                <div class="col-12 col-md-6">
+                  <label class="form-label text-muted mb-1" style="font-size:0.85em;">สำเนาทะเบียนบ้าน</label>
+                  <input type="file" class="form-control form-control-sm" id="docHouseReg" accept="image/*,application/pdf">
+                </div>
+                <div class="col-12 col-md-6">
+                  <label class="form-label text-muted mb-1" style="font-size:0.85em;">รูปถ่ายสถานที่ / ห้องน้ำ</label>
+                  <input type="file" class="form-control form-control-sm" id="docPhoto" accept="image/*,application/pdf">
+                </div>
+              </div>
+            </div>
+
+            <div class="d-grid mt-4">
+              <button type="submit" class="btn btn-primary" style="background-color: #3b82f6; border:none; padding: 12px;"><i class="fas fa-paper-plane me-2"></i> บันทึกข้อมูลคำร้อง</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    // ==========================================
+    // ⚠️ นำ URL จาก Google Apps Script (ลงท้ายด้วย /exec) มาวางแทนที่ด้านล่างนี้
+    const API_URL = "https://script.google.com/macros/s/AKfycbxkifwMWUqx7uBEvHg0ug5FrPu2fw7fSJJjydFdpIzgjGSvU4bEdFsvRnV3ik7iUaT5/exec"; 
+    // ==========================================
+
+    let globalRequests = [];
+    const formModal = new bootstrap.Modal(document.getElementById('formModal'));
+
+    // ฟังก์ชันสำหรับเรียกใช้ API
+    async function callAPI(action, payload = {}) {
+      if(API_URL === "YOUR_GOOGLE_WEB_APP_URL_HERE") {
+        Swal.fire('ข้อผิดพลาด', 'ยังไม่ได้ใส่ URL API ในโค้ด', 'error');
+        throw new Error("API URL missing");
+      }
+      try {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: action, ...payload })
+        });
+        return await response.json();
+      } catch (error) {
+        console.error("API Call Error:", error);
+        throw error;
+      }
+    }
+
+    // เริ่มทำงานเมื่อเปิดหน้าเว็บ
+    window.onload = function() { 
+      loadData(); 
+      // Auto-Sync ดึงข้อมูลใหม่เบื้องหลัง
+      setInterval(function() {
+        let indicator = document.getElementById('syncIndicator');
+        if(indicator) indicator.classList.remove('d-none');
+        
+        fetch(API_URL + "?action=getRequests")
+          .then(res => res.json())
+          .then(data => {
+            if(indicator) indicator.classList.add('d-none');
+            renderData(data, true); 
+          }).catch(e => {
+            if(indicator) indicator.classList.add('d-none');
+          });
+      }, 10000);
+    };
+
+    function loadData() {
+      fetch(API_URL + "?action=getRequests")
+        .then(res => res.json())
+        .then(data => renderData(data, false))
+        .catch(err => {
+          document.getElementById('userTableBody').innerHTML = "<tr><td colspan='5' class='text-center text-danger'>เกิดข้อผิดพลาดในการดึงข้อมูล โปรดตรวจสอบ API URL</td></tr>";
+        });
+    }
+
+    function renderData(data, isBackground) {
+      globalRequests = data;
+      let userHtml = "";
+      let adminHtml = "";
+      
+      let countAll = data.length;
+      let countPending = 0;
+      let countProcessing = 0;
+      let countApproved = 0;
+      let countIncomplete = 0;
+
+      if(data.length === 0) {
+        userHtml = "<tr><td colspan='5' class='text-center py-4 text-muted'>ยังไม่มีข้อมูลคำร้อง...</td></tr>";
+        adminHtml = "<tr><td colspan='5' class='text-center py-4 text-muted'>ยังไม่มีข้อมูลคำร้อง...</td></tr>";
+      } else {
+        data.forEach(function(req) {
+          if(req.status === 'pending') countPending++;
+          if(req.status === 'processing') countProcessing++;
+          if(req.status === 'approved') countApproved++;
+          if(req.status === 'incomplete') countIncomplete++;
+
+          let badgeClass = 'bg-pending';
+          let statusText = 'รอตรวจสอบ';
+          
+          if (req.status === 'processing') {
+            badgeClass = 'bg-processing';
+            statusText = 'กำลังดำเนินการ';
+          } else if (req.status === 'approved') {
+            badgeClass = 'bg-approved';
+            statusText = 'ผ่านมาตรฐาน';
+          } else if (req.status === 'incomplete') {
+            badgeClass = 'bg-incomplete';
+            statusText = 'เอกสารไม่ครบ';
+          }
+
+          let remarkHtml = req.remark ? "<div class='text-muted mt-2 wrap-text-mobile' style='font-size: 0.85em;'><i class='fas fa-info-circle text-primary'></i> " + req.remark + "</div>" : "";
+          
+          let editBtn = "";
+          if (req.status === 'pending') {
+            editBtn = "<button class='btn btn-sm btn-outline-warning rounded-pill px-3 mt-1' onclick='promptEditPin(" + req.rowIndex + ")'><i class='fas fa-pen'></i> แก้ไข</button>";
+          }
+
+          userHtml += "<tr>";
+          userHtml += "<td class='fw-bold text-secondary'>" + req.id + "</td>";
+          userHtml += "<td class='wrap-text-mobile'>" + req.applicantName + "</td>";
+          userHtml += "<td><span class='d-block d-sm-inline'>" + req.submitDate.split(' ')[0] + "</span></td>";
+          userHtml += "<td><span class='status-badge " + badgeClass + "'>" + statusText + "</span>" + remarkHtml + "</td>";
+          userHtml += "<td>" + editBtn + "</td>";
+          userHtml += "</tr>";
+
+          let editTracker = req.editCount > 0 ? "<br><span class='badge bg-warning text-dark mt-2' style='font-size: 0.8em; white-space: normal;'><i class='fas fa-history'></i> แก้ไข " + req.editCount + " ครั้ง<br>(" + req.lastEditTime + ")</span>" : "";
+          let pinHtml = req.pin ? "<br><span class='badge bg-danger mt-1' style='font-size:0.85em;'><i class='fas fa-key'></i> PIN: " + req.pin + "</span>" : "";
+
+          adminHtml += "<tr>";
+          adminHtml += "<td><strong>" + req.id + "</strong><br><small class='text-muted'>" + req.submitDate + "</small>" + pinHtml + editTracker + "</td>";
+          adminHtml += "<td><i class='fas fa-user text-muted'></i> " + req.applicantName + "<br><i class='fas fa-phone text-muted'></i> " + req.phone + "</td>";
+          adminHtml += "<td class='wrap-text-mobile'><strong>" + req.placeType + "</strong><br><small class='text-muted'>" + req.address + "</small></td>";
+          adminHtml += "<td>" + getFileLink(req.docHouse, "ใบแจ้งบ้าน") + getFileLink(req.docIdCard, "บัตรปชช.") + getFileLink(req.docHouseReg, "ทะเบียนบ้าน") + getFileLink(req.docPhoto, "รูปถ่าย") + "</td>";
+          
+          adminHtml += "<td>";
+          adminHtml += "<select class='form-select form-select-sm mb-2' id='status_" + req.rowIndex + "'>";
+          adminHtml += "<option value='pending' " + (req.status === 'pending' ? 'selected' : '') + ">รอตรวจสอบ</option>";
+          adminHtml += "<option value='processing' " + (req.status === 'processing' ? 'selected' : '') + ">กำลังดำเนินการ</option>";
+          adminHtml += "<option value='approved' " + (req.status === 'approved' ? 'selected' : '') + ">ผ่านมาตรฐาน</option>";
+          adminHtml += "<option value='incomplete' " + (req.status === 'incomplete' ? 'selected' : '') + ">เอกสารไม่ครบ</option>";
+          adminHtml += "</select>";
+          
+          adminHtml += "<input type='text' class='form-control form-control-sm mb-2' id='remark_" + req.rowIndex + "' placeholder='หมายเหตุ...' value='" + req.remark + "'>";
+          adminHtml += "<button class='btn btn-success btn-sm w-100' onclick='confirmUpdateStatus(" + req.rowIndex + ")'><i class='fas fa-save'></i> บันทึก</button>";
+          adminHtml += "</td>";
+          adminHtml += "</tr>";
+        });
+      }
+
+      document.getElementById('userTableBody').innerHTML = userHtml;
+      
+      document.getElementById('countAll').innerText = countAll;
+      document.getElementById('countPending').innerText = countPending;
+      document.getElementById('countProcessing').innerText = countProcessing;
+      document.getElementById('countApproved').innerText = countApproved;
+      document.getElementById('countIncomplete').innerText = countIncomplete;
+
+      let adminPanel = document.getElementById('adminPanel');
+      if (!isBackground || adminPanel.style.display !== 'block') {
+        document.getElementById('adminTableBody').innerHTML = adminHtml;
+      }
+    }
+
+    function getFileLink(url, label) {
+      if (!url) return "<span class='text-muted d-block mb-1' style='font-size:0.75em;'>- ไม่มี " + label + "</span>";
+      return "<a href='" + url + "' target='_blank' class='badge bg-primary text-decoration-none mb-1 d-inline-block p-2'><i class='fas fa-link'></i> " + label + "</a><br>";
+    }
+
+    function showContactModal() {
+      Swal.fire({
+        title: '<strong>ข้อมูลติดต่อ รพ.โพนสวรรค์</strong>',
+        icon: 'info',
+        html: '<div style="text-align: left; margin-top: 15px; font-size: 1rem; line-height: 1.8;"><i class="fas fa-phone-alt text-success"></i> <b>เบอร์โทรศัพท์:</b> 042 595 064 ต่อ 301<br><i class="fab fa-facebook text-primary"></i> <b>Facebook:</b> <a href="https://www.facebook.com/pcu.pswh" target="_blank">PCU โพนสวรรค์</a><br><i class="fas fa-map-marker-alt text-danger"></i> <b>ที่อยู่:</b> 276 ม.12 โพธิ์ศรี ต.โพนสวรรค์ จ.นครพนม 48190</div>',
+        confirmButtonText: 'ปิดหน้าต่าง',
+        confirmButtonColor: '#0d6efd'
+      });
+    }
+
+    function requireAdminPassword() {
+      let panel = document.getElementById('adminPanel');
+      if (panel.style.display === 'block') {
+        panel.style.display = 'none';
+        return;
+      }
+
+      Swal.fire({
+        title: 'เข้าสู่ระบบเจ้าหน้าที่',
+        input: 'password',
+        inputPlaceholder: 'รหัสผ่านของคุณ...',
+        showCancelButton: true,
+        confirmButtonText: 'เข้าสู่ระบบ',
+        cancelButtonText: 'ยกเลิก',
+        confirmButtonColor: '#dc3545',
+        showLoaderOnConfirm: true,
+        preConfirm: async (password) => {
+          try {
+            const res = await callAPI('verifyPassword', { password: password });
+            if (!res) {
+              Swal.showValidationMessage('รหัสผ่านไม่ถูกต้อง!');
+              return false;
+            }
+            return true;
+          } catch (e) {
+            Swal.showValidationMessage('การเชื่อมต่อล้มเหลว');
+            return false;
+          }
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+      }).then((result) => {
+        if (result.isConfirmed && result.value) {
+          panel.style.display = 'block';
+          panel.scrollIntoView({ behavior: 'smooth' });
+          loadData();
+          Swal.fire({ icon: 'success', title: 'เข้าสู่ระบบสำเร็จ', showConfirmButton: false, timer: 1500 });
+        }
+      });
+    }
+
+    function showChangePassword() {
+      Swal.fire({
+        title: 'เปลี่ยนรหัสผ่าน',
+        html:
+          '<input id="oldPwd" class="swal2-input" placeholder="รหัสผ่านเดิม" type="password">' +
+          '<input id="newPwd" class="swal2-input" placeholder="รหัสผ่านใหม่" type="password">' +
+          '<input id="confirmPwd" class="swal2-input" placeholder="ยืนยันรหัสผ่านใหม่" type="password">',
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: 'บันทึก',
+        cancelButtonText: 'ยกเลิก',
+        preConfirm: async () => {
+          const oldPwd = document.getElementById('oldPwd').value;
+          const newPwd = document.getElementById('newPwd').value;
+          const confirmPwd = document.getElementById('confirmPwd').value;
+          
+          if (!oldPwd || !newPwd || !confirmPwd) { Swal.showValidationMessage('กรุณากรอกให้ครบ'); return false; }
+          if (newPwd !== confirmPwd) { Swal.showValidationMessage('รหัสผ่านใหม่ไม่ตรงกัน!'); return false; }
+          
+          try {
+            return await callAPI('changeAdminPassword', { oldPwd: oldPwd, newPwd: newPwd });
+          } catch (e) {
+             Swal.showValidationMessage('การเชื่อมต่อล้มเหลว'); return false;
+          }
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          if (result.value.success) Swal.fire('สำเร็จ!', result.value.message, 'success');
+          else Swal.fire('ผิดพลาด', result.value.message, 'error');
+        }
+      });
+    }
+
+    function exportCSV() {
+      if (!globalRequests || globalRequests.length === 0) {
+        Swal.fire('ไม่มีข้อมูล', 'ยังไม่มีข้อมูลคำร้องให้ดาวน์โหลด', 'info');
+        return;
+      }
+      const headers = ['รหัสคำร้อง', 'รหัส PIN', 'ชื่อผู้ยื่น', 'เบอร์โทร', 'ประเภทสถานที่', 'จำนวนห้องน้ำ', 'ที่อยู่', 'จุดสังเกต', 'สถานะ', 'หมายเหตุ', 'วันที่ยื่น', 'เวลาแก้ไขล่าสุด', 'จำนวนครั้งที่แก้ไข'];
+      const statusMap = { 'pending': 'รอตรวจสอบ', 'processing': 'กำลังดำเนินการ', 'approved': 'ผ่านมาตรฐาน', 'incomplete': 'เอกสารไม่ครบ' };
+      
+      let csvContent = '\uFEFF' + headers.join(',') + '\n';
+      
+      globalRequests.forEach(req => {
+        let row = [
+          req.id, (req.pin || ''), `"${(req.applicantName || '').replace(/"/g, '""')}"`, `"${(req.phone || '').replace(/"/g, '""')}"`,
+          `"${(req.placeType || '').replace(/"/g, '""')}"`, req.toiletCount, `"${(req.address || '').replace(/"/g, '""')}"`,
+          `"${(req.nearbyLocation || '').replace(/"/g, '""')}"`, statusMap[req.status] || req.status,
+          `"${(req.remark || '').replace(/"/g, '""')}"`, `"${(req.submitDate || '').replace(/"/g, '""')}"`,
+          `"${(req.lastEditTime || '').replace(/"/g, '""')}"`, req.editCount || 0
+        ];
+        csvContent += row.join(',') + '\n';
+      });
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      const today = new Date().toISOString().slice(0, 10);
+      link.setAttribute("download", `รายการคำร้องห้องน้ำ_${today}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function openFormModal() {
+      document.getElementById('requestForm').reset();
+      document.getElementById('editRowIndex').value = '';
+      document.getElementById('formModalLabel').innerHTML = '<i class="fas fa-edit me-2"></i> ยื่นคำร้องใบรับรองมาตรฐานห้องน้ำ';
+      formModal.show();
+    }
+
+    function promptEditPin(rowIndex) {
+      Swal.fire({
+        title: 'ยืนยันรหัสความปลอดภัย',
+        text: 'กรุณากรอกรหัส 4 หลัก ที่คุณได้รับตอนส่งคำร้อง เพื่อเข้าสู่โหมดแก้ไข',
+        input: 'text',
+        inputAttributes: { maxlength: 4, autocapitalize: 'off', autocorrect: 'off' },
+        inputPlaceholder: 'รหัส PIN 4 หลัก...',
+        showCancelButton: true,
+        confirmButtonText: 'ยืนยัน',
+        cancelButtonText: 'ยกเลิก',
+        confirmButtonColor: '#f59e0b',
+        showLoaderOnConfirm: true,
+        preConfirm: async (pin) => {
+          if (!pin || pin.length !== 4) {
+            Swal.showValidationMessage('กรุณากรอกรหัส PIN 4 หลักให้ครบถ้วน');
+            return false;
+          }
+          try {
+            const isValid = await callAPI('verifyEditPin', { rowIndex: rowIndex, pin: pin });
+            if (!isValid) { Swal.showValidationMessage('รหัส PIN ไม่ถูกต้อง!'); return false; }
+            return true;
+          } catch(e) {
+            Swal.showValidationMessage('การเชื่อมต่อล้มเหลว'); return false;
+          }
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+      }).then((result) => {
+        if (result.isConfirmed && result.value) {
+          editRequest(rowIndex);
+        }
+      });
+    }
+
+    function editRequest(rowIndex) {
+      let req = globalRequests.find(function(r) { return r.rowIndex === rowIndex; });
+      if (!req) return;
+      document.getElementById('editRowIndex').value = req.rowIndex;
+      document.getElementById('formModalLabel').innerHTML = '<i class="fas fa-pen me-2"></i> แก้ไขคำร้อง: ' + req.id;
+      document.getElementById('applicantName').value = req.applicantName;
+      document.getElementById('phone').value = req.phone;
+      document.getElementById('placeType').value = req.placeType;
+      document.getElementById('toiletCount').value = req.toiletCount;
+      document.getElementById('address').value = req.address;
+      document.getElementById('nearbyLocation').value = req.nearbyLocation;
+      formModal.show();
+    }
+
+    function confirmUpdateStatus(rowIndex) {
+      var statusValue = document.getElementById('status_' + rowIndex).value;
+      var remarkValue = document.getElementById('remark_' + rowIndex).value;
+
+      Swal.fire({
+        title: 'ยืนยันการบันทึก?',
+        text: "คุณต้องการอัปเดตสถานะและหมายเหตุของคำร้องนี้?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#28a745',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'ยืนยัน',
+        cancelButtonText: 'ยกเลิก'
+      }).then(async function(result) {
+        if (result.isConfirmed) {
+          Swal.fire({ title: 'กำลังอัปเดตข้อมูล...', allowOutsideClick: false });
+          Swal.showLoading();
+          try {
+            const res = await callAPI('updateRequestStatus', { rowIndex: rowIndex, status: statusValue, remark: remarkValue });
+            if(res.success) { Swal.fire('สำเร็จ!', 'อัปเดตสถานะเรียบร้อยแล้ว', 'success'); loadData(); } 
+            else { Swal.fire('ผิดพลาด', res.error, 'error'); }
+          } catch (e) {
+            Swal.fire('ผิดพลาด', 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้', 'error');
+          }
+        }
+      });
+    }
+
+    async function handleFormSubmit(event) {
+      event.preventDefault();
+      Swal.fire({ title: 'กำลังส่งข้อมูล...', html: 'กรุณารอสักครู่ (อาจใช้เวลา 10-20 วินาที หากมีรูปภาพ)', allowOutsideClick: false });
+      Swal.showLoading();
+      
+      try {
+        let data = {
+          applicantName: document.getElementById('applicantName').value, phone: document.getElementById('phone').value,
+          placeType: document.getElementById('placeType').value, toiletCount: document.getElementById('toiletCount').value,
+          address: document.getElementById('address').value, nearbyLocation: document.getElementById('nearbyLocation').value,
+          docHouse: document.getElementById('docHouse').files[0] ? await convertFile(document.getElementById('docHouse').files[0]) : "",
+          docIdCard: document.getElementById('docIdCard').files[0] ? await convertFile(document.getElementById('docIdCard').files[0]) : "",
+          docHouseReg: document.getElementById('docHouseReg').files[0] ? await convertFile(document.getElementById('docHouseReg').files[0]) : "",
+          docPhoto: document.getElementById('docPhoto').files[0] ? await convertFile(document.getElementById('docPhoto').files[0]) : "",
+          appUrl: window.location.href // แนบ URL ของ Vercel ส่งไปหลังบ้านเพื่อใส่ใน LINE
+        };
+
+        let editRowIndex = document.getElementById('editRowIndex').value;
+        let res;
+        if (editRowIndex) {
+          res = await callAPI('updateRequest', { data: data, rowIndex: parseInt(editRowIndex) });
+        } else {
+          res = await callAPI('submitRequest', { data: data });
+        }
+        submitSuccess(res);
+      } catch (err) {
+        Swal.fire('เกิดข้อผิดพลาด', err.toString(), 'error');
+      }
+    }
+
+    function submitSuccess(res) {
+      if(res.success) {
+        formModal.hide();
+        
+        if (res.isNew) {
+          Swal.fire({
+            title: 'ส่งคำร้องสำเร็จ!',
+            html: '<div class="text-start mt-2">' +
+                  'ข้อมูลของคุณถูกบันทึกเข้าระบบเรียบร้อยแล้ว<br><br>' +
+                  '<b>รหัสคำร้อง:</b> <span class="text-primary">' + res.id + '</span><br>' +
+                  '<b>รหัส PIN สำหรับแก้ไข:</b> <span class="text-danger fs-3 fw-bold ms-2">' + res.pin + '</span><br><br>' +
+                  '<span class="text-muted" style="font-size: 0.9em;"><i class="fas fa-exclamation-triangle text-warning"></i> <b>โปรดแคปหน้าจอหรือจดรหัสนี้ไว้!</b> คุณต้องใช้รหัส 4 หลักนี้ หากต้องการเข้ามาแก้ไขข้อมูลในภายหลัง</span>' +
+                  '</div>',
+            icon: 'success'
+          });
+        } else {
+          Swal.fire('อัปเดตสำเร็จ!', 'ข้อมูลของคุณถูกแก้ไขเรียบร้อยแล้ว', 'success');
+        }
+        
+        document.getElementById('requestForm').reset();
+        loadData();
+      } else { Swal.fire('เกิดข้อผิดพลาด', res.error || "บันทึกไม่สำเร็จ", 'error'); }
+    }
+
+    function convertFile(file) {
+      return new Promise(function(resolve) {
+        if (!file.type.startsWith('image/')) {
+          let reader = new FileReader();
+          reader.onload = function(e) { resolve(e.target.result); };
+          reader.readAsDataURL(file); return;
+        }
+        let reader = new FileReader();
+        reader.onload = function(event) {
+          let img = new Image();
+          img.onload = function() {
+            let canvas = document.createElement('canvas');
+            let maxW = 1200, maxH = 1200, width = img.width, height = img.height;
+            if (width > height && width > maxW) { height *= maxW / width; width = maxW; } 
+            else if (height > maxW) { width *= maxH / height; height = maxH; }
+            canvas.width = width; canvas.height = height;
+            canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', 0.6));
+          }
+          img.src = event.target.result;
+        }
+        reader.readAsDataURL(file);
+      });
+    }
+  </script>
+</body>
+</html>
