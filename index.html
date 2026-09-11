@@ -231,7 +231,7 @@
                             <td>${req['รหัสคำร้อง (ID)']}</td>
                             <td>${new Date(req['วันที่ (Timestamp)']).toLocaleDateString('th-TH')}</td>
                             <td>${req['ชื่อ-นามสกุล']}</td>
-                            <td><span class="badge bg-info">${req['สถานะ']}</span></td>
+                            <td><span class="badge bg-info text-dark">${req['สถานะ']}</span></td>
                             <td>
                                 <button class="btn btn-sm btn-outline-warning" onclick="openEditModal('${req['รหัสคำร้อง (ID)']}', false)">✏️ แก้ไข</button>
                             </td>
@@ -257,7 +257,7 @@
                             <td>${req['รหัสคำร้อง (ID)']}</td>
                             <td>${new Date(req['วันที่ (Timestamp)']).toLocaleDateString('th-TH')}</td>
                             <td>${req['ชื่อ-นามสกุล']}</td>
-                            <td><span class="badge bg-primary">${req['สถานะ']}</span><br><small>${req['หมายเหตุเจ้าหน้าที่'] || '-'}</small></td>
+                            <td><span class="badge bg-primary">${req['สถานะ']}</span><br><small class="text-muted">${req['หมายเหตุเจ้าหน้าที่'] || '-'}</small></td>
                             <td>
                                 <button class="btn btn-sm btn-warning mb-1" onclick="openEditModal('${req['รหัสคำร้อง (ID)']}', true)">✏️ แก้ไขเอกสาร</button>
                                 <button class="btn btn-sm btn-info mb-1" onclick="openStatusModal('${req['รหัสคำร้อง (ID)']}', '${req['สถานะ']}', '${req['หมายเหตุเจ้าหน้าที่']}')">📝 สถานะ</button>
