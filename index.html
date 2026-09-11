@@ -181,6 +181,7 @@
         <h5 class="mb-0 text-danger fw-bold section-title"><i class="fas fa-user-shield me-2"></i> ระบบจัดการสำหรับเจ้าหน้าที่</h5>
         <div class="d-flex flex-wrap gap-2 w-100 w-md-auto">
           <button class="btn btn-success btn-sm flex-fill" onclick="exportCSV()"><i class="fas fa-file-csv"></i> Export CSV</button>
+          <button class="btn btn-warning btn-sm flex-fill" onclick="showChangePassword()"><i class="fas fa-key"></i> เปลี่ยนรหัส</button>
           <button class="btn btn-outline-secondary btn-sm flex-fill" onclick="document.getElementById('adminPanel').style.display='none'"><i class="fas fa-times"></i> ปิด</button>
         </div>
       </div>
@@ -475,15 +476,61 @@
         confirmButtonText: 'เข้าสู่ระบบ',
         cancelButtonText: 'ยกเลิก',
         confirmButtonColor: '#dc3545',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          if (result.value === '123456') { // รหัสตั้งต้น
-            panel.style.display = 'block';
-            panel.scrollIntoView({ behavior: 'smooth' });
-            Swal.fire({ icon: 'success', title: 'เข้าสู่ระบบสำเร็จ', showConfirmButton: false, timer: 1500 });
-          } else {
-            Swal.fire('ผิดพลาด', 'รหัสผ่านไม่ถูกต้อง', 'error');
+        showLoaderOnConfirm: true,
+        preConfirm: (password) => {
+          if (!password) {
+            Swal.showValidationMessage('กรุณากรอกรหัสผ่าน');
+            return false;
           }
+          return callAPI('verifyPassword', { password: password }).then(res => {
+            if (!res.isValid) {
+              Swal.showValidationMessage('รหัสผ่านไม่ถูกต้อง');
+              return false;
+            }
+            return true;
+          });
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+      }).then((result) => {
+        if (result.isConfirmed && result.value) {
+          panel.style.display = 'block';
+          panel.scrollIntoView({ behavior: 'smooth' });
+          Swal.fire({ icon: 'success', title: 'เข้าสู่ระบบสำเร็จ', showConfirmButton: false, timer: 1500 });
+        }
+      });
+    }
+
+    function showChangePassword() {
+      Swal.fire({
+        title: 'เปลี่ยนรหัสผ่าน',
+        html:
+          '<input id="oldPwd" class="swal2-input" placeholder="รหัสผ่านเดิม" type="password">' +
+          '<input id="newPwd" class="swal2-input" placeholder="รหัสผ่านใหม่" type="password">' +
+          '<input id="confirmPwd" class="swal2-input" placeholder="ยืนยันรหัสผ่านใหม่" type="password">',
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: 'บันทึก',
+        cancelButtonText: 'ยกเลิก',
+        showLoaderOnConfirm: true,
+        preConfirm: () => {
+          const oldPwd = document.getElementById('oldPwd').value;
+          const newPwd = document.getElementById('newPwd').value;
+          const confirmPwd = document.getElementById('confirmPwd').value;
+          
+          if (!oldPwd || !newPwd || !confirmPwd) { Swal.showValidationMessage('กรุณากรอกข้อมูลให้ครบ'); return false; }
+          if (newPwd !== confirmPwd) { Swal.showValidationMessage('รหัสผ่านใหม่ไม่ตรงกัน!'); return false; }
+          
+          return callAPI('changePassword', { oldPassword: oldPwd, newPassword: newPwd }).then(res => {
+            if (!res.success) {
+              Swal.showValidationMessage(res.message);
+              return false;
+            }
+            return res;
+          });
+        }
+      }).then((result) => {
+        if (result.isConfirmed && result.value) {
+          Swal.fire('สำเร็จ!', result.value.message, 'success');
         }
       });
     }
