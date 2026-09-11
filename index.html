@@ -202,7 +202,6 @@
 
   </div>
 
-  <!-- Floating Contact Widget -->
   <div class="floating-contact" onclick="showContactModal()">
     <i class="fas fa-phone-volume"></i> <span class="d-none d-sm-inline">ติดต่อรพ.โพนสวรรค์</span><span class="d-inline d-sm-none">ติดต่อเรา</span>
   </div>
@@ -301,18 +300,18 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   
   <script>
-    // ⚠️ ลิงก์ API Google Apps Script ของคุณ
+    // ⚠️ ลิงก์ API Google Apps Script ตัวล่าสุด
     const GAS_API_URL = "https://script.google.com/macros/s/AKfycbyCvbu6ktMHaoK_H5kyy0jZKoU63jPQytqJDIL0I95b9MFPC2F2Eo4Ybci4V8P9duVi/exec";
 
     let globalRequests = [];
     const formModal = new bootstrap.Modal(document.getElementById('formModal'));
 
-    // ฟังก์ชันเชื่อมต่อกับ API พร้อมระบบตรวจจับ Error ชัดเจนและเพิ่ม Timeout เป็น 45 วินาที
+    // ฟังก์ชันเชื่อมต่อกับ API (แก้ปัญหา Timeout)
     async function callAPI(action, payload = {}) {
       payload.action = action;
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 45000); // ขยายเวลาเป็น 45 วินาที
+        const timeoutId = setTimeout(() => controller.abort(), 45000); // 45 วิ
 
         let response = await fetch(GAS_API_URL, {
           method: 'POST',
@@ -323,24 +322,17 @@
         });
         
         clearTimeout(timeoutId);
-        
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         
         const text = await response.text();
-        try {
-          return JSON.parse(text);
-        } catch (e) {
-          throw new Error("ระบบหลังบ้าน (Google) ไม่ตอบกลับเป็นข้อมูล คุณอาจลืมกด Deploy > New version");
-        }
+        try { return JSON.parse(text); } 
+        catch (e) { throw new Error("API ตอบกลับผิดพลาด (ไม่ได้ Deploy เป็น New version)"); }
       } catch (err) {
         console.error("API Error: ", err);
         let errorText = err.message || 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้';
-        
-        // ดักจับอาการ Timeout (AbortError) แล้วแปลเป็นไทย
         if (err.name === 'AbortError' || err.message.includes('aborted')) {
-          errorText = 'การเชื่อมต่อใช้เวลานานเกินไป (Timeout) สาเหตุหลักคือ: ลืมกด Deploy ให้เป็น "New version" ที่หน้าต่าง Google Apps Script ครับ';
+          errorText = 'การเชื่อมต่อใช้เวลานานเกินไป กรุณาลองใหม่อีกครั้ง';
         }
-        
         return { success: false, error: errorText };
       }
     }
@@ -350,7 +342,6 @@
       setInterval(function() {
         let indicator = document.getElementById('syncIndicator');
         if(indicator) indicator.classList.remove('d-none');
-        
         callAPI('getRequests').then(res => {
           if(indicator) indicator.classList.add('d-none');
           if (res && res.success) renderData(res.data, true);
@@ -359,30 +350,16 @@
     };
 
     function loadData() {
-      // แสดงสถานะกำลังโหลด
       document.getElementById('userTableBody').innerHTML = "<tr><td colspan='5' class='text-center py-5'><div class='spinner-border spinner-border-sm text-primary me-2' role='status'></div>กำลังโหลดข้อมูล...</td></tr>";
-      
       callAPI('getRequests').then(res => {
-        if (res.success) {
-          renderData(res.data, false);
-        } else {
-          // ถ้าโหลดไม่ขึ้น จะแสดงกล่องแจ้งเตือนสาเหตุที่แท้จริง
+        if (res.success) { renderData(res.data, false); } 
+        else {
           document.getElementById('userTableBody').innerHTML = `
-            <tr>
-              <td colspan='5' class='text-center text-danger py-5'>
-                <i class='fas fa-exclamation-triangle fa-2x mb-2'></i><br>
-                <b class="fs-5">เชื่อมต่อฐานข้อมูลล้มเหลว</b><br>
-                <span>${res.error}</span><br>
-                <div class="mt-3 p-3 bg-light border rounded d-inline-block text-start text-dark" style="max-width: 500px; font-size: 0.9em;">
-                  <b>วิธีแก้ปัญหา:</b><br>
-                  1. ไปที่หน้าโค้ด Google Apps Script<br>
-                  2. กด <b>การทำให้ใช้งานได้ (Deploy)</b> > การจัดการการทำให้ใช้งานได้<br>
-                  3. กดไอคอน <b>ดินสอ (แก้ไข)</b><br>
-                  4. ช่องเวอร์ชัน เลือกเป็น <b>เวอร์ชันใหม่ (New version)</b> เสมอ!<br>
-                  5. กดบันทึก แล้วกลับมารีเฟรชหน้านี้ครับ
-                </div>
-              </td>
-            </tr>`;
+            <tr><td colspan='5' class='text-center text-danger py-5'>
+              <i class='fas fa-exclamation-triangle fa-2x mb-2'></i><br>
+              <b class="fs-5">เชื่อมต่อฐานข้อมูลล้มเหลว</b><br>
+              <span>${res.error}</span>
+            </td></tr>`;
         }
       });
     }
@@ -393,10 +370,8 @@
       let adminHtml = "";
       
       let countAll = data.length;
-      let countPending = 0;
-      let countProcessing = 0;
-      let countApproved = 0;
-      let countIncomplete = 0;
+      let countPending = 0; let countProcessing = 0;
+      let countApproved = 0; let countIncomplete = 0;
 
       if(data.length === 0) {
         userHtml = "<tr><td colspan='5' class='text-center py-4 text-muted'>ยังไม่มีข้อมูลคำร้อง...</td></tr>";
@@ -408,32 +383,23 @@
           if(req.status === 'approved') countApproved++;
           if(req.status === 'incomplete') countIncomplete++;
 
-          let badgeClass = 'bg-pending';
-          let statusText = 'รอตรวจสอบ';
-          
-          if (req.status === 'processing') {
-            badgeClass = 'bg-processing';
-            statusText = 'กำลังดำเนินการ';
-          } else if (req.status === 'approved') {
-            badgeClass = 'bg-approved';
-            statusText = 'ผ่านมาตรฐาน';
-          } else if (req.status === 'incomplete') {
-            badgeClass = 'bg-incomplete';
-            statusText = 'เอกสารไม่ครบ';
-          }
+          let badgeClass = 'bg-pending'; let statusText = 'รอตรวจสอบ';
+          if (req.status === 'processing') { badgeClass = 'bg-processing'; statusText = 'กำลังดำเนินการ'; } 
+          else if (req.status === 'approved') { badgeClass = 'bg-approved'; statusText = 'ผ่านมาตรฐาน'; } 
+          else if (req.status === 'incomplete') { badgeClass = 'bg-incomplete'; statusText = 'เอกสารไม่ครบ'; }
 
           let remarkHtml = req.remark ? "<div class='text-muted mt-2 wrap-text-mobile' style='font-size: 0.85em;'><i class='fas fa-info-circle text-primary'></i> " + req.remark + "</div>" : "";
           
+          // 🛡️ ป้องกันการแก้ไขถ้าไม่อยู่ในสถานะที่อนุญาต (ล็อคปุ่มบนหน้าเว็บ)
           let editBtn = "";
-          // ป้องกันการแก้ไขถ้าไม่อยู่ในสถานะที่อนุญาต
           if (req.status === 'pending' || req.status === 'incomplete') {
             editBtn = "<button class='btn btn-sm btn-outline-warning rounded-pill px-3 mt-1' onclick='promptEditPin(" + req.rowIndex + ")'><i class='fas fa-pen'></i> แก้ไข</button>";
           } else {
-            editBtn = "<button class='btn btn-sm btn-outline-secondary rounded-pill px-3 mt-1' disabled><i class='fas fa-lock'></i></button>";
+            editBtn = "<button class='btn btn-sm btn-outline-secondary rounded-pill px-3 mt-1' disabled title='ไม่สามารถแก้ไขได้ในสถานะนี้'><i class='fas fa-lock'></i></button>";
           }
 
           userHtml += "<tr>";
-          userHtml += "<td class='fw-bold text-secondary'>" + (req.id || 'ไม่มีข้อมูล') + "</td>";
+          userHtml += "<td class='fw-bold text-secondary'>" + (req.id || '-') + "</td>";
           userHtml += "<td class='wrap-text-mobile'>" + (req.applicantName || '-') + "</td>";
           userHtml += "<td><span class='d-block d-sm-inline'>" + (req.submitDate || "").split(' ')[0] + "</span></td>";
           userHtml += "<td><span class='status-badge " + badgeClass + "'>" + statusText + "</span>" + remarkHtml + "</td>";
@@ -494,24 +460,12 @@
 
     function showExample(title, imageUrl, originalUrl) {
       let footerHtml = originalUrl ? '<div class="text-center w-100 mt-2"><a href="' + originalUrl + '" target="_blank" class="btn btn-sm btn-outline-primary"><i class="fas fa-external-link-alt me-1"></i> เปิดดูไฟล์ต้นฉบับขนาดเต็ม</a></div>' : '';
-      
-      Swal.fire({
-        title: 'ตัวอย่าง: ' + title,
-        imageUrl: imageUrl,
-        imageAlt: title,
-        footer: footerHtml,
-        confirmButtonText: 'ปิดหน้าต่าง',
-        confirmButtonColor: '#3b82f6',
-        customClass: { image: 'rounded shadow-sm' }
-      });
+      Swal.fire({ title: 'ตัวอย่าง: ' + title, imageUrl: imageUrl, imageAlt: title, footer: footerHtml, confirmButtonText: 'ปิดหน้าต่าง', confirmButtonColor: '#3b82f6', customClass: { image: 'rounded shadow-sm' } });
     }
 
     function requireAdminPassword() {
       let panel = document.getElementById('adminPanel');
-      if (panel.style.display === 'block') {
-        panel.style.display = 'none';
-        return;
-      }
+      if (panel.style.display === 'block') { panel.style.display = 'none'; return; }
 
       Swal.fire({
         title: 'เข้าสู่ระบบเจ้าหน้าที่',
@@ -524,10 +478,7 @@
         showLoaderOnConfirm: true,
         preConfirm: (password) => {
           return callAPI('verifyPassword', { password: password }).then(res => {
-            if (!res.success || !res.isValid) {
-              Swal.showValidationMessage('รหัสผ่านไม่ถูกต้อง!');
-              return false;
-            }
+            if (!res.success || !res.isValid) { Swal.showValidationMessage('รหัสผ่านไม่ถูกต้อง!'); return false; }
             return true;
           });
         },
@@ -545,10 +496,9 @@
     function showChangePassword() {
       Swal.fire({
         title: 'เปลี่ยนรหัสผ่าน',
-        html:
-          '<input id="oldPwd" class="swal2-input" placeholder="รหัสผ่านเดิม" type="password">' +
-          '<input id="newPwd" class="swal2-input" placeholder="รหัสผ่านใหม่" type="password">' +
-          '<input id="confirmPwd" class="swal2-input" placeholder="ยืนยันรหัสผ่านใหม่" type="password">',
+        html: '<input id="oldPwd" class="swal2-input" placeholder="รหัสผ่านเดิม" type="password">' +
+              '<input id="newPwd" class="swal2-input" placeholder="รหัสผ่านใหม่" type="password">' +
+              '<input id="confirmPwd" class="swal2-input" placeholder="ยืนยันรหัสผ่านใหม่" type="password">',
         focusConfirm: false,
         showCancelButton: true,
         confirmButtonText: 'บันทึก',
@@ -560,7 +510,6 @@
           
           if (!oldPwd || !newPwd || !confirmPwd) { Swal.showValidationMessage('กรุณากรอกให้ครบ'); return false; }
           if (newPwd !== confirmPwd) { Swal.showValidationMessage('รหัสผ่านใหม่ไม่ตรงกัน!'); return false; }
-          
           return callAPI('changeAdminPassword', { oldPwd: oldPwd, newPwd: newPwd });
         }
       }).then((result) => {
@@ -572,15 +521,11 @@
     }
 
     function exportCSV() {
-      if (!globalRequests || globalRequests.length === 0) {
-        Swal.fire('ไม่มีข้อมูล', 'ยังไม่มีข้อมูลคำร้องให้ดาวน์โหลด', 'info');
-        return;
-      }
+      if (!globalRequests || globalRequests.length === 0) { Swal.fire('ไม่มีข้อมูล', 'ยังไม่มีข้อมูลคำร้องให้ดาวน์โหลด', 'info'); return; }
       const headers = ['รหัสคำร้อง', 'รหัส PIN', 'ชื่อผู้ยื่น', 'เบอร์โทร', 'ประเภทสถานที่', 'จำนวนห้องน้ำ', 'ที่อยู่', 'จุดสังเกต', 'สถานะ', 'หมายเหตุ', 'วันที่ยื่น', 'เวลาแก้ไขล่าสุด', 'จำนวนครั้งที่แก้ไข'];
       const statusMap = { 'pending': 'รอตรวจสอบ', 'processing': 'กำลังดำเนินการ', 'approved': 'ผ่านมาตรฐาน', 'incomplete': 'เอกสารไม่ครบ' };
       
       let csvContent = '\uFEFF' + headers.join(',') + '\n';
-      
       globalRequests.forEach(req => {
         let row = [
           req.id, req.pin || '-', `"${(req.applicantName || '').replace(/"/g, '""')}"`, `"${(req.phone || '').replace(/"/g, '""')}"`,
@@ -596,11 +541,8 @@
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.setAttribute("href", url);
-      const today = new Date().toISOString().slice(0, 10);
-      link.setAttribute("download", `รายการคำร้องห้องน้ำ_${today}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      link.setAttribute("download", `รายการคำร้องห้องน้ำ_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link); link.click(); document.body.removeChild(link);
     }
 
     function openFormModal() {
@@ -610,6 +552,7 @@
       formModal.show();
     }
 
+    // 🛡️ ตรวจสอบรหัสความปลอดภัย PIN ก่อนแก้ไข
     function promptEditPin(rowIndex) {
       Swal.fire({
         title: 'ยืนยันรหัสความปลอดภัย',
@@ -623,23 +566,15 @@
         confirmButtonColor: '#f59e0b',
         showLoaderOnConfirm: true,
         preConfirm: (pin) => {
-          if (!pin || pin.length !== 4) {
-            Swal.showValidationMessage('กรุณากรอกรหัส PIN 4 หลักให้ครบถ้วน');
-            return false;
-          }
+          if (!pin || pin.length !== 4) { Swal.showValidationMessage('กรุณากรอกรหัส PIN 4 หลักให้ครบถ้วน'); return false; }
           return callAPI('verifyEditPin', { rowIndex: rowIndex, pin: pin }).then(res => {
-            if (!res.success || !res.isValid) {
-              Swal.showValidationMessage('รหัส PIN ไม่ถูกต้อง!');
-              return false;
-            }
+            if (!res.success || !res.isValid) { Swal.showValidationMessage('รหัส PIN ไม่ถูกต้อง!'); return false; }
             return true;
           });
         },
         allowOutsideClick: () => !Swal.isLoading()
       }).then((result) => {
-        if (result.isConfirmed && result.value) {
-          editRequest(rowIndex);
-        }
+        if (result.isConfirmed && result.value) { editRequest(rowIndex); }
       });
     }
 
@@ -674,7 +609,6 @@
         if (result.isConfirmed) {
           Swal.fire({ title: 'กำลังอัปเดตข้อมูล...', allowOutsideClick: false });
           Swal.showLoading();
-          
           callAPI('updateRequestStatus', { rowIndex: rowIndex, status: statusValue, remark: remarkValue })
             .then(res => {
               if(res.success) { Swal.fire('สำเร็จ!', 'อัปเดตสถานะเรียบร้อยแล้ว', 'success'); loadData(); } 
@@ -700,7 +634,6 @@
       };
 
       let editRowIndex = document.getElementById('editRowIndex').value;
-      
       if (editRowIndex) {
         data.rowIndex = parseInt(editRowIndex);
         callAPI('updateRequest', data).then(submitSuccess);
@@ -712,28 +645,23 @@
     function submitSuccess(res) {
       if(res.success) {
         formModal.hide();
-        
         if (res.isNew) {
           Swal.fire({
             title: 'ส่งคำร้องสำเร็จ!',
-            html: '<div class="text-start mt-2">' +
-                  'ข้อมูลของคุณถูกบันทึกเข้าระบบเรียบร้อยแล้ว<br><br>' +
+            html: '<div class="text-start mt-2">ข้อมูลของคุณถูกบันทึกเข้าระบบเรียบร้อยแล้ว<br><br>' +
                   '<b>รหัสคำร้อง:</b> <span class="text-primary">' + res.id + '</span><br>' +
                   '<b>รหัส PIN สำหรับแก้ไข:</b> <span class="text-danger fs-3 fw-bold ms-2">' + res.pin + '</span><br><br>' +
-                  '<span class="text-muted" style="font-size: 0.9em;"><i class="fas fa-exclamation-triangle text-warning"></i> <b>โปรดแคปหน้าจอหรือจดรหัสนี้ไว้!</b> คุณต้องใช้รหัส 4 หลักนี้ หากต้องการเข้ามาแก้ไขข้อมูลในภายหลัง</span>' +
-                  '</div>',
+                  '<span class="text-muted" style="font-size: 0.9em;"><i class="fas fa-exclamation-triangle text-warning"></i> <b>โปรดแคปหน้าจอหรือจดรหัสนี้ไว้!</b> คุณต้องใช้รหัส 4 หลักนี้ หากต้องการเข้ามาแก้ไขข้อมูลในภายหลัง</span></div>',
             icon: 'success'
           });
         } else {
           Swal.fire('อัปเดตสำเร็จ!', 'ข้อมูลของคุณถูกแก้ไขเรียบร้อยแล้ว', 'success');
         }
-        
         document.getElementById('requestForm').reset();
         loadData();
       } else { Swal.fire('เกิดข้อผิดพลาด', res.error, 'error'); }
     }
 
-    // ฟังก์ชันบีบอัดรูปภาพให้เล็กลงมากๆ เพื่อไม่ให้เกิด Timeout
     function convertFile(file) {
       return new Promise(function(resolve) {
         if (!file.type.startsWith('image/')) {
@@ -746,13 +674,11 @@
           let img = new Image();
           img.onload = function() {
             let canvas = document.createElement('canvas');
-            // ลดขนาดภาพสูงสุดเหลือแค่ 800px ไฟล์จะเล็กและส่งไวมาก
             let maxW = 800, maxH = 800, width = img.width, height = img.height;
             if (width > height && width > maxW) { height *= maxW / width; width = maxW; } 
             else if (height > maxH) { width *= maxH / height; height = maxH; }
             canvas.width = width; canvas.height = height;
             canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-            // ลดคุณภาพรูปลงเหลือ 50%
             resolve(canvas.toDataURL('image/jpeg', 0.5));
           }
           img.src = event.target.result;
