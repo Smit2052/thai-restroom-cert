@@ -246,10 +246,10 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        // ⚠️ ลิงก์ API ตัวล่าสุดของคุณ (ดึงจาก Apps Script)
+        // ⚠️ ลิงก์ API ตัวล่าสุดที่เพิ่ง Deploy
         const GAS_API_URL = "https://script.google.com/macros/s/AKfycbwumWo8CM57-v6_DImCDsD7Ngf6oy3gu1XSKN-MAMBW39EM9dCzve-P-6VzZx7RCV2H/exec";
         
-        // ⚠️ ใส่ API Key ของ ImgBB
+        // ⚠️ อย่าลืมเปลี่ยนเป็น API Key ของคุณ
         const IMGBB_API_KEY = "YOUR_IMGBB_API_KEY"; 
 
         let globalRequests = []; 
@@ -346,7 +346,7 @@
                     Swal.fire('ผิดพลาด', result.message, 'error');
                 }
             } catch (error) { 
-                Swal.fire('ผิดพลาด', 'ไม่สามารถเชื่อมต่อระบบหลังบ้านได้', 'error'); 
+                Swal.fire('ผิดพลาด', 'ไม่สามารถเชื่อมต่อระบบหลังบ้านได้ (ตรวจสอบ API URL)', 'error'); 
             }
         }
 
