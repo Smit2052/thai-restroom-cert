@@ -69,10 +69,30 @@
     <div class="alert alert-warning card-custom" role="alert" style="background-color: #fff8e1; border-color: #ffecb3;">
       <h5 class="alert-heading text-warning-emphasis"><i class="fas fa-info-circle"></i> เอกสารที่สามารถเตรียมมาแนบได้ (ถ้ามี)</h5>
       <ul class="mb-0 text-dark" style="line-height: 1.8;">
-        <li>ใบรับแจ้งเกี่ยวกับบ้าน จำนวน 1 ฉบับ <a href="javascript:void(0)" onclick="showExample('ใบรับแจ้งเกี่ยวกับบ้าน', 'https://i.ibb.co/4gwMcfyx/1.png')" class="badge bg-info text-dark text-decoration-none ms-1"><i class="fas fa-image"></i> ดูตัวอย่าง</a></li>
-        <li>สำเนาบัตรประชาชน จำนวน 1 ฉบับ <a href="javascript:void(0)" onclick="showExample('สำเนาบัตรประชาชน', 'https://i.ibb.co/1Gy02ThV/2.png')" class="badge bg-info text-dark text-decoration-none ms-1"><i class="fas fa-image"></i> ดูตัวอย่าง</a></li>
-        <li>สำเนาทะเบียนบ้าน จำนวน 1 ฉบับ <a href="javascript:void(0)" onclick="showExample('สำเนาทะเบียนบ้าน', 'https://i.ibb.co/8ySNp92/3.png')" class="badge bg-info text-dark text-decoration-none ms-1"><i class="fas fa-image"></i> ดูตัวอย่าง</a></li>
-        <li>รูปถ่ายตัวบ้านและห้องน้ำ จำนวน 1 แผ่น <a href="javascript:void(0)" onclick="showExample('รูปถ่ายตัวบ้านและห้องน้ำ', 'https://i.ibb.co/BKYqkcf4/4.png')" class="badge bg-info text-dark text-decoration-none ms-1"><i class="fas fa-image"></i> ดูตัวอย่าง</a></li>
+        <li>
+          ใบรับแจ้งเกี่ยวกับบ้าน จำนวน 1 ฉบับ 
+          <a href="javascript:void(0)" onclick="showExample('ใบรับแจ้งเกี่ยวกับบ้าน', 'https://i.ibb.co/4gwMcfyx/1.png')" class="badge bg-info text-dark text-decoration-none ms-1">
+            <i class="fas fa-image"></i> ดูตัวอย่าง
+          </a>
+        </li>
+        <li>
+          สำเนาบัตรประชาชน จำนวน 1 ฉบับ 
+          <a href="javascript:void(0)" onclick="showExample('สำเนาบัตรประชาชน', 'https://i.ibb.co/1Gy02ThV/2.png')" class="badge bg-info text-dark text-decoration-none ms-1">
+            <i class="fas fa-image"></i> ดูตัวอย่าง
+          </a>
+        </li>
+        <li>
+          สำเนาทะเบียนบ้าน จำนวน 1 ฉบับ 
+          <a href="javascript:void(0)" onclick="showExample('สำเนาทะเบียนบ้าน', 'https://i.ibb.co/8ySNp92/3.png')" class="badge bg-info text-dark text-decoration-none ms-1">
+            <i class="fas fa-image"></i> ดูตัวอย่าง
+          </a>
+        </li>
+        <li>
+          รูปถ่ายตัวบ้านและห้องน้ำ จำนวน 1 แผ่น 
+          <a href="javascript:void(0)" onclick="showExample('รูปถ่ายตัวบ้านและห้องน้ำ', 'https://i.ibb.co/BKYqkcf4/4.png')" class="badge bg-info text-dark text-decoration-none ms-1">
+            <i class="fas fa-image"></i> ดูตัวอย่าง
+          </a>
+        </li>
       </ul>
       <hr style="border-color: #ffe082;">
       <p class="mb-0 text-muted" style="font-size: 0.9em;"><i class="fas fa-lightbulb text-warning"></i> <strong>หมายเหตุ:</strong> หากยังไม่สะดวกแนบไฟล์ สามารถกดยื่นคำร้องโดยไม่แนบไฟล์ได้ครับ และทางเจ้าหน้าที่จะประสานขอเพิ่มเติมในภายหลัง</p>
@@ -133,7 +153,6 @@
       </div>
     </div>
 
-    <!-- User Table -->
     <div class="card card-custom p-3 p-md-4" id="userTableView">
       <h5 class="mb-3 fw-bold text-secondary section-title">รายการคำร้องล่าสุด <span id="syncIndicator" class="spinner-border spinner-border-sm text-primary ms-2 d-none" role="status"></span></h5>
       <div class="table-responsive">
@@ -154,7 +173,6 @@
       </div>
     </div>
 
-    <!-- Admin Panel -->
     <div class="card card-custom p-3 p-md-4 mt-4 bg-white" id="adminPanel" style="display: none; border-top: 4px solid #dc3545;">
       <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-2">
         <h5 class="mb-0 text-danger fw-bold section-title"><i class="fas fa-user-shield me-2"></i> ระบบจัดการสำหรับเจ้าหน้าที่</h5>
@@ -188,7 +206,6 @@
     <i class="fas fa-phone-volume"></i> <span class="d-none d-sm-inline">ติดต่อรพ.โพนสวรรค์</span><span class="d-inline d-sm-none">ติดต่อเรา</span>
   </div>
 
-  <!-- Form Modal -->
   <div class="modal fade" id="formModal" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content border-0 shadow">
@@ -237,6 +254,7 @@
               <input type="text" class="form-control bg-light" id="nearbyLocation" placeholder="เช่น ใกล้โรงเรียน, วัด, หรือร้านค้า">
             </div>
 
+            <!-- โซนแนบไฟล์ -->
             <div class="p-3 mt-4 mb-2 rounded" style="background-color: #f1f5f9;">
               <h6 class="fw-bold mb-3"><i class="fas fa-paperclip text-secondary"></i> เอกสารแนบ (ถ้ามี) <br><small class="text-muted fw-normal mt-1 d-block">- หากแก้ไขและใช้รูปเดิม ไม่ต้องเลือกไฟล์ใหม่</small></h6>
               <div class="row g-2">
@@ -245,34 +263,46 @@
                     <span>ใบรับแจ้งเกี่ยวกับบ้าน</span>
                     <a href="javascript:void(0)" onclick="showExample('ใบรับแจ้งเกี่ยวกับบ้าน', 'https://i.ibb.co/4gwMcfyx/1.png')" class="text-primary text-decoration-none"><i class="fas fa-image"></i> ตัวอย่าง</a>
                   </label>
-                  <input type="file" class="form-control form-control-sm" id="docHouse" accept="image/*,application/pdf">
+                  <div id="docHouse_view" class="d-none mb-2"></div>
+                  <div class="file-upload-zone">
+                    <input type="file" class="form-control form-control-sm file-input-group" id="docHouse" accept="image/*,application/pdf">
+                  </div>
                 </div>
                 <div class="col-12 col-md-6">
                   <label class="form-label text-muted mb-1 w-100 d-flex justify-content-between" style="font-size:0.85em;">
                     <span>สำเนาบัตรประชาชน</span>
                     <a href="javascript:void(0)" onclick="showExample('สำเนาบัตรประชาชน', 'https://i.ibb.co/1Gy02ThV/2.png')" class="text-primary text-decoration-none"><i class="fas fa-image"></i> ตัวอย่าง</a>
                   </label>
-                  <input type="file" class="form-control form-control-sm" id="docIdCard" accept="image/*,application/pdf">
+                  <div id="docIdCard_view" class="d-none mb-2"></div>
+                  <div class="file-upload-zone">
+                    <input type="file" class="form-control form-control-sm file-input-group" id="docIdCard" accept="image/*,application/pdf">
+                  </div>
                 </div>
                 <div class="col-12 col-md-6">
                   <label class="form-label text-muted mb-1 w-100 d-flex justify-content-between" style="font-size:0.85em;">
                     <span>สำเนาทะเบียนบ้าน</span>
                     <a href="javascript:void(0)" onclick="showExample('สำเนาทะเบียนบ้าน', 'https://i.ibb.co/8ySNp92/3.png')" class="text-primary text-decoration-none"><i class="fas fa-image"></i> ตัวอย่าง</a>
                   </label>
-                  <input type="file" class="form-control form-control-sm" id="docHouseReg" accept="image/*,application/pdf">
+                  <div id="docHouseReg_view" class="d-none mb-2"></div>
+                  <div class="file-upload-zone">
+                    <input type="file" class="form-control form-control-sm file-input-group" id="docHouseReg" accept="image/*,application/pdf">
+                  </div>
                 </div>
                 <div class="col-12 col-md-6">
                   <label class="form-label text-muted mb-1 w-100 d-flex justify-content-between" style="font-size:0.85em;">
                     <span>รูปถ่ายสถานที่ / ห้องน้ำ</span>
                     <a href="javascript:void(0)" onclick="showExample('รูปถ่ายตัวบ้านและห้องน้ำ', 'https://i.ibb.co/BKYqkcf4/4.png')" class="text-primary text-decoration-none"><i class="fas fa-image"></i> ตัวอย่าง</a>
                   </label>
-                  <input type="file" class="form-control form-control-sm" id="docPhoto" accept="image/*,application/pdf">
+                  <div id="docPhoto_view" class="d-none mb-2"></div>
+                  <div class="file-upload-zone">
+                    <input type="file" class="form-control form-control-sm file-input-group" id="docPhoto" accept="image/*,application/pdf">
+                  </div>
                 </div>
               </div>
             </div>
 
             <div class="d-grid mt-4">
-              <button type="submit" class="btn btn-primary" style="background-color: #3b82f6; border:none; padding: 12px;"><i class="fas fa-paper-plane me-2"></i> บันทึกข้อมูลคำร้อง</button>
+              <button type="submit" id="submitBtn" class="btn btn-primary" style="background-color: #3b82f6; border:none; padding: 12px;"><i class="fas fa-paper-plane me-2"></i> บันทึกข้อมูลคำร้อง</button>
             </div>
           </form>
         </div>
@@ -283,23 +313,21 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   
   <script>
-    // =========================================================================
-    // ⚠️ นำ URL Web App ของ Google Apps Script มาใส่ในเครื่องหมายคำพูดด้านล่างนี้ 
-    // =========================================================================
-    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbyA_SYLr5rMNpDoPYoAQgUhmgu75acuV1Odx5QYRTalm8iHYtDd_hioRVZ57Jpe7ABQ/exec"; 
-    
-    // ฟังก์ชันสื่อสารกับ Google Apps Script (สำหรับ Vercel)
-    async function callAPI(action, data = null) {
+    // URL ของ Google Apps Script ที่ Deploy เสร็จแล้ว
+    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbyA_SYLr5rMNpDoPYoAQgUhmgu75acuV1Odx5QYRTalm8iHYtDd_hioRVZ57Jpe7ABQ/exec";
+
+    // ฟังก์ชันศูนย์กลางสำหรับเรียกใช้ API
+    async function callBackend(actionName, payloadData = {}) {
       try {
         const response = await fetch(GAS_API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ action: action, data: data })
+          body: JSON.stringify({ action: actionName, data: payloadData })
         });
         return await response.json();
-      } catch (error) {
-        console.error("API Error:", error);
-        return { success: false, error: "ไม่สามารถเชื่อมต่อฐานข้อมูลได้" };
+      } catch (err) {
+        console.error("Fetch Error:", err);
+        return { success: false, error: "เชื่อมต่อเซิร์ฟเวอร์ล้มเหลว โปรดตรวจสอบอินเทอร์เน็ต" };
       }
     }
 
@@ -312,51 +340,74 @@
         let indicator = document.getElementById('syncIndicator');
         if(indicator) indicator.classList.remove('d-none');
         
-        callAPI('getRequests').then(function(data) {
+        callBackend('getRequests').then(res => {
           if(indicator) indicator.classList.add('d-none');
-          if(data && !data.error) renderData(data, true); 
+          // GAS Code ส่งค่าผ่านตัวแปร data
+          let fetchedData = (res && Array.isArray(res)) ? res : (res && res.data ? res.data : []);
+          if(fetchedData.length > 0 || Array.isArray(res)) renderData(fetchedData, true); 
         });
-      }, 10000);
+      }, 15000); // รีเฟรชอัตโนมัติทุก 15 วินาที
     };
 
     function loadData() {
-      callAPI('getRequests').then(function(data) {
-        if(data && !data.error) renderData(data, false);
-        else document.getElementById('userTableBody').innerHTML = "<tr><td colspan='5' class='text-center text-danger'>เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>";
+      callBackend('getRequests').then(res => {
+        let fetchedData = (res && Array.isArray(res)) ? res : (res && res.data ? res.data : []);
+        renderData(fetchedData, false);
       });
     }
 
     function renderData(data, isBackground) {
-      globalRequests = data;
+      globalRequests = data || [];
       let userHtml = "";
       let adminHtml = "";
-      let countAll = data.length;
-      let countPending = 0, countProcessing = 0, countApproved = 0, countIncomplete = 0;
+      
+      let countAll = globalRequests.length;
+      let countPending = 0;
+      let countProcessing = 0;
+      let countApproved = 0;
+      let countIncomplete = 0;
 
-      if(data.length === 0) {
+      if(globalRequests.length === 0) {
         userHtml = "<tr><td colspan='5' class='text-center py-4 text-muted'>ยังไม่มีข้อมูลคำร้อง...</td></tr>";
         adminHtml = "<tr><td colspan='5' class='text-center py-4 text-muted'>ยังไม่มีข้อมูลคำร้อง...</td></tr>";
       } else {
-        data.forEach(function(req) {
+        globalRequests.forEach(function(req) {
           if(req.status === 'pending') countPending++;
           if(req.status === 'processing') countProcessing++;
           if(req.status === 'approved') countApproved++;
           if(req.status === 'incomplete') countIncomplete++;
 
-          let badgeClass = 'bg-pending'; let statusText = 'รอตรวจสอบ';
-          if (req.status === 'processing') { badgeClass = 'bg-processing'; statusText = 'กำลังดำเนินการ'; } 
-          else if (req.status === 'approved') { badgeClass = 'bg-approved'; statusText = 'ผ่านมาตรฐาน'; } 
-          else if (req.status === 'incomplete') { badgeClass = 'bg-incomplete'; statusText = 'เอกสารไม่ครบ'; }
+          let badgeClass = 'bg-pending';
+          let statusText = 'รอตรวจสอบ';
+          
+          if (req.status === 'processing') {
+            badgeClass = 'bg-processing';
+            statusText = 'กำลังดำเนินการ';
+          } else if (req.status === 'approved') {
+            badgeClass = 'bg-approved';
+            statusText = 'ผ่านมาตรฐาน';
+          } else if (req.status === 'incomplete') {
+            badgeClass = 'bg-incomplete';
+            statusText = 'เอกสารไม่ครบ';
+          }
 
           let remarkHtml = req.remark ? "<div class='text-muted mt-2 wrap-text-mobile' style='font-size: 0.85em;'><i class='fas fa-info-circle text-primary'></i> " + req.remark + "</div>" : "";
-          let editBtn = req.status === 'pending' ? "<button class='btn btn-sm btn-outline-warning rounded-pill px-3 mt-1' onclick='promptEditPin(" + req.rowIndex + ")'><i class='fas fa-pen'></i> แก้ไข</button>" : "";
+          
+          let actionBtns = "<div class='d-flex flex-wrap gap-1'>";
+          // เพิ่มปุ่ม ดูข้อมูล สำหรับโหมด View Read-only
+          actionBtns += "<button class='btn btn-sm btn-outline-info rounded-pill px-3 mt-1' onclick='viewRequest(" + req.rowIndex + ")'><i class='fas fa-eye'></i> ดูข้อมูล</button>";
+          // ถ้าสถานะรอดำเนินการ ให้แสดงปุ่มแก้ไข (ต้องใส่รหัส PIN)
+          if (req.status === 'pending') {
+            actionBtns += "<button class='btn btn-sm btn-outline-warning rounded-pill px-3 mt-1' onclick='promptEditPin(" + req.rowIndex + ")'><i class='fas fa-pen'></i> แก้ไข</button>";
+          }
+          actionBtns += "</div>";
 
           userHtml += "<tr>";
           userHtml += "<td class='fw-bold text-secondary'>" + req.id + "</td>";
           userHtml += "<td class='wrap-text-mobile'>" + req.applicantName + "</td>";
           userHtml += "<td><span class='d-block d-sm-inline'>" + (req.submitDate || "").split(' ')[0] + "</span></td>";
           userHtml += "<td><span class='status-badge " + badgeClass + "'>" + statusText + "</span>" + remarkHtml + "</td>";
-          userHtml += "<td>" + editBtn + "</td>";
+          userHtml += "<td>" + actionBtns + "</td>";
           userHtml += "</tr>";
 
           let editTracker = req.editCount > 0 ? "<br><span class='badge bg-warning text-dark mt-2' style='font-size: 0.8em; white-space: normal;'><i class='fas fa-history'></i> แก้ไข " + req.editCount + " ครั้ง<br>(" + req.lastEditTime + ")</span>" : "";
@@ -367,6 +418,7 @@
           adminHtml += "<td><i class='fas fa-user text-muted'></i> " + req.applicantName + "<br><i class='fas fa-phone text-muted'></i> " + req.phone + "</td>";
           adminHtml += "<td class='wrap-text-mobile'><strong>" + req.placeType + "</strong><br><small class='text-muted'>" + req.address + "</small></td>";
           adminHtml += "<td>" + getFileLink(req.docHouse, "ใบแจ้งบ้าน") + getFileLink(req.docIdCard, "บัตรปชช.") + getFileLink(req.docHouseReg, "ทะเบียนบ้าน") + getFileLink(req.docPhoto, "รูปถ่าย") + "</td>";
+          
           adminHtml += "<td>";
           adminHtml += "<select class='form-select form-select-sm mb-2' id='status_" + req.rowIndex + "'>";
           adminHtml += "<option value='pending' " + (req.status === 'pending' ? 'selected' : '') + ">รอตรวจสอบ</option>";
@@ -374,13 +426,20 @@
           adminHtml += "<option value='approved' " + (req.status === 'approved' ? 'selected' : '') + ">ผ่านมาตรฐาน</option>";
           adminHtml += "<option value='incomplete' " + (req.status === 'incomplete' ? 'selected' : '') + ">เอกสารไม่ครบ</option>";
           adminHtml += "</select>";
+          
           adminHtml += "<input type='text' class='form-control form-control-sm mb-2' id='remark_" + req.rowIndex + "' placeholder='หมายเหตุ...' value='" + req.remark + "'>";
+          adminHtml += "<div class='d-flex gap-1'>";
           adminHtml += "<button class='btn btn-success btn-sm w-100' onclick='confirmUpdateStatus(" + req.rowIndex + ")'><i class='fas fa-save'></i> บันทึก</button>";
-          adminHtml += "</td></tr>";
+          // ปุ่มแก้ไขข้อมูลสำหรับแอดมิน (เข้าได้เลยไม่ต้องใช้ PIN)
+          adminHtml += "<button class='btn btn-warning btn-sm flex-shrink-0 text-dark' onclick='adminEditRequest(" + req.rowIndex + ")' title='แก้ไขข้อมูลและเอกสาร'><i class='fas fa-edit'></i></button>";
+          adminHtml += "</div>";
+          adminHtml += "</td>";
+          adminHtml += "</tr>";
         });
       }
 
       document.getElementById('userTableBody').innerHTML = userHtml;
+      
       document.getElementById('countAll').innerText = countAll;
       document.getElementById('countPending').innerText = countPending;
       document.getElementById('countProcessing').innerText = countProcessing;
@@ -395,6 +454,7 @@
 
     function getFileLink(url, label) {
       if (!url) return "<span class='text-muted d-block mb-1' style='font-size:0.75em;'>- ไม่มี " + label + "</span>";
+      if (url === 'mock-url') return "<span class='badge bg-info text-dark mb-1 d-inline-block p-1'>[ไฟล์จำลอง] " + label + "</span><br>";
       return "<a href='" + url + "' target='_blank' class='badge bg-primary text-decoration-none mb-1 d-inline-block p-2'><i class='fas fa-link'></i> " + label + "</a><br>";
     }
 
@@ -409,24 +469,49 @@
     }
 
     function showExample(title, imageUrl) {
-      Swal.fire({ title: 'ตัวอย่าง: ' + title, imageUrl: imageUrl, imageAlt: title, confirmButtonText: 'ปิดหน้าต่าง', confirmButtonColor: '#3b82f6', customClass: { image: 'rounded shadow-sm' }});
+      Swal.fire({
+        title: 'ตัวอย่าง: ' + title,
+        imageUrl: imageUrl,
+        imageAlt: title,
+        confirmButtonText: 'ปิดหน้าต่าง',
+        confirmButtonColor: '#3b82f6',
+        customClass: { image: 'rounded shadow-sm' }
+      });
     }
 
     function requireAdminPassword() {
       let panel = document.getElementById('adminPanel');
-      if (panel.style.display === 'block') { panel.style.display = 'none'; return; }
+      if (panel.style.display === 'block') {
+        panel.style.display = 'none';
+        return;
+      }
+
       Swal.fire({
-        title: 'เข้าสู่ระบบเจ้าหน้าที่', input: 'password', inputPlaceholder: 'รหัสผ่านของคุณ...', showCancelButton: true, confirmButtonText: 'เข้าสู่ระบบ', cancelButtonText: 'ยกเลิก', confirmButtonColor: '#dc3545', showLoaderOnConfirm: true,
+        title: 'เข้าสู่ระบบเจ้าหน้าที่',
+        input: 'password',
+        inputPlaceholder: 'รหัสผ่านของคุณ...',
+        showCancelButton: true,
+        confirmButtonText: 'เข้าสู่ระบบ',
+        cancelButtonText: 'ยกเลิก',
+        confirmButtonColor: '#dc3545',
+        showLoaderOnConfirm: true,
         preConfirm: (password) => {
-          return callAPI('verifyPassword', password).then((isValid) => {
-            if (!isValid) { Swal.showValidationMessage('รหัสผ่านไม่ถูกต้อง!'); return false; }
-            return true;
+          return callBackend('verifyPassword', password).then(res => {
+             // สมมติว่าระบบเก่าคืนค่า bool ตรงๆ หรือ success flag
+             let isValid = (res === true || (res && res.success === true));
+             if (!isValid) {
+               Swal.showValidationMessage('รหัสผ่านไม่ถูกต้อง!');
+               return false;
+             }
+             return true;
           });
         },
         allowOutsideClick: () => !Swal.isLoading()
       }).then((result) => {
         if (result.isConfirmed && result.value) {
-          panel.style.display = 'block'; panel.scrollIntoView({ behavior: 'smooth' }); loadData();
+          panel.style.display = 'block';
+          panel.scrollIntoView({ behavior: 'smooth' });
+          loadData();
           Swal.fire({ icon: 'success', title: 'เข้าสู่ระบบสำเร็จ', showConfirmButton: false, timer: 1500 });
         }
       });
@@ -434,92 +519,182 @@
 
     function showChangePassword() {
       Swal.fire({
-        title: 'เปลี่ยนรหัสผ่าน', html: '<input id="oldPwd" class="swal2-input" placeholder="รหัสผ่านเดิม" type="password"><input id="newPwd" class="swal2-input" placeholder="รหัสผ่านใหม่" type="password"><input id="confirmPwd" class="swal2-input" placeholder="ยืนยันรหัสผ่านใหม่" type="password">', focusConfirm: false, showCancelButton: true, confirmButtonText: 'บันทึก', cancelButtonText: 'ยกเลิก',
+        title: 'เปลี่ยนรหัสผ่าน',
+        html:
+          '<input id="oldPwd" class="swal2-input" placeholder="รหัสผ่านเดิม" type="password">' +
+          '<input id="newPwd" class="swal2-input" placeholder="รหัสผ่านใหม่" type="password">' +
+          '<input id="confirmPwd" class="swal2-input" placeholder="ยืนยันรหัสผ่านใหม่" type="password">',
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: 'บันทึก',
+        cancelButtonText: 'ยกเลิก',
         preConfirm: () => {
           const oldPwd = document.getElementById('oldPwd').value;
           const newPwd = document.getElementById('newPwd').value;
           const confirmPwd = document.getElementById('confirmPwd').value;
+          
           if (!oldPwd || !newPwd || !confirmPwd) { Swal.showValidationMessage('กรุณากรอกให้ครบ'); return false; }
           if (newPwd !== confirmPwd) { Swal.showValidationMessage('รหัสผ่านใหม่ไม่ตรงกัน!'); return false; }
-          return callAPI('changeAdminPassword', { oldPwd: oldPwd, newPwd: newPwd });
+          
+          return callBackend('changeAdminPassword', { oldPwd: oldPwd, newPwd: newPwd });
         }
       }).then((result) => {
         if (result.isConfirmed) {
-          if (result.value.success) Swal.fire('สำเร็จ!', result.value.message, 'success');
-          else Swal.fire('ผิดพลาด', result.value.message, 'error');
+          if (result.value && result.value.success) Swal.fire('สำเร็จ!', result.value.message || 'เปลี่ยนรหัสสำเร็จ', 'success');
+          else Swal.fire('ผิดพลาด', (result.value ? result.value.message : 'รหัสเดิมไม่ถูกต้อง'), 'error');
         }
       });
     }
 
-    function exportCSV() {
-      if (!globalRequests || globalRequests.length === 0) { Swal.fire('ไม่มีข้อมูล', 'ยังไม่มีข้อมูลคำร้องให้ดาวน์โหลด', 'info'); return; }
-      const headers = ['รหัสคำร้อง', 'รหัส PIN', 'ชื่อผู้ยื่น', 'เบอร์โทร', 'ประเภทสถานที่', 'จำนวนห้องน้ำ', 'ที่อยู่', 'จุดสังเกต', 'สถานะ', 'หมายเหตุ', 'วันที่ยื่น', 'เวลาแก้ไขล่าสุด', 'จำนวนครั้งที่แก้ไข'];
-      const statusMap = { 'pending': 'รอตรวจสอบ', 'processing': 'กำลังดำเนินการ', 'approved': 'ผ่านมาตรฐาน', 'incomplete': 'เอกสารไม่ครบ' };
-      let csvContent = '\uFEFF' + headers.join(',') + '\n';
-      globalRequests.forEach(req => {
-        let row = [
-          req.id, req.pin || '-', `"${(req.applicantName || '').replace(/"/g, '""')}"`, `"${(req.phone || '').replace(/"/g, '""')}"`,
-          `"${(req.placeType || '').replace(/"/g, '""')}"`, req.toiletCount, `"${(req.address || '').replace(/"/g, '""')}"`,
-          `"${(req.nearbyLocation || '').replace(/"/g, '""')}"`, statusMap[req.status] || req.status,
-          `"${(req.remark || '').replace(/"/g, '""')}"`, `"${(req.submitDate || '').replace(/"/g, '""')}"`,
-          `"${(req.lastEditTime || '').replace(/"/g, '""')}"`, req.editCount || 0
-        ];
-        csvContent += row.join(',') + '\n';
+    function toggleFormMode(mode, req = null) {
+      const inputs = document.querySelectorAll('#requestForm input[type="text"], #requestForm input[type="tel"], #requestForm input[type="number"], #requestForm select, #requestForm textarea');
+      const fileUploadZones = document.querySelectorAll('.file-upload-zone');
+      const submitBtn = document.getElementById('submitBtn');
+
+      if (mode === 'view') {
+        inputs.forEach(input => input.disabled = true);
+        fileUploadZones.forEach(el => el.style.display = 'none');
+        submitBtn.style.display = 'none';
+        document.getElementById('formModalLabel').innerHTML = '<i class="fas fa-eye me-2"></i> รายละเอียดคำร้อง';
+        setupFileLinks(req, true);
+      } else if (mode === 'edit') {
+        inputs.forEach(input => input.disabled = false);
+        fileUploadZones.forEach(el => el.style.display = 'block');
+        submitBtn.style.display = 'block';
+        submitBtn.innerHTML = '<i class="fas fa-save me-2"></i> บันทึกการแก้ไข';
+        document.getElementById('formModalLabel').innerHTML = '<i class="fas fa-pen me-2"></i> แก้ไขคำร้อง: ' + req.id;
+        setupFileLinks(req, false);
+      } else {
+        inputs.forEach(input => input.disabled = false);
+        fileUploadZones.forEach(el => el.style.display = 'block');
+        submitBtn.style.display = 'block';
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i> บันทึกข้อมูลคำร้อง';
+        document.getElementById('formModalLabel').innerHTML = '<i class="fas fa-edit me-2"></i> ยื่นคำร้องใบรับรองมาตรฐานห้องน้ำ';
+        setupFileLinks(null, false);
+      }
+    }
+
+    function setupFileLinks(req, isViewMode) {
+      const files = [
+        { id: 'docHouse', url: req ? req.docHouse : null, label: 'ใบแจ้งบ้าน' },
+        { id: 'docIdCard', url: req ? req.docIdCard : null, label: 'บัตรปชช.' },
+        { id: 'docHouseReg', url: req ? req.docHouseReg : null, label: 'ทะเบียนบ้าน' },
+        { id: 'docPhoto', url: req ? req.docPhoto : null, label: 'รูปถ่าย' }
+      ];
+
+      files.forEach(f => {
+        const viewDiv = document.getElementById(f.id + '_view');
+        if (isViewMode) {
+          if (f.url && f.url !== '') {
+            viewDiv.innerHTML = `<a href="${f.url}" target="_blank" class="btn btn-outline-primary btn-sm w-100"><i class="fas fa-file-alt"></i> เปิดดูไฟล์ ${f.label}</a>`;
+          } else {
+            viewDiv.innerHTML = `<div class="text-center text-muted border rounded bg-light py-1" style="font-size:0.85em;">ไม่มีไฟล์แนบ</div>`;
+          }
+          viewDiv.classList.remove('d-none');
+        } else {
+          if (f.url && f.url !== '') {
+             viewDiv.innerHTML = `<div class="d-flex justify-content-between align-items-center bg-white border border-success rounded p-1 mb-1" style="font-size:0.85em;">
+                                  <span class="text-success ms-1"><i class="fas fa-check-circle"></i> มีไฟล์เดิมแล้ว</span>
+                                  <a href="${f.url}" target="_blank" class="btn btn-sm btn-outline-primary py-0 px-2"><i class="fas fa-eye"></i> ดูไฟล์</a>
+                                 </div>`;
+             viewDiv.classList.remove('d-none');
+          } else {
+             viewDiv.classList.add('d-none');
+             viewDiv.innerHTML = '';
+          }
+        }
       });
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a"); link.setAttribute("href", url);
-      const today = new Date().toISOString().slice(0, 10); link.setAttribute("download", `รายการคำร้องห้องน้ำ_${today}.csv`);
-      document.body.appendChild(link); link.click(); document.body.removeChild(link);
     }
 
     function openFormModal() {
       document.getElementById('requestForm').reset();
       document.getElementById('editRowIndex').value = '';
-      document.getElementById('formModalLabel').innerHTML = '<i class="fas fa-edit me-2"></i> ยื่นคำร้องใบรับรองมาตรฐานห้องน้ำ';
+      toggleFormMode('new');
       formModal.show();
     }
 
+    function viewRequest(rowIndex) {
+      let req = globalRequests.find(r => r.rowIndex === rowIndex);
+      if (!req) return;
+      document.getElementById('requestForm').reset();
+      populateForm(req);
+      toggleFormMode('view', req);
+      formModal.show();
+    }
+
+    function adminEditRequest(rowIndex) {
+      editRequest(rowIndex); // แอดมินเข้าแก้ไขได้เลย ไม่ต้องกรอก PIN
+    }
+
     function promptEditPin(rowIndex) {
+      let req = globalRequests.find(r => r.rowIndex === rowIndex);
       Swal.fire({
-        title: 'ยืนยันรหัสความปลอดภัย', text: 'กรุณากรอกรหัส 4 หลัก ที่คุณได้รับตอนส่งคำร้อง เพื่อเข้าสู่โหมดแก้ไข', input: 'text', inputAttributes: { maxlength: 4, autocapitalize: 'off', autocorrect: 'off' }, inputPlaceholder: 'รหัส PIN 4 หลัก...', showCancelButton: true, confirmButtonText: 'ยืนยัน', cancelButtonText: 'ยกเลิก', confirmButtonColor: '#f59e0b', showLoaderOnConfirm: true,
+        title: 'ยืนยันรหัสความปลอดภัย',
+        html: 'กรุณากรอกรหัส 4 หลัก ที่คุณได้รับตอนส่งคำร้อง เพื่อเข้าสู่โหมดแก้ไข',
+        input: 'text',
+        inputAttributes: { maxlength: 4, autocapitalize: 'off', autocorrect: 'off' },
+        inputPlaceholder: 'รหัส PIN 4 หลัก...',
+        showCancelButton: true,
+        confirmButtonText: 'ยืนยัน',
+        cancelButtonText: 'ยกเลิก',
+        confirmButtonColor: '#f59e0b',
+        showLoaderOnConfirm: true,
         preConfirm: (pin) => {
           if (!pin || pin.length !== 4) { Swal.showValidationMessage('กรุณากรอกรหัส PIN 4 หลักให้ครบถ้วน'); return false; }
-          return callAPI('verifyEditPin', { rowIndex: rowIndex, pin: pin }).then((isValid) => {
-            if (!isValid) { Swal.showValidationMessage('รหัส PIN ไม่ถูกต้อง!'); return false; }
-            return true;
+          
+          return callBackend('verifyEditPin', { rowIndex: rowIndex, pin: pin }).then(res => {
+             let isValid = (res === true || (res && res.success === true));
+             if (!isValid) { Swal.showValidationMessage('รหัส PIN ไม่ถูกต้อง!'); return false; }
+             return true;
           });
         },
         allowOutsideClick: () => !Swal.isLoading()
-      }).then((result) => { if (result.isConfirmed && result.value) editRequest(rowIndex); });
+      }).then((result) => {
+        if (result.isConfirmed && result.value) editRequest(rowIndex);
+      });
+    }
+
+    function populateForm(req) {
+      document.getElementById('applicantName').value = req.applicantName || '';
+      document.getElementById('phone').value = req.phone || '';
+      document.getElementById('placeType').value = req.placeType || '';
+      document.getElementById('toiletCount').value = req.toiletCount || '';
+      document.getElementById('address').value = req.address || '';
+      document.getElementById('nearbyLocation').value = req.nearbyLocation || '';
     }
 
     function editRequest(rowIndex) {
       let req = globalRequests.find(function(r) { return r.rowIndex === rowIndex; });
       if (!req) return;
+      document.getElementById('requestForm').reset();
       document.getElementById('editRowIndex').value = req.rowIndex;
-      document.getElementById('formModalLabel').innerHTML = '<i class="fas fa-pen me-2"></i> แก้ไขคำร้อง: ' + req.id;
-      document.getElementById('applicantName').value = req.applicantName;
-      document.getElementById('phone').value = req.phone;
-      document.getElementById('placeType').value = req.placeType;
-      document.getElementById('toiletCount').value = req.toiletCount;
-      document.getElementById('address').value = req.address;
-      document.getElementById('nearbyLocation').value = req.nearbyLocation;
+      populateForm(req);
+      toggleFormMode('edit', req);
       formModal.show();
     }
 
     function confirmUpdateStatus(rowIndex) {
       var statusValue = document.getElementById('status_' + rowIndex).value;
       var remarkValue = document.getElementById('remark_' + rowIndex).value;
+
       Swal.fire({
-        title: 'ยืนยันการบันทึก?', text: "คุณต้องการอัปเดตสถานะและหมายเหตุของคำร้องนี้?", icon: 'warning', showCancelButton: true, confirmButtonColor: '#28a745', cancelButtonColor: '#6c757d', confirmButtonText: 'ยืนยัน', cancelButtonText: 'ยกเลิก'
+        title: 'ยืนยันการบันทึก?',
+        text: "คุณต้องการอัปเดตสถานะและหมายเหตุของคำร้องนี้?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#28a745',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'ยืนยัน'
       }).then(function(result) {
         if (result.isConfirmed) {
-          Swal.fire({ title: 'กำลังอัปเดตข้อมูล...', allowOutsideClick: false }); Swal.showLoading();
-          callAPI('updateRequestStatus', { rowIndex: rowIndex, status: statusValue, remark: remarkValue }).then(function(res) {
-            if(res.success) { Swal.fire('สำเร็จ!', 'อัปเดตสถานะเรียบร้อยแล้ว', 'success'); loadData(); } 
-            else { Swal.fire('ผิดพลาด', res.error, 'error'); }
-          });
+          Swal.fire({ title: 'กำลังอัปเดตข้อมูล...', allowOutsideClick: false });
+          Swal.showLoading();
+          
+          callBackend('updateRequestStatus', { rowIndex: rowIndex, status: statusValue, remark: remarkValue })
+            .then(res => {
+              if(res && res.success) { Swal.fire('สำเร็จ!', 'อัปเดตสถานะเรียบร้อยแล้ว', 'success'); loadData(); } 
+              else { Swal.fire('ผิดพลาด', res.error || 'เกิดข้อผิดพลาดในการอัปเดต', 'error'); }
+            });
         }
       });
     }
@@ -530,9 +705,12 @@
       Swal.showLoading();
       
       let data = {
-        applicantName: document.getElementById('applicantName').value, phone: document.getElementById('phone').value,
-        placeType: document.getElementById('placeType').value, toiletCount: document.getElementById('toiletCount').value,
-        address: document.getElementById('address').value, nearbyLocation: document.getElementById('nearbyLocation').value,
+        applicantName: document.getElementById('applicantName').value, 
+        phone: document.getElementById('phone').value,
+        placeType: document.getElementById('placeType').value, 
+        toiletCount: document.getElementById('toiletCount').value,
+        address: document.getElementById('address').value, 
+        nearbyLocation: document.getElementById('nearbyLocation').value,
         docHouse: document.getElementById('docHouse').files[0] ? await convertFile(document.getElementById('docHouse').files[0]) : "",
         docIdCard: document.getElementById('docIdCard').files[0] ? await convertFile(document.getElementById('docIdCard').files[0]) : "",
         docHouseReg: document.getElementById('docHouseReg').files[0] ? await convertFile(document.getElementById('docHouseReg').files[0]) : "",
@@ -540,27 +718,44 @@
       };
 
       let editRowIndex = document.getElementById('editRowIndex').value;
-      if (editRowIndex) callAPI('updateRequest', { payload: data, rowIndex: parseInt(editRowIndex) }).then(submitSuccess);
-      else callAPI('submitRequest', data).then(submitSuccess);
+      
+      if (editRowIndex) {
+        callBackend('updateRequest', { payload: data, rowIndex: parseInt(editRowIndex) }).then(submitSuccess);
+      } else {
+        callBackend('submitRequest', data).then(submitSuccess);
+      }
     }
 
     function submitSuccess(res) {
-      if(res.success) {
+      if(res && res.success) {
         formModal.hide();
+        
         if (res.isNew) {
           Swal.fire({
             title: 'ส่งคำร้องสำเร็จ!',
-            html: '<div class="text-start mt-2">ข้อมูลของคุณถูกบันทึกเข้าระบบเรียบร้อยแล้ว<br><br><b>รหัสคำร้อง:</b> <span class="text-primary">' + res.id + '</span><br><b>รหัส PIN สำหรับแก้ไข:</b> <span class="text-danger fs-3 fw-bold ms-2">' + res.pin + '</span><br><br><span class="text-muted" style="font-size: 0.9em;"><i class="fas fa-exclamation-triangle text-warning"></i> <b>โปรดแคปหน้าจอหรือจดรหัสนี้ไว้!</b> คุณต้องใช้รหัส 4 หลักนี้ หากต้องการเข้ามาแก้ไขข้อมูลในภายหลัง</span></div>', icon: 'success'
+            html: '<div class="text-start mt-2">' +
+                  'ข้อมูลของคุณถูกบันทึกเข้าระบบเรียบร้อยแล้ว<br><br>' +
+                  '<b>รหัสคำร้อง:</b> <span class="text-primary">' + res.id + '</span><br>' +
+                  '<b>รหัส PIN สำหรับแก้ไข:</b> <span class="text-danger fs-3 fw-bold ms-2">' + res.pin + '</span><br><br>' +
+                  '<span class="text-muted" style="font-size: 0.9em;"><i class="fas fa-exclamation-triangle text-warning"></i> <b>โปรดแคปหน้าจอหรือจดรหัสนี้ไว้!</b> คุณต้องใช้รหัส 4 หลักนี้ หากต้องการเข้ามาแก้ไขข้อมูลในภายหลัง</span>' +
+                  '</div>',
+            icon: 'success'
           });
-        } else { Swal.fire('อัปเดตสำเร็จ!', 'ข้อมูลของคุณถูกแก้ไขเรียบร้อยแล้ว', 'success'); }
-        document.getElementById('requestForm').reset(); loadData();
-      } else { Swal.fire('เกิดข้อผิดพลาด', res.error, 'error'); }
+        } else {
+          Swal.fire('อัปเดตสำเร็จ!', 'ข้อมูลของคุณถูกแก้ไขเรียบร้อยแล้ว', 'success');
+        }
+        
+        document.getElementById('requestForm').reset();
+        loadData();
+      } else { Swal.fire('เกิดข้อผิดพลาด', res.error || res.message || 'บันทึกไม่สำเร็จ', 'error'); }
     }
 
     function convertFile(file) {
       return new Promise(function(resolve) {
         if (!file.type.startsWith('image/')) {
-          let reader = new FileReader(); reader.onload = function(e) { resolve(e.target.result); }; reader.readAsDataURL(file); return;
+          let reader = new FileReader();
+          reader.onload = function(e) { resolve(e.target.result); };
+          reader.readAsDataURL(file); return;
         }
         let reader = new FileReader();
         reader.onload = function(event) {
@@ -578,6 +773,38 @@
         }
         reader.readAsDataURL(file);
       });
+    }
+    
+    function exportCSV() {
+      if (!globalRequests || globalRequests.length === 0) {
+        Swal.fire('ไม่มีข้อมูล', 'ยังไม่มีข้อมูลคำร้องให้ดาวน์โหลด', 'info');
+        return;
+      }
+      const headers = ['รหัสคำร้อง', 'รหัส PIN', 'ชื่อผู้ยื่น', 'เบอร์โทร', 'ประเภทสถานที่', 'จำนวนห้องน้ำ', 'ที่อยู่', 'จุดสังเกต', 'สถานะ', 'หมายเหตุ', 'วันที่ยื่น', 'เวลาแก้ไขล่าสุด', 'จำนวนครั้งที่แก้ไข'];
+      const statusMap = { 'pending': 'รอตรวจสอบ', 'processing': 'กำลังดำเนินการ', 'approved': 'ผ่านมาตรฐาน', 'incomplete': 'เอกสารไม่ครบ' };
+      
+      let csvContent = '\uFEFF' + headers.join(',') + '\n';
+      
+      globalRequests.forEach(req => {
+        let row = [
+          req.id, req.pin || '-', `"${(req.applicantName || '').replace(/"/g, '""')}"`, `"${(req.phone || '').replace(/"/g, '""')}"`,
+          `"${(req.placeType || '').replace(/"/g, '""')}"`, req.toiletCount, `"${(req.address || '').replace(/"/g, '""')}"`,
+          `"${(req.nearbyLocation || '').replace(/"/g, '""')}"`, statusMap[req.status] || req.status,
+          `"${(req.remark || '').replace(/"/g, '""')}"`, `"${(req.submitDate || '').replace(/"/g, '""')}"`,
+          `"${(req.lastEditTime || '').replace(/"/g, '""')}"`, req.editCount || 0
+        ];
+        csvContent += row.join(',') + '\n';
+      });
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      const today = new Date().toISOString().slice(0, 10);
+      link.setAttribute("download", `รายการคำร้องห้องน้ำ_${today}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
   </script>
 </body>
