@@ -342,11 +342,10 @@
         
         callBackend('getRequests').then(res => {
           if(indicator) indicator.classList.add('d-none');
-          // GAS Code ส่งค่าผ่านตัวแปร data
           let fetchedData = (res && Array.isArray(res)) ? res : (res && res.data ? res.data : []);
           if(fetchedData.length > 0 || Array.isArray(res)) renderData(fetchedData, true); 
         });
-      }, 15000); // รีเฟรชอัตโนมัติทุก 15 วินาที
+      }, 15000); 
     };
 
     function loadData() {
@@ -393,21 +392,18 @@
 
           let remarkHtml = req.remark ? "<div class='text-muted mt-2 wrap-text-mobile' style='font-size: 0.85em;'><i class='fas fa-info-circle text-primary'></i> " + req.remark + "</div>" : "";
           
-          let actionBtns = "<div class='d-flex flex-wrap gap-1'>";
-          // เพิ่มปุ่ม ดูข้อมูล สำหรับโหมด View Read-only
-          actionBtns += "<button class='btn btn-sm btn-outline-info rounded-pill px-3 mt-1' onclick='viewRequest(" + req.rowIndex + ")'><i class='fas fa-eye'></i> ดูข้อมูล</button>";
+          let editBtn = "";
           // ถ้าสถานะรอดำเนินการ ให้แสดงปุ่มแก้ไข (ต้องใส่รหัส PIN)
           if (req.status === 'pending') {
-            actionBtns += "<button class='btn btn-sm btn-outline-warning rounded-pill px-3 mt-1' onclick='promptEditPin(" + req.rowIndex + ")'><i class='fas fa-pen'></i> แก้ไข</button>";
+            editBtn = "<button class='btn btn-sm btn-outline-warning rounded-pill px-3 mt-1' onclick='promptEditPin(" + req.rowIndex + ")'><i class='fas fa-pen'></i> แก้ไข</button>";
           }
-          actionBtns += "</div>";
 
           userHtml += "<tr>";
           userHtml += "<td class='fw-bold text-secondary'>" + req.id + "</td>";
           userHtml += "<td class='wrap-text-mobile'>" + req.applicantName + "</td>";
           userHtml += "<td><span class='d-block d-sm-inline'>" + (req.submitDate || "").split(' ')[0] + "</span></td>";
           userHtml += "<td><span class='status-badge " + badgeClass + "'>" + statusText + "</span>" + remarkHtml + "</td>";
-          userHtml += "<td>" + actionBtns + "</td>";
+          userHtml += "<td>" + editBtn + "</td>";
           userHtml += "</tr>";
 
           let editTracker = req.editCount > 0 ? "<br><span class='badge bg-warning text-dark mt-2' style='font-size: 0.8em; white-space: normal;'><i class='fas fa-history'></i> แก้ไข " + req.editCount + " ครั้ง<br>(" + req.lastEditTime + ")</span>" : "";
@@ -497,7 +493,6 @@
         showLoaderOnConfirm: true,
         preConfirm: (password) => {
           return callBackend('verifyPassword', password).then(res => {
-             // สมมติว่าระบบเก่าคืนค่า bool ตรงๆ หรือ success flag
              let isValid = (res === true || (res && res.success === true));
              if (!isValid) {
                Swal.showValidationMessage('รหัสผ่านไม่ถูกต้อง!');
@@ -551,20 +546,14 @@
       const fileUploadZones = document.querySelectorAll('.file-upload-zone');
       const submitBtn = document.getElementById('submitBtn');
 
-      if (mode === 'view') {
-        inputs.forEach(input => input.disabled = true);
-        fileUploadZones.forEach(el => el.style.display = 'none');
-        submitBtn.style.display = 'none';
-        document.getElementById('formModalLabel').innerHTML = '<i class="fas fa-eye me-2"></i> รายละเอียดคำร้อง';
-        setupFileLinks(req, true);
-      } else if (mode === 'edit') {
+      if (mode === 'edit') {
         inputs.forEach(input => input.disabled = false);
         fileUploadZones.forEach(el => el.style.display = 'block');
         submitBtn.style.display = 'block';
         submitBtn.innerHTML = '<i class="fas fa-save me-2"></i> บันทึกการแก้ไข';
         document.getElementById('formModalLabel').innerHTML = '<i class="fas fa-pen me-2"></i> แก้ไขคำร้อง: ' + req.id;
         setupFileLinks(req, false);
-      } else {
+      } else { // 'new' mode
         inputs.forEach(input => input.disabled = false);
         fileUploadZones.forEach(el => el.style.display = 'block');
         submitBtn.style.display = 'block';
@@ -610,15 +599,6 @@
       document.getElementById('requestForm').reset();
       document.getElementById('editRowIndex').value = '';
       toggleFormMode('new');
-      formModal.show();
-    }
-
-    function viewRequest(rowIndex) {
-      let req = globalRequests.find(r => r.rowIndex === rowIndex);
-      if (!req) return;
-      document.getElementById('requestForm').reset();
-      populateForm(req);
-      toggleFormMode('view', req);
       formModal.show();
     }
 
