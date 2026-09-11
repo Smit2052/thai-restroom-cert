@@ -1,535 +1,433 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <title>Thai Restroom Cert - รับรองมาตรฐานห้องน้ำ</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  
-  <style>
-    body { font-family: 'Sarabun', sans-serif; background-color: #f8f9fa; color: #333; }
-    .header-bar { background-color: white; border-bottom: 1px solid #e0e0e0; padding: 15px 0; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-    .logo-box { background-color: #4285f4; color: white; width: 45px; height: 45px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-right: 15px; flex-shrink: 0; }
-    .app-title { font-weight: 700; color: #1a73e8; margin: 0; font-size: 1.25rem; line-height: 1.2; }
-    .app-subtitle { color: #5f6368; font-size: 0.9rem; margin: 0; }
-    
-    .card-custom { border-radius: 12px; border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
-    .status-badge { padding: 6px 12px; border-radius: 20px; font-weight: 500; font-size: 0.85rem; display: inline-block; text-align: center; white-space: nowrap; }
-    .bg-pending { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
-    .bg-processing { background-color: #cce5ff; color: #004085; border: 1px solid #b8daff; }
-    .bg-approved { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-    .bg-incomplete { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-    
-    .floating-contact { position: fixed; bottom: 25px; right: 25px; background-color: #28a745; color: white; border-radius: 50px; padding: 12px 20px; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 12px rgba(40,167,69,0.4); cursor: pointer; z-index: 1000; transition: all 0.3s ease; }
-    .floating-contact:hover { background-color: #218838; transform: translateY(-3px); }
-
-    .table-responsive { -webkit-overflow-scrolling: touch; }
-    .table th { white-space: nowrap; }
-    .table td { vertical-align: middle; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบยื่นและติดตามคำร้อง - Thai Restroom Cert</title>
+    <!-- Load Bootstrap & SweetAlert -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body { font-family: 'Sarabun', sans-serif; background-color: #f4f7f6; }
+        .container { max-width: 1000px; margin-top: 40px; margin-bottom: 40px; }
+        .card-custom { background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 30px; }
+        .nav-tabs .nav-link { color: #555; }
+        .nav-tabs .nav-link.active { font-weight: 600; color: #0d6efd; }
+        .form-control, .form-select { background-color: #fafafa; }
+    </style>
 </head>
 <body>
-  <div class="header-bar">
-    <div class="container d-flex justify-content-between align-items-center">
-      <div class="d-flex align-items-center">
-        <div class="logo-box"><i class="fas fa-building"></i></div>
-        <div>
-          <h1 class="app-title">Thai Restroom Cert</h1>
-          <p class="app-subtitle">ระบบรับคำร้องใบรับรองมาตรฐานห้องน้ำ</p>
-        </div>
-      </div>
-      <button class="btn btn-light border rounded-pill text-secondary fw-bold" onclick="requireAdminPassword()">
-        <i class="fas fa-lock me-1"></i> <span class="d-none d-sm-inline">สำหรับเจ้าหน้าที่</span>
-      </button>
-    </div>
-  </div>
-
-  <div class="container">
-    <div class="alert alert-warning card-custom" role="alert" style="background-color: #fff8e1; border-color: #ffecb3;">
-      <h5 class="alert-heading text-warning-emphasis"><i class="fas fa-info-circle"></i> เอกสารที่สามารถเตรียมมาแนบได้ (ถ้ามี)</h5>
-      <ul class="mb-0 text-dark" style="line-height: 1.8;">
-        <li>ใบรับแจ้งเกี่ยวกับบ้าน จำนวน 1 ฉบับ <a href="javascript:void(0)" onclick="showExample('ใบรับแจ้งบ้าน', 'https://i.ibb.co/4gwMcfyx/1.png')" class="badge bg-info text-dark text-decoration-none ms-1"><i class="fas fa-image"></i> ดูตัวอย่าง</a></li>
-        <li>สำเนาบัตรประชาชน จำนวน 1 ฉบับ <a href="javascript:void(0)" onclick="showExample('บัตรประชาชน', 'https://i.ibb.co/1Gy02ThV/2.png')" class="badge bg-info text-dark text-decoration-none ms-1"><i class="fas fa-image"></i> ดูตัวอย่าง</a></li>
-        <li>สำเนาทะเบียนบ้าน จำนวน 1 ฉบับ <a href="javascript:void(0)" onclick="showExample('ทะเบียนบ้าน', 'https://i.ibb.co/8ySNp92/3.png')" class="badge bg-info text-dark text-decoration-none ms-1"><i class="fas fa-image"></i> ดูตัวอย่าง</a></li>
-        <li>รูปถ่ายตัวบ้านและห้องน้ำ จำนวน 1 แผ่น <a href="javascript:void(0)" onclick="showExample('รูปถ่าย', 'https://i.ibb.co/BKYqkcf4/4.png')" class="badge bg-info text-dark text-decoration-none ms-1"><i class="fas fa-image"></i> ดูตัวอย่าง</a></li>
-      </ul>
-      <p class="mb-0 text-muted mt-2" style="font-size: 0.9em;"><i class="fas fa-lightbulb text-warning"></i> หมายเหตุ: หากยังไม่สะดวกแนบไฟล์ สามารถกดยื่นคำร้องโดยไม่แนบไฟล์ได้ครับ และทางเจ้าหน้าที่จะประสานขอเพิ่มเติมในภายหลัง</p>
-    </div>
-
-    <div class="d-flex justify-content-between align-items-center mb-3 mt-4">
-      <h4 class="mb-0 fw-bold">แผงควบคุมและรายการคำร้อง</h4>
-      <button class="btn btn-primary shadow-sm" style="background-color: #3b82f6; border: none; border-radius: 8px;" onclick="openFormModal()">
-        <i class="fas fa-plus"></i> ยื่นคำร้องใหม่
-      </button>
-    </div>
-
-    <!-- Dashboard Cards -->
-    <div class="row g-3 mb-4">
-      <div class="col-6 col-md-4 col-lg">
-        <div class="card card-custom p-3 text-center h-100 d-flex flex-row align-items-center justify-content-center gap-3">
-          <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; font-size: 1.3rem;"><i class="fas fa-file-alt"></i></div>
-          <div class="text-start">
-            <h6 class="text-muted mb-0" style="font-size: 0.85rem;">คำร้องทั้งหมด</h6>
-            <h3 class="mb-0 fw-bold" id="countAll">0</h3>
-          </div>
-        </div>
-      </div>
-      <div class="col-6 col-md-4 col-lg">
-        <div class="card card-custom p-3 text-center h-100 d-flex flex-row align-items-center justify-content-center gap-3">
-          <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; font-size: 1.3rem;"><i class="fas fa-clock"></i></div>
-          <div class="text-start">
-            <h6 class="text-muted mb-0" style="font-size: 0.85rem;">รอตรวจสอบ</h6>
-            <h3 class="mb-0 fw-bold" id="countPending">0</h3>
-          </div>
-        </div>
-      </div>
-      <div class="col-6 col-md-4 col-lg">
-        <div class="card card-custom p-3 text-center h-100 d-flex flex-row align-items-center justify-content-center gap-3">
-          <div class="bg-info bg-opacity-10 text-info rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; font-size: 1.3rem;"><i class="fas fa-spinner"></i></div>
-          <div class="text-start">
-            <h6 class="text-muted mb-0" style="font-size: 0.85rem;">กำลังดำเนินการ</h6>
-            <h3 class="mb-0 fw-bold" id="countProcessing">0</h3>
-          </div>
-        </div>
-      </div>
-      <div class="col-6 col-md-4 col-lg">
-        <div class="card card-custom p-3 text-center h-100 d-flex flex-row align-items-center justify-content-center gap-3">
-          <div class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; font-size: 1.3rem;"><i class="fas fa-check-circle"></i></div>
-          <div class="text-start">
-            <h6 class="text-muted mb-0" style="font-size: 0.85rem;">ผ่านมาตรฐาน</h6>
-            <h3 class="mb-0 fw-bold" id="countApproved">0</h3>
-          </div>
-        </div>
-      </div>
-      <div class="col-12 col-md-4 col-lg">
-        <div class="card card-custom p-3 text-center h-100 d-flex flex-row align-items-center justify-content-center gap-3">
-          <div class="bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; font-size: 1.3rem;"><i class="fas fa-exclamation-circle"></i></div>
-          <div class="text-start">
-            <h6 class="text-muted mb-0" style="font-size: 0.85rem;">เอกสารไม่ครบ</h6>
-            <h3 class="mb-0 fw-bold text-danger" id="countIncomplete">0</h3>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- User Table -->
-    <div class="card card-custom p-4">
-      <h5 class="mb-3 fw-bold text-secondary">รายการคำร้องล่าสุด <span id="syncIndicator" class="spinner-border spinner-border-sm text-primary ms-2 d-none"></span></h5>
-      <div class="table-responsive">
-        <table class="table table-hover align-middle">
-          <thead class="table-light">
-            <tr>
-              <th class="text-secondary fw-normal">รหัสคำร้อง</th>
-              <th class="text-secondary fw-normal">ชื่อผู้ยื่น</th>
-              <th class="text-secondary fw-normal">วันที่ยื่น</th>
-              <th class="text-secondary fw-normal">สถานะ/หมายเหตุ</th>
-              <th class="text-secondary fw-normal">การจัดการ</th>
-            </tr>
-          </thead>
-          <tbody id="userTableBody">
-            <tr><td colspan="5" class="text-center py-4">กำลังโหลดข้อมูล...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Admin Panel -->
-    <div class="card card-custom p-4 mt-4 bg-white" id="adminPanel" style="display: none; border-top: 4px solid #dc3545;">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="mb-0 text-danger fw-bold"><i class="fas fa-user-shield me-2"></i> ระบบจัดการสำหรับเจ้าหน้าที่</h5>
-        <button class="btn btn-outline-secondary btn-sm" onclick="document.getElementById('adminPanel').style.display='none'"><i class="fas fa-times"></i> ปิด</button>
-      </div>
-      <div class="table-responsive">
-        <table class="table table-bordered align-middle" style="font-size: 0.9em; min-width: 850px;">
-          <thead class="table-dark">
-            <tr>
-              <th width="15%">รหัส/วันที่</th>
-              <th width="20%">ข้อมูลผู้ยื่น</th>
-              <th width="25%">พิกัด/ข้อมูล</th>
-              <th width="20%">ไฟล์แนบ</th>
-              <th width="20%">อัปเดตสถานะ</th>
-            </tr>
-          </thead>
-          <tbody id="adminTableBody">
-             <tr><td colspan="5" class="text-center text-muted">กำลังโหลดข้อมูล...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <div class="floating-contact" onclick="showContactModal()">
-    <i class="fas fa-phone-volume"></i> <span>ติดต่อรพ.โพนสวรรค์</span>
-  </div>
-
-  <!-- Modal Submit / Edit Form -->
-  <div class="modal fade" id="formModal" tabindex="-1" data-bs-backdrop="static">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content border-0 shadow">
-        <div class="modal-header text-white" style="background-color: #3b82f6;">
-          <h5 class="modal-title fw-bold" id="formModalLabel"><i class="fas fa-edit me-2"></i> ยื่นคำร้องใบรับรองมาตรฐานห้องน้ำ</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body p-4">
-          <form id="requestForm" onsubmit="handleFormSubmit(event)">
-            <input type="hidden" id="editReqId">
-            <input type="hidden" id="editIsAdmin" value="false">
-            
-            <div class="row mb-3 g-3">
-              <div class="col-md-6">
-                <label class="form-label fw-bold">ชื่อ-นามสกุล <span class="text-danger">*</span></label>
-                <input type="text" class="form-control bg-light" id="reqName" required>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label fw-bold">เบอร์โทรศัพท์ <span class="text-danger">*</span></label>
-                <input type="tel" class="form-control bg-light" id="reqPhone" required>
-              </div>
-            </div>
-
-            <div class="row mb-3 g-3">
-              <div class="col-md-6">
-                <label class="form-label fw-bold">ประเภทสถานที่ <span class="text-danger">*</span></label>
-                <select class="form-select bg-light" id="placeType" required>
-                  <option value="บ้านพักอาศัย">บ้านพักอาศัย</option>
-                  <option value="ร้านอาหาร">ร้านอาหาร</option>
-                  <option value="สถานที่สาธารณะ">สถานที่สาธารณะ</option>
-                  <option value="อื่นๆ">อื่นๆ</option>
-                </select>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label fw-bold">จำนวนห้องน้ำ (ห้อง) <span class="text-danger">*</span></label>
-                <input type="number" class="form-control bg-light" id="toiletCount" value="1" required>
-              </div>
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label fw-bold">ที่อยู่ (บ้านเลขที่ / หมู่ที่ / ตำบล) <span class="text-danger">*</span></label>
-              <textarea class="form-control bg-light" id="reqAddress" rows="2" required></textarea>
-            </div>
-            
-            <div class="mb-3" id="pinInputSection">
-              <label class="form-label fw-bold text-danger">รหัส PIN 4 หลัก (สำหรับตั้งเป็นรหัสผ่านแก้ไข) <span class="text-danger">*</span></label>
-              <input type="number" class="form-control" id="pin" placeholder="ตั้งรหัส PIN 4 หลัก..." required>
-            </div>
-
-            <div class="p-3 mt-4 mb-2 rounded" style="background-color: #f1f5f9;">
-              <h6 class="fw-bold mb-3"><i class="fas fa-paperclip text-secondary"></i> อัปโหลดเอกสาร (สูงสุด 4 ไฟล์)</h6>
-              <div class="row g-2">
-                <div class="col-12 col-md-6"><input type="file" class="form-control form-control-sm" id="file1"> <small class="text-muted">ใบแจ้งบ้าน</small></div>
-                <div class="col-12 col-md-6"><input type="file" class="form-control form-control-sm" id="file2"> <small class="text-muted">บัตรประชาชน</small></div>
-                <div class="col-12 col-md-6"><input type="file" class="form-control form-control-sm" id="file3"> <small class="text-muted">ทะเบียนบ้าน</small></div>
-                <div class="col-12 col-md-6"><input type="file" class="form-control form-control-sm" id="file4"> <small class="text-muted">รูปถ่าย</small></div>
-              </div>
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100 py-2 mt-3 fw-bold"><i class="fas fa-save"></i> บันทึกข้อมูล</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  
-  <script>
-    // -----------------------------------------------------------------------------------
-    // ⚠️ ลิงก์ API หลังบ้านของคุณ และ API Key ของ ImgBB (ถ้ายังไม่แก้ ห้ามลืม!)
-    // -----------------------------------------------------------------------------------
-    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbxAHxOFVPACXSl_SgIXLiwz7q-tZRgWEZZ9nl0C-ZTqgWDOVO-IiuPQzP-aVdbWU2AB/exec";
-    const IMGBB_API_KEY = "YOUR_IMGBB_API_KEY"; // ใส่ API Key ของ ImgBB ตรงนี้
-    // -----------------------------------------------------------------------------------
-
-    let globalRequests = [];
-    const formModal = new bootstrap.Modal(document.getElementById('formModal'));
-
-    window.onload = function() {
-      loadData();
-      setInterval(loadDataBackground, 15000); // อัปเดตข้อมูลอัตโนมัติทุก 15 วินาที
-    }
-
-    async function loadData() {
-      document.getElementById('userTableBody').innerHTML = "<tr><td colspan='5' class='text-center py-4'>กำลังโหลดข้อมูล...</td></tr>";
-      await fetchData();
-    }
-
-    async function loadDataBackground() {
-      document.getElementById('syncIndicator').classList.remove('d-none');
-      await fetchData();
-      document.getElementById('syncIndicator').classList.add('d-none');
-    }
-
-    async function fetchData() {
-      try {
-        const response = await fetch(GAS_API_URL, {
-          method: 'POST',
-          body: JSON.stringify({ action: 'getAllRequests' })
-        });
-        const result = await response.json();
-        if (result.success) {
-          globalRequests = result.data || [];
-          renderTables();
-        }
-      } catch (error) {
-        console.error("Error loading data:", error);
-      }
-    }
-
-    function renderTables() {
-      let userHtml = "";
-      let adminHtml = "";
-      let count = { all: 0, pending: 0, processing: 0, approved: 0, incomplete: 0 };
-
-      if(globalRequests.length === 0) {
-        userHtml = "<tr><td colspan='5' class='text-center py-4 text-muted'>ยังไม่มีข้อมูลคำร้อง</td></tr>";
-      } else {
-        globalRequests.forEach(req => {
-          let reqId = req['รหัสคำร้อง (ID)'] || req.id || req['รหัสคำร้อง'] || '-';
-          let date = req['วันที่ (Timestamp)'] || req.dateStr || req['วันที่'] || '';
-          let name = req['ชื่อ-นามสกุล'] || req.reqName || req.applicantName || '';
-          let phone = req['เบอร์โทรศัพท์'] || req.reqPhone || req.phone || '';
-          let status = req['สถานะ'] || req.status || 'รอตรวจสอบ';
-          let remark = req['หมายเหตุเจ้าหน้าที่'] || req['หมายเหตุ'] || req.remark || '';
-          
-          let addressFull = (req['ที่อยู่'] || req.reqAddress || req.address || '') + 
-                            (req['ประเภทสถานที่'] ? ` (ประเภท: ${req['ประเภทสถานที่']})` : '');
-          
-          count.all++;
-          let badgeClass = 'bg-pending';
-          
-          if (status.includes('รอตรวจสอบ') || status === 'pending') { count.pending++; badgeClass = 'bg-pending'; status = 'รอตรวจสอบ'; }
-          else if (status.includes('กำลังดำเนินการ') || status === 'processing') { count.processing++; badgeClass = 'bg-processing'; status = 'กำลังดำเนินการ'; }
-          else if (status.includes('ผ่าน') || status.includes('อนุมัติ') || status === 'approved') { count.approved++; badgeClass = 'bg-approved'; status = 'ผ่านมาตรฐาน'; }
-          else { count.incomplete++; badgeClass = 'bg-incomplete'; status = 'เอกสารไม่ครบ'; }
-
-          let remarkHtml = remark ? `<div class='text-muted mt-1' style='font-size:0.85em;'><i class='fas fa-info-circle text-primary'></i> ${remark}</div>` : "";
-          
-          // ตารางผู้ใช้ (โชว์ปุ่มแก้ไขเฉพาะตอน รอตรวจสอบ หรือ เอกสารไม่ครบ)
-          let editBtn = (status === 'รอตรวจสอบ' || status === 'เอกสารไม่ครบ') 
-            ? `<button class='btn btn-sm btn-outline-warning rounded-pill' onclick="promptEditPin('${reqId}')"><i class="fas fa-pen"></i> แก้ไข</button>` : "";
-
-          userHtml += `<tr>
-            <td class="fw-bold text-secondary">${reqId}</td>
-            <td>${name}</td>
-            <td>${date.split(' ')[0]}</td>
-            <td><span class="status-badge ${badgeClass}">${status}</span>${remarkHtml}</td>
-            <td>${editBtn}</td>
-          </tr>`;
-
-          // ตารางแอดมิน
-          let f1 = req['ไฟล์1'] || req.file1 || req.docHouse || '';
-          let f2 = req['ไฟล์2'] || req.file2 || req.docIdCard || '';
-          let f3 = req['ไฟล์3'] || req.file3 || req.docHouseReg || '';
-          let f4 = req['ไฟล์4'] || req.file4 || req.docPhoto || '';
-
-          adminHtml += `<tr>
-            <td><strong>${reqId}</strong><br><small class="text-muted">${date}</small><br><span class="badge bg-secondary">PIN: ${req['รหัส PIN'] || req.pin || '-'}</span></td>
-            <td><i class="fas fa-user text-muted"></i> ${name}<br><i class="fas fa-phone text-muted"></i> ${phone}</td>
-            <td><small>${addressFull}</small></td>
-            <td>
-              ${f1 ? `<a href="${f1}" target="_blank" class="badge bg-primary text-decoration-none mb-1 d-block">ไฟล์ 1</a>` : ''}
-              ${f2 ? `<a href="${f2}" target="_blank" class="badge bg-primary text-decoration-none mb-1 d-block">ไฟล์ 2</a>` : ''}
-              ${f3 ? `<a href="${f3}" target="_blank" class="badge bg-primary text-decoration-none mb-1 d-block">ไฟล์ 3</a>` : ''}
-              ${f4 ? `<a href="${f4}" target="_blank" class="badge bg-primary text-decoration-none mb-1 d-block">ไฟล์ 4</a>` : ''}
-              <button class="btn btn-sm btn-warning w-100 mt-1" onclick="openAdminEdit('${reqId}')"><i class="fas fa-pen"></i> แก้ไข</button>
-            </td>
-            <td>
-              <select class="form-select form-select-sm mb-1" id="status_${reqId}">
-                <option value="รอตรวจสอบ" ${status==='รอตรวจสอบ'?'selected':''}>รอตรวจสอบ</option>
-                <option value="กำลังดำเนินการ" ${status==='กำลังดำเนินการ'?'selected':''}>กำลังดำเนินการ</option>
-                <option value="ผ่านมาตรฐาน" ${status==='ผ่านมาตรฐาน'?'selected':''}>ผ่านมาตรฐาน</option>
-                <option value="เอกสารไม่ครบ" ${status==='เอกสารไม่ครบ'?'selected':''}>เอกสารไม่ครบ</option>
-              </select>
-              <input type="text" class="form-control form-control-sm mb-1" id="remark_${reqId}" placeholder="พิมพ์หมายเหตุ..." value="${remark}">
-              <button class="btn btn-success btn-sm w-100" onclick="saveStatus('${reqId}')"><i class="fas fa-save"></i> บันทึก</button>
-            </td>
-          </tr>`;
-        });
-      }
-
-      document.getElementById('userTableBody').innerHTML = userHtml;
-      document.getElementById('adminTableBody').innerHTML = adminHtml;
-      
-      document.getElementById('countAll').innerText = count.all;
-      document.getElementById('countPending').innerText = count.pending;
-      document.getElementById('countProcessing').innerText = count.processing;
-      document.getElementById('countApproved').innerText = count.approved;
-      document.getElementById('countIncomplete').innerText = count.incomplete;
-    }
-
-    async function uploadToImgBB(fileInputId) {
-      const file = document.getElementById(fileInputId).files[0];
-      if (!file) return "";
-      if (IMGBB_API_KEY === "YOUR_IMGBB_API_KEY") return "mock-url";
-      
-      const formData = new FormData();
-      formData.append("image", file);
-      try {
-        const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
-        const data = await res.json();
-        return data.data.url;
-      } catch (error) { return ""; }
-    }
-
-    function openFormModal() {
-      document.getElementById('requestForm').reset();
-      document.getElementById('editReqId').value = "";
-      document.getElementById('editIsAdmin').value = "false";
-      document.getElementById('pinInputSection').style.display = "block";
-      document.getElementById('pin').disabled = false;
-      document.getElementById('formModalLabel').innerHTML = '<i class="fas fa-edit me-2"></i> ยื่นคำร้องใหม่';
-      formModal.show();
-    }
-
-    function promptEditPin(reqId) {
-      // หา PIN จากข้อมูลที่โหลดมาแล้ว (เพื่อใช้เช็คแบบไวๆ หน้าเว็บ)
-      let req = globalRequests.find(r => r['รหัสคำร้อง (ID)'] === reqId || r.id === reqId || r['รหัสคำร้อง'] === reqId);
-      let actualPin = req['รหัส PIN'] || req.pin;
-
-      Swal.fire({
-        title: 'ยืนยันรหัส PIN',
-        text: 'กรุณากรอกรหัส PIN 4 หลักของคุณ',
-        input: 'number',
-        inputAttributes: { maxlength: 4 },
-        showCancelButton: true,
-        confirmButtonText: 'ยืนยัน',
-        cancelButtonText: 'ยกเลิก'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          if (result.value === actualPin.toString()) {
-            openEditForm(reqId, false);
-          } else {
-            Swal.fire('ผิดพลาด', 'รหัส PIN ไม่ถูกต้อง', 'error');
-          }
-        }
-      });
-    }
-
-    function openAdminEdit(reqId) {
-      openEditForm(reqId, true);
-    }
-
-    function openEditForm(reqId, isAdmin) {
-      let req = globalRequests.find(r => r['รหัสคำร้อง (ID)'] === reqId || r.id === reqId || r['รหัสคำร้อง'] === reqId);
-      if (!req) return;
-
-      document.getElementById('editReqId').value = reqId;
-      document.getElementById('editIsAdmin').value = isAdmin ? "true" : "false";
-      document.getElementById('reqName').value = req['ชื่อ-นามสกุล'] || req.reqName || req.applicantName || '';
-      document.getElementById('reqPhone').value = req['เบอร์โทรศัพท์'] || req.reqPhone || req.phone || '';
-      document.getElementById('reqAddress').value = req['ที่อยู่'] || req.reqAddress || req.address || '';
-      document.getElementById('pin').value = req['รหัส PIN'] || req.pin || '';
-      
-      document.getElementById('pinInputSection').style.display = isAdmin ? "none" : "block";
-      document.getElementById('pin').disabled = true; // ห้ามแก้ PIN เดิม
-
-      document.getElementById('formModalLabel').innerHTML = `<i class="fas fa-pen me-2"></i> แก้ไขข้อมูล: ${reqId}`;
-      formModal.show();
-    }
-
-    async function handleFormSubmit(e) {
-      e.preventDefault();
-      Swal.fire({ title: 'กำลังประมวลผล...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-
-      let reqId = document.getElementById('editReqId').value;
-      let isAdmin = document.getElementById('editIsAdmin').value === "true";
-      
-      let f1 = await uploadToImgBB('file1');
-      let f2 = await uploadToImgBB('file2');
-      let f3 = await uploadToImgBB('file3');
-      let f4 = await uploadToImgBB('file4');
-
-      // รองรับโครงสร้างข้อมูลที่ยืดหยุ่น เพื่อให้เข้ากับระบบหลังบ้านทุกแบบของคุณ
-      const payload = {
-        action: reqId ? 'updateRequest' : 'submitRequest',
-        reqId: reqId,
-        reqName: document.getElementById('reqName').value,
-        reqPhone: document.getElementById('reqPhone').value,
-        reqAddress: document.getElementById('reqAddress').value,
-        pin: document.getElementById('pin').value,
-        isAdminUpdate: isAdmin,
-        file1: f1, file2: f2, file3: f3, file4: f4,
+    <div class="container">
+        <h2 class="text-center mb-4 fw-bold">ระบบยื่นและติดตามคำร้อง</h2>
         
-        // ข้อมูลเสริมเผื่อไว้
-        placeType: document.getElementById('placeType').value,
-        toiletCount: document.getElementById('toiletCount').value
-      };
+        <ul class="nav nav-tabs mb-4" id="mainTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#submitTab" type="button">ยื่นคำร้องใหม่</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#listTab" type="button" onclick="loadRequests()">รายการคำร้อง (ประชาชน)</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#adminTab" type="button" onclick="requireAdminLogin()">ส่วนเจ้าหน้าที่</button>
+            </li>
+        </ul>
 
-      try {
-        const response = await fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify(payload) });
-        const result = await response.json();
+        <div class="tab-content card-custom">
+            <!-- 1. แท็บยื่นคำร้อง -->
+            <div class="tab-pane fade show active" id="submitTab">
+                <form id="requestForm" onsubmit="submitForm(event)">
+                    <div class="mb-3">
+                        <label class="form-label">ชื่อ-นามสกุล</label>
+                        <input type="text" class="form-control" id="reqName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">เบอร์โทรศัพท์</label>
+                        <input type="text" class="form-control" id="reqPhone" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">ที่อยู่</label>
+                        <textarea class="form-control" id="reqAddress" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-danger">รหัส PIN (สำหรับตั้งเป็นรหัสผ่านแก้ไขข้อมูล 4-6 หลัก)</label>
+                        <input type="password" class="form-control" id="pin" minlength="4" maxlength="6" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">แนบไฟล์เอกสาร (สูงสุด 4 ไฟล์)</label>
+                        <div class="input-group mb-2">
+                            <span class="input-group-text">เลือกไฟล์</span>
+                            <input type="file" class="form-control" id="file1" accept="image/*,application/pdf">
+                        </div>
+                        <div class="input-group mb-2">
+                            <span class="input-group-text">เลือกไฟล์</span>
+                            <input type="file" class="form-control" id="file2" accept="image/*,application/pdf">
+                        </div>
+                        <div class="input-group mb-2">
+                            <span class="input-group-text">เลือกไฟล์</span>
+                            <input type="file" class="form-control" id="file3" accept="image/*,application/pdf">
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text">เลือกไฟล์</span>
+                            <input type="file" class="form-control" id="file4" accept="image/*,application/pdf">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 py-2">ส่งคำร้อง</button>
+                </form>
+            </div>
+
+            <!-- 2. แท็บรายการประชาชน -->
+            <div class="tab-pane fade" id="listTab">
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle">
+                        <thead>
+                            <tr>
+                                <th>รหัสคำร้อง</th>
+                                <th>ชื่อผู้ยื่น</th>
+                                <th>สถานะ</th>
+                                <th>หมายเหตุ</th>
+                                <th>การจัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userTableBody">
+                            <tr><td colspan="5" class="text-center">คลิกเพื่อโหลดข้อมูล...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 3. แท็บส่วนเจ้าหน้าที่ -->
+            <div class="tab-pane fade" id="adminTab">
+                <div id="adminContent" style="display: none;">
+                    <button class="btn btn-sm btn-success mb-3" onclick="loadAdminRequests()">🔄 รีเฟรชข้อมูล</button>
+                    <div class="table-responsive">
+                        <table class="table table-bordered align-middle" style="font-size: 0.9em;">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>รหัส/วันที่</th>
+                                    <th>ข้อมูลผู้ยื่น</th>
+                                    <th>ไฟล์แนบ</th>
+                                    <th>อัปเดตสถานะ/หมายเหตุ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal แก้ไขข้อมูล (ประชาชน) -->
+    <div class="modal fade" id="editModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">อัปเดตไฟล์เอกสาร (ผู้ใช้งาน)</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editReqId">
+                    <div class="mb-3 text-danger">
+                        <label>รหัส PIN ยืนยันการแก้ไข</label>
+                        <input type="password" class="form-control" id="editPin" placeholder="กรอกรหัสของคุณ">
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted small mb-2">เลือกเฉพาะไฟล์ที่ต้องการเปลี่ยนใหม่ (หากไม่ต้องการเปลี่ยนให้เว้นว่างไว้)</label>
+                        <input type="file" class="form-control mb-2" id="editFile1" accept="image/*,application/pdf">
+                        <input type="file" class="form-control mb-2" id="editFile2" accept="image/*,application/pdf">
+                        <input type="file" class="form-control mb-2" id="editFile3" accept="image/*,application/pdf">
+                        <input type="file" class="form-control" id="editFile4" accept="image/*,application/pdf">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                    <button type="button" class="btn btn-primary" onclick="saveUserEdit()">บันทึกเอกสาร</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal แก้ไข (แอดมิน) -->
+    <div class="modal fade" id="adminEditModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title">เจ้าหน้าที่แก้ไขเอกสารแทนประชาชน</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="adminEditReqId">
+                    <div class="alert alert-info py-2 small">ในโหมดเจ้าหน้าที่ ไม่จำเป็นต้องใช้รหัส PIN</div>
+                    <div class="mb-3">
+                        <label class="text-muted small mb-2">เลือกเฉพาะไฟล์ที่ต้องการเปลี่ยนใหม่ (หากไม่ต้องการเปลี่ยนให้เว้นว่างไว้)</label>
+                        <input type="file" class="form-control mb-2" id="aFile1" accept="image/*,application/pdf">
+                        <input type="file" class="form-control mb-2" id="aFile2" accept="image/*,application/pdf">
+                        <input type="file" class="form-control mb-2" id="aFile3" accept="image/*,application/pdf">
+                        <input type="file" class="form-control" id="aFile4" accept="image/*,application/pdf">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                    <button type="button" class="btn btn-warning" onclick="saveAdminEdit()">อัปเดตเอกสารเลย</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ⚠️ ลิงก์ API ล่าสุดของคุณ
+        const GAS_API_URL = "https://script.google.com/macros/s/AKfycbx6tkyJs9RnGlUHQeeQZ84RbLBVRLh5JLH_2tKeTOjOxk6NT-xPq3HioHn8ya8nStsj/exec";
         
-        if (result.success) {
-          formModal.hide();
-          Swal.fire('สำเร็จ', reqId ? 'แก้ไขข้อมูลเรียบร้อย' : 'ยื่นคำร้องเรียบร้อยแล้ว<br>รหัสของคุณคือ: ' + result.reqId, 'success');
-          loadData();
-        } else {
-          Swal.fire('ผิดพลาด', result.message || 'บันทึกไม่สำเร็จ', 'error');
+        // ⚠️ ใส่ API Key ของ ImgBB เพื่อเก็บรูป (ถ้าไม่ใส่จะจำลองให้)
+        const IMGBB_API_KEY = "YOUR_IMGBB_API_KEY"; 
+
+        // ฟังก์ชันช่วยอัปโหลดไฟล์ไปที่ ImgBB
+        async function uploadToImgBB(fileInputId) {
+            const file = document.getElementById(fileInputId).files[0];
+            if (!file) return "";
+            if (IMGBB_API_KEY === "YOUR_IMGBB_API_KEY") {
+                console.warn("ยังไม่ได้ใส่ IMGBB_API_KEY ระบบจะใช้ลิงก์จำลอง");
+                return "mock-url";
+            }
+            
+            const formData = new FormData();
+            formData.append("image", file);
+            try {
+                const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+                const data = await res.json();
+                return data.data.url;
+            } catch (error) { 
+                console.error("ImgBB Error:", error);
+                return ""; 
+            }
         }
-      } catch (error) {
-        Swal.fire('ผิดพลาด', error.toString(), 'error');
-      }
-    }
 
-    async function saveStatus(reqId) {
-      const payload = {
-        action: 'adminUpdateStatus',
-        reqId: reqId,
-        status: document.getElementById('status_' + reqId).value,
-        remark: document.getElementById('remark_' + reqId).value
-      };
+        // ยื่นคำร้องใหม่
+        async function submitForm(e) {
+            e.preventDefault();
+            Swal.fire({ title: 'กำลังอัปโหลดไฟล์และส่งข้อมูล...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+            
+            let f1 = await uploadToImgBB('file1');
+            let f2 = await uploadToImgBB('file2');
+            let f3 = await uploadToImgBB('file3');
+            let f4 = await uploadToImgBB('file4');
 
-      Swal.fire({ title: 'กำลังอัปเดต...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-      try {
-        const response = await fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify(payload) });
-        const result = await response.json();
-        if (result.success) {
-          Swal.fire('สำเร็จ', 'อัปเดตสถานะเรียบร้อย', 'success');
-          loadData();
-        } else {
-           Swal.fire('ผิดพลาด', 'อัปเดตไม่สำเร็จ', 'error');
+            const payload = {
+                action: 'submitRequest',
+                reqName: document.getElementById('reqName').value,
+                reqPhone: document.getElementById('reqPhone').value,
+                reqAddress: document.getElementById('reqAddress').value,
+                pin: document.getElementById('pin').value,
+                file1: f1, file2: f2, file3: f3, file4: f4
+            };
+
+            try {
+                const response = await fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify(payload) });
+                const result = await response.json();
+                if (result.success) {
+                    Swal.fire('สำเร็จ', 'ส่งคำร้องเรียบร้อย<br>รหัสของคุณคือ: <b>' + result.reqId + '</b>', 'success');
+                    document.getElementById('requestForm').reset();
+                } else {
+                    Swal.fire('ผิดพลาด', result.message, 'error');
+                }
+            } catch (error) { Swal.fire('ผิดพลาด', 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้: ' + error.message, 'error'); }
         }
-      } catch (error) {
-        Swal.fire('ผิดพลาด', error.message, 'error');
-      }
-    }
 
-    function requireAdminPassword() {
-      let panel = document.getElementById('adminPanel');
-      if (panel.style.display === 'block') { panel.style.display = 'none'; return; }
-      
-      Swal.fire({
-        title: 'รหัสผ่านเจ้าหน้าที่',
-        input: 'password',
-        showCancelButton: true,
-        confirmButtonText: 'เข้าสู่ระบบ'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          if (result.value === '123456') { // หรือเชื่อมกับ API เพื่อเช็ครหัสผ่าน
-            panel.style.display = 'block';
-            panel.scrollIntoView({ behavior: 'smooth' });
-            Swal.fire({ icon: 'success', title: 'ปลดล็อกเรียบร้อย', showConfirmButton: false, timer: 1000 });
-          } else {
-            Swal.fire('ผิดพลาด', 'รหัสผ่านไม่ถูกต้อง', 'error');
-          }
+        // ตกแต่งป้ายสถานะ
+        function getStatusBadge(status) {
+            if(!status) return `<span class="badge bg-warning text-dark">รอตรวจสอบ</span>`;
+            if(status.includes('รอตรวจสอบ')) return `<span class="badge bg-warning text-dark">${status}</span>`;
+            if(status.includes('กำลัง')) return `<span class="badge bg-info">${status}</span>`;
+            if(status.includes('ผ่าน') || status.includes('อนุมัติ')) return `<span class="badge bg-success">${status}</span>`;
+            return `<span class="badge bg-danger">${status}</span>`;
         }
-      });
-    }
 
-    function showContactModal() {
-      Swal.fire({
-        title: '<strong>ติดต่อ รพ.โพนสวรรค์</strong>',
-        icon: 'info',
-        html: '<div style="text-align: left; margin-top: 15px;"><i class="fas fa-phone-alt text-success"></i> <b>โทรศัพท์:</b> 042 595 064<br><i class="fas fa-map-marker-alt text-danger"></i> <b>ที่อยู่:</b> 276 ม.12 อ.โพนสวรรค์ จ.นครพนม</div>',
-        confirmButtonText: 'ปิด'
-      });
-    }
+        // โหลดรายการสำหรับประชาชน
+        async function loadRequests() {
+            document.getElementById('userTableBody').innerHTML = '<tr><td colspan="5" class="text-center py-4"><div class="spinner-border text-primary" role="status"></div> กำลังดึงข้อมูล...</td></tr>';
+            try {
+                const response = await fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify({ action: 'getAllRequests' }) });
+                const result = await response.json();
+                
+                if (result.success) {
+                    let html = '';
+                    result.data.forEach(req => {
+                        let status = req['สถานะ'];
+                        let remark = req['หมายเหตุเจ้าหน้าที่'] || '-';
+                        // แสดงปุ่มแก้ไขเฉพาะสถานะรอตรวจสอบ หรือ เอกสารไม่ครบ
+                        let editBtn = (status === 'รอตรวจสอบ' || status === 'เอกสารไม่ครบ' || status === 'pending') 
+                            ? `<button class="btn btn-sm btn-outline-warning" onclick="openUserEdit('${req['รหัสคำร้อง (ID)']}')">✏️ แก้ไข</button>` : '';
 
-    function showExample(title, url) {
-      Swal.fire({ title: 'ตัวอย่าง ' + title, imageUrl: url, imageAlt: title, confirmButtonText: 'ปิด' });
-    }
-  </script>
+                        html += `<tr>
+                            <td><strong>${req['รหัสคำร้อง (ID)']}</strong></td>
+                            <td>${req['ชื่อ-นามสกุล']}</td>
+                            <td>${getStatusBadge(status)}</td>
+                            <td><small class="text-muted">${remark}</small></td>
+                            <td>${editBtn}</td>
+                        </tr>`;
+                    });
+                    document.getElementById('userTableBody').innerHTML = html || '<tr><td colspan="5" class="text-center">ยังไม่มีข้อมูลคำร้องในระบบ</td></tr>';
+                }
+            } catch (error) { document.getElementById('userTableBody').innerHTML = '<tr><td colspan="5" class="text-center text-danger">โหลดข้อมูลล้มเหลว โปรดลองอีกครั้ง</td></tr>'; }
+        }
+
+        // ตรวจสอบรหัสแอดมิน
+        function requireAdminLogin() {
+            if(document.getElementById('adminContent').style.display === 'block') return;
+            Swal.fire({
+                title: 'ยืนยันตัวตนเจ้าหน้าที่',
+                input: 'password',
+                inputPlaceholder: 'ใส่รหัสผ่านแอดมิน (ค่าเริ่มต้นคือ 123456)',
+                showCancelButton: true,
+                confirmButtonText: 'เข้าสู่ระบบ',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed && result.value === '123456') {
+                    document.getElementById('adminContent').style.display = 'block';
+                    loadAdminRequests();
+                } else if(result.isConfirmed) {
+                    Swal.fire('ผิดพลาด', 'รหัสผ่านไม่ถูกต้อง!', 'error');
+                    // สลับกลับไปหน้าประชาชน
+                    let tab = new bootstrap.Tab(document.querySelector('#mainTab button[data-bs-target="#listTab"]'));
+                    tab.show();
+                }
+            });
+        }
+
+        // โหลดรายการสำหรับแอดมิน
+        async function loadAdminRequests() {
+            document.getElementById('adminTableBody').innerHTML = '<tr><td colspan="4" class="text-center py-4"><div class="spinner-border text-primary" role="status"></div> กำลังดึงข้อมูล...</td></tr>';
+            try {
+                const response = await fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify({ action: 'getAllRequests' }) });
+                const result = await response.json();
+                
+                if (result.success) {
+                    let html = '';
+                    result.data.forEach(req => {
+                        let id = req['รหัสคำร้อง (ID)'];
+                        let status = req['สถานะ'] || 'รอตรวจสอบ';
+                        let remark = req['หมายเหตุเจ้าหน้าที่'] || '';
+                        let pin = req['รหัส PIN'] || '-';
+                        
+                        html += `<tr>
+                            <td>
+                                <strong class="text-primary">${id}</strong><br>
+                                <small class="text-muted">${(req['วันที่ (Timestamp)']||'').split(' ')[0]}</small><br>
+                                <span class="badge bg-secondary mt-1" title="เผื่อประชาชนลืมรหัส">PIN: ${pin}</span>
+                            </td>
+                            <td>👤 ${req['ชื่อ-นามสกุล']}<br>📞 ${req['เบอร์โทรศัพท์']}<br><small class="text-muted">📍 ${req['ที่อยู่']}</small></td>
+                            <td>
+                                ${(req['ไฟล์1']) ? `<a href="${req['ไฟล์1']}" target="_blank" class="badge bg-primary text-decoration-none mb-1">ไฟล์1</a>` : ''}
+                                ${(req['ไฟล์2']) ? `<a href="${req['ไฟล์2']}" target="_blank" class="badge bg-primary text-decoration-none mb-1">ไฟล์2</a>` : ''}
+                                ${(req['ไฟล์3']) ? `<a href="${req['ไฟล์3']}" target="_blank" class="badge bg-primary text-decoration-none mb-1">ไฟล์3</a>` : ''}
+                                ${(req['ไฟล์4']) ? `<a href="${req['ไฟล์4']}" target="_blank" class="badge bg-primary text-decoration-none mb-1">ไฟล์4</a>` : ''}
+                                <br><button class="btn btn-sm btn-warning mt-2 w-100 shadow-sm" onclick="openAdminEdit('${id}')">✏️ แก้ไขไฟล์แทนผู้ใช้</button>
+                            </td>
+                            <td style="min-width: 200px;">
+                                <select class="form-select form-select-sm mb-1" id="st_${id}">
+                                    <option value="รอตรวจสอบ" ${status==='รอตรวจสอบ'?'selected':''}>รอตรวจสอบ</option>
+                                    <option value="กำลังดำเนินการ" ${status==='กำลังดำเนินการ'?'selected':''}>กำลังดำเนินการ</option>
+                                    <option value="ผ่านมาตรฐาน" ${status==='ผ่านมาตรฐาน'?'selected':''}>ผ่านมาตรฐาน</option>
+                                    <option value="เอกสารไม่ครบ" ${status==='เอกสารไม่ครบ'?'selected':''}>เอกสารไม่ครบ</option>
+                                </select>
+                                <input type="text" class="form-control form-control-sm mb-1" id="rm_${id}" value="${remark}" placeholder="พิมพ์หมายเหตุถึงผู้ใช้...">
+                                <button class="btn btn-sm btn-success w-100 shadow-sm" onclick="saveAdminStatus('${id}')">💾 บันทึกสถานะ</button>
+                            </td>
+                        </tr>`;
+                    });
+                    document.getElementById('adminTableBody').innerHTML = html || '<tr><td colspan="4" class="text-center">ไม่มีข้อมูล</td></tr>';
+                }
+            } catch (error) { document.getElementById('adminTableBody').innerHTML = '<tr><td colspan="4" class="text-center text-danger">โหลดข้อมูลล้มเหลว</td></tr>'; }
+        }
+
+        // ป๊อปอัปให้ประชาชนกดแก้ไข
+        function openUserEdit(reqId) {
+            document.getElementById('editReqId').value = reqId;
+            document.getElementById('editPin').value = '';
+            new bootstrap.Modal(document.getElementById('editModal')).show();
+        }
+
+        // ประชาชนบันทึกการแก้ไข (บังคับใส่ PIN)
+        async function saveUserEdit() {
+            let reqId = document.getElementById('editReqId').value;
+            let pin = document.getElementById('editPin').value;
+            if(!pin) return Swal.fire('เตือน', 'กรุณาใส่รหัส PIN เพื่อยืนยันตัวตน', 'warning');
+
+            Swal.fire({ title: 'กำลังอัปเดต...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+            
+            let f1 = await uploadToImgBB('editFile1');
+            let f2 = await uploadToImgBB('editFile2');
+            let f3 = await uploadToImgBB('editFile3');
+            let f4 = await uploadToImgBB('editFile4');
+
+            // ⚠️ isAdminUpdate = false ทำให้ระบบเช็ค PIN และส่งไลน์เตือนแอดมิน
+            const payload = { action: 'updateRequest', reqId: reqId, pin: pin, isAdminUpdate: false, file1: f1, file2: f2, file3: f3, file4: f4 };
+
+            try {
+                const res = await fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify(payload) });
+                const result = await res.json();
+                if(result.success) {
+                    Swal.fire('สำเร็จ', 'อัปเดตไฟล์เอกสารเรียบร้อยแล้ว', 'success');
+                    bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
+                    loadRequests(); // รีเฟรชตาราง
+                } else { Swal.fire('ผิดพลาด', result.message, 'error'); }
+            } catch(e) { Swal.fire('ผิดพลาด', 'เชื่อมต่อเซิร์ฟเวอร์ไม่ได้', 'error'); }
+        }
+
+        // ป๊อปอัปให้แอดมินกดแก้ไขแทน
+        function openAdminEdit(reqId) {
+            document.getElementById('adminEditReqId').value = reqId;
+            new bootstrap.Modal(document.getElementById('adminEditModal')).show();
+        }
+
+        // แอดมินบันทึกการแก้ไข (ไม่ต้องใส่ PIN)
+        async function saveAdminEdit() {
+            let reqId = document.getElementById('adminEditReqId').value;
+            Swal.fire({ title: 'กำลังอัปเดต (แอดมิน)...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+            
+            let f1 = await uploadToImgBB('aFile1');
+            let f2 = await uploadToImgBB('aFile2');
+            let f3 = await uploadToImgBB('aFile3');
+            let f4 = await uploadToImgBB('aFile4');
+
+            // ⚠️ isAdminUpdate = true ทำให้ระบบไม่เช็ค PIN และ "ไม่ส่งไลน์เตือน"
+            const payload = { action: 'updateRequest', reqId: reqId, pin: 'admin-bypass', isAdminUpdate: true, file1: f1, file2: f2, file3: f3, file4: f4 };
+
+            try {
+                const res = await fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify(payload) });
+                const result = await res.json();
+                if(result.success) {
+                    Swal.fire('สำเร็จ', 'แก้ไขเอกสารให้ประชาชนเรียบร้อย', 'success');
+                    bootstrap.Modal.getInstance(document.getElementById('adminEditModal')).hide();
+                    loadAdminRequests(); // รีเฟรชตาราง
+                } else { Swal.fire('ผิดพลาด', result.message, 'error'); }
+            } catch(e) { Swal.fire('ผิดพลาด', 'เชื่อมต่อเซิร์ฟเวอร์ไม่ได้', 'error'); }
+        }
+
+        // แอดมินบันทึกสถานะ/หมายเหตุ
+        async function saveAdminStatus(reqId) {
+            Swal.fire({ title: 'กำลังบันทึกสถานะ...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+            
+            const payload = {
+                action: 'adminUpdateStatus',
+                reqId: reqId,
+                status: document.getElementById('st_'+reqId).value,
+                remark: document.getElementById('rm_'+reqId).value
+            };
+
+            try {
+                const res = await fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify(payload) });
+                const result = await res.json();
+                if(result.success) {
+                    Swal.fire({icon: 'success', title: 'บันทึกสถานะเรียบร้อย', showConfirmButton: false, timer: 1500});
+                } else {
+                    Swal.fire('ผิดพลาด', result.message, 'error');
+                }
+            } catch(e) { Swal.fire('ผิดพลาด', 'เชื่อมต่อเซิร์ฟเวอร์ไม่ได้', 'error'); }
+        }
+    </script>
 </body>
 </html>
