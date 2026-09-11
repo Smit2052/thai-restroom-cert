@@ -69,30 +69,10 @@
     <div class="alert alert-warning card-custom" role="alert" style="background-color: #fff8e1; border-color: #ffecb3;">
       <h5 class="alert-heading text-warning-emphasis"><i class="fas fa-info-circle"></i> เอกสารที่สามารถเตรียมมาแนบได้ (ถ้ามี)</h5>
       <ul class="mb-0 text-dark" style="line-height: 1.8;">
-        <li>
-          ใบรับแจ้งเกี่ยวกับบ้าน จำนวน 1 ฉบับ 
-          <a href="javascript:void(0)" onclick="showExample('ใบรับแจ้งเกี่ยวกับบ้าน', 'https://i.ibb.co/4gwMcfyx/1.png')" class="badge bg-info text-dark text-decoration-none ms-1">
-            <i class="fas fa-image"></i> ดูตัวอย่าง
-          </a>
-        </li>
-        <li>
-          สำเนาบัตรประชาชน จำนวน 1 ฉบับ 
-          <a href="javascript:void(0)" onclick="showExample('สำเนาบัตรประชาชน', 'https://i.ibb.co/1Gy02ThV/2.png')" class="badge bg-info text-dark text-decoration-none ms-1">
-            <i class="fas fa-image"></i> ดูตัวอย่าง
-          </a>
-        </li>
-        <li>
-          สำเนาทะเบียนบ้าน จำนวน 1 ฉบับ 
-          <a href="javascript:void(0)" onclick="showExample('สำเนาทะเบียนบ้าน', 'https://i.ibb.co/8ySNp92/3.png')" class="badge bg-info text-dark text-decoration-none ms-1">
-            <i class="fas fa-image"></i> ดูตัวอย่าง
-          </a>
-        </li>
-        <li>
-          รูปถ่ายตัวบ้านและห้องน้ำ จำนวน 1 แผ่น 
-          <a href="javascript:void(0)" onclick="showExample('รูปถ่ายตัวบ้านและห้องน้ำ', 'https://i.ibb.co/BKYqkcf4/4.png')" class="badge bg-info text-dark text-decoration-none ms-1">
-            <i class="fas fa-image"></i> ดูตัวอย่าง
-          </a>
-        </li>
+        <li>ใบรับแจ้งเกี่ยวกับบ้าน จำนวน 1 ฉบับ <a href="javascript:void(0)" onclick="showExample('ใบรับแจ้งเกี่ยวกับบ้าน', 'https://i.ibb.co/4gwMcfyx/1.png')" class="badge bg-info text-dark text-decoration-none ms-1"><i class="fas fa-image"></i> ดูตัวอย่าง</a></li>
+        <li>สำเนาบัตรประชาชน จำนวน 1 ฉบับ <a href="javascript:void(0)" onclick="showExample('สำเนาบัตรประชาชน', 'https://i.ibb.co/1Gy02ThV/2.png')" class="badge bg-info text-dark text-decoration-none ms-1"><i class="fas fa-image"></i> ดูตัวอย่าง</a></li>
+        <li>สำเนาทะเบียนบ้าน จำนวน 1 ฉบับ <a href="javascript:void(0)" onclick="showExample('สำเนาทะเบียนบ้าน', 'https://i.ibb.co/8ySNp92/3.png')" class="badge bg-info text-dark text-decoration-none ms-1"><i class="fas fa-image"></i> ดูตัวอย่าง</a></li>
+        <li>รูปถ่ายตัวบ้านและห้องน้ำ จำนวน 1 แผ่น <a href="javascript:void(0)" onclick="showExample('รูปถ่ายตัวบ้านและห้องน้ำ', 'https://i.ibb.co/BKYqkcf4/4.png')" class="badge bg-info text-dark text-decoration-none ms-1"><i class="fas fa-image"></i> ดูตัวอย่าง</a></li>
       </ul>
       <hr style="border-color: #ffe082;">
       <p class="mb-0 text-muted" style="font-size: 0.9em;"><i class="fas fa-lightbulb text-warning"></i> <strong>หมายเหตุ:</strong> หากยังไม่สะดวกแนบไฟล์ สามารถกดยื่นคำร้องโดยไม่แนบไฟล์ได้ครับ และทางเจ้าหน้าที่จะประสานขอเพิ่มเติมในภายหลัง</p>
@@ -163,7 +143,7 @@
               <th class="text-secondary fw-normal py-2">ชื่อผู้ยื่น</th>
               <th class="text-secondary fw-normal py-2">วันที่ยื่น</th>
               <th class="text-secondary fw-normal py-2">สถานะ/หมายเหตุ</th>
-              <th class="text-secondary fw-normal py-2">การจัดการ</th>
+              <th class="text-secondary fw-normal py-2 text-center">การจัดการ</th>
             </tr>
           </thead>
           <tbody id="userTableBody">
@@ -260,28 +240,24 @@
                 <div class="col-12 col-md-6">
                   <label class="form-label text-muted mb-1 w-100 d-flex justify-content-between" style="font-size:0.85em;">
                     <span>ใบรับแจ้งเกี่ยวกับบ้าน</span>
-                    <a href="javascript:void(0)" onclick="showExample('ใบรับแจ้งเกี่ยวกับบ้าน', 'https://i.ibb.co/4gwMcfyx/1.png')" class="text-primary text-decoration-none"><i class="fas fa-image"></i> ตัวอย่าง</a>
                   </label>
                   <input type="file" class="form-control form-control-sm" id="docHouse" accept="image/*,application/pdf">
                 </div>
                 <div class="col-12 col-md-6">
                   <label class="form-label text-muted mb-1 w-100 d-flex justify-content-between" style="font-size:0.85em;">
                     <span>สำเนาบัตรประชาชน</span>
-                    <a href="javascript:void(0)" onclick="showExample('สำเนาบัตรประชาชน', 'https://i.ibb.co/1Gy02ThV/2.png')" class="text-primary text-decoration-none"><i class="fas fa-image"></i> ตัวอย่าง</a>
                   </label>
                   <input type="file" class="form-control form-control-sm" id="docIdCard" accept="image/*,application/pdf">
                 </div>
                 <div class="col-12 col-md-6">
                   <label class="form-label text-muted mb-1 w-100 d-flex justify-content-between" style="font-size:0.85em;">
                     <span>สำเนาทะเบียนบ้าน</span>
-                    <a href="javascript:void(0)" onclick="showExample('สำเนาทะเบียนบ้าน', 'https://i.ibb.co/8ySNp92/3.png')" class="text-primary text-decoration-none"><i class="fas fa-image"></i> ตัวอย่าง</a>
                   </label>
                   <input type="file" class="form-control form-control-sm" id="docHouseReg" accept="image/*,application/pdf">
                 </div>
                 <div class="col-12 col-md-6">
                   <label class="form-label text-muted mb-1 w-100 d-flex justify-content-between" style="font-size:0.85em;">
                     <span>รูปถ่ายสถานที่ / ห้องน้ำ</span>
-                    <a href="javascript:void(0)" onclick="showExample('รูปถ่ายตัวบ้านและห้องน้ำ', 'https://i.ibb.co/BKYqkcf4/4.png')" class="text-primary text-decoration-none"><i class="fas fa-image"></i> ตัวอย่าง</a>
                   </label>
                   <input type="file" class="form-control form-control-sm" id="docPhoto" accept="image/*,application/pdf">
                 </div>
@@ -300,18 +276,17 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   
   <script>
-    // ⚠️ ลิงก์ API Google Apps Script ตัวล่าสุด
+    // ⚠️ ลิงก์ API ตัวล่าสุดของคุณ (ห้ามลบ)
     const GAS_API_URL = "https://script.google.com/macros/s/AKfycbyCvbu6ktMHaoK_H5kyy0jZKoU63jPQytqJDIL0I95b9MFPC2F2Eo4Ybci4V8P9duVi/exec";
 
     let globalRequests = [];
     const formModal = new bootstrap.Modal(document.getElementById('formModal'));
 
-    // ฟังก์ชันเชื่อมต่อกับ API (แก้ปัญหา Timeout)
     async function callAPI(action, payload = {}) {
       payload.action = action;
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 45000); // 45 วิ
+        const timeoutId = setTimeout(() => controller.abort(), 45000); 
 
         let response = await fetch(GAS_API_URL, {
           method: 'POST',
@@ -326,7 +301,7 @@
         
         const text = await response.text();
         try { return JSON.parse(text); } 
-        catch (e) { throw new Error("API ตอบกลับผิดพลาด (ไม่ได้ Deploy เป็น New version)"); }
+        catch (e) { throw new Error("API ตอบกลับผิดพลาด (ลืมอัปเดต New Version หรือไม่)"); }
       } catch (err) {
         console.error("API Error: ", err);
         let errorText = err.message || 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้';
@@ -390,12 +365,12 @@
 
           let remarkHtml = req.remark ? "<div class='text-muted mt-2 wrap-text-mobile' style='font-size: 0.85em;'><i class='fas fa-info-circle text-primary'></i> " + req.remark + "</div>" : "";
           
-          // 🛡️ ป้องกันการแก้ไขถ้าไม่อยู่ในสถานะที่อนุญาต (ล็อคปุ่มบนหน้าเว็บ)
+          // 🔒 ระบบตรวจสอบปุ่มแก้ไข: อนุญาตเฉพาะ Pending หรือ Incomplete
           let editBtn = "";
           if (req.status === 'pending' || req.status === 'incomplete') {
-            editBtn = "<button class='btn btn-sm btn-outline-warning rounded-pill px-3 mt-1' onclick='promptEditPin(" + req.rowIndex + ")'><i class='fas fa-pen'></i> แก้ไข</button>";
+            editBtn = "<button class='btn btn-sm btn-outline-warning rounded-pill px-3 mt-1 fw-bold shadow-sm' onclick='promptEditPin(" + req.rowIndex + ")'><i class='fas fa-pen'></i> แก้ไขข้อมูล/ไฟล์แนบ</button>";
           } else {
-            editBtn = "<button class='btn btn-sm btn-outline-secondary rounded-pill px-3 mt-1' disabled title='ไม่สามารถแก้ไขได้ในสถานะนี้'><i class='fas fa-lock'></i></button>";
+            editBtn = "<button class='btn btn-sm btn-outline-secondary rounded-pill px-3 mt-1' disabled title='ไม่สามารถแก้ไขได้ในสถานะนี้'><i class='fas fa-lock'></i> ล็อคการแก้ไข</button>";
           }
 
           userHtml += "<tr>";
@@ -403,11 +378,13 @@
           userHtml += "<td class='wrap-text-mobile'>" + (req.applicantName || '-') + "</td>";
           userHtml += "<td><span class='d-block d-sm-inline'>" + (req.submitDate || "").split(' ')[0] + "</span></td>";
           userHtml += "<td><span class='status-badge " + badgeClass + "'>" + statusText + "</span>" + remarkHtml + "</td>";
-          userHtml += "<td>" + editBtn + "</td>";
+          userHtml += "<td class='text-center'>" + editBtn + "</td>";
           userHtml += "</tr>";
 
           let editTracker = req.editCount > 0 ? "<br><span class='badge bg-warning text-dark mt-2' style='font-size: 0.8em; white-space: normal;'><i class='fas fa-history'></i> แก้ไข " + req.editCount + " ครั้ง<br>(" + req.lastEditTime + ")</span>" : "";
-          let pinHtml = req.pin ? "<br><span class='badge bg-secondary mt-1'><i class='fas fa-key'></i> PIN: " + req.pin + "</span>" : "";
+          
+          // 🔑 โชว์รหัส PIN ให้เจ้าหน้าที่เห็นชัดๆ ตรงส่วนของ Admin
+          let pinHtml = req.pin ? "<br><div class='badge bg-warning text-dark mt-2 p-2 border border-warning-subtle shadow-sm' style='font-size: 0.9em;'><i class='fas fa-key'></i> รหัส PIN ผู้ยื่น: " + req.pin + "</div>" : "";
 
           adminHtml += "<tr>";
           adminHtml += "<td><strong>" + (req.id || '-') + "</strong>" + pinHtml + "<br><small class='text-muted'>" + (req.submitDate || '-') + "</small>" + editTracker + "</td>";
@@ -458,9 +435,8 @@
       });
     }
 
-    function showExample(title, imageUrl, originalUrl) {
-      let footerHtml = originalUrl ? '<div class="text-center w-100 mt-2"><a href="' + originalUrl + '" target="_blank" class="btn btn-sm btn-outline-primary"><i class="fas fa-external-link-alt me-1"></i> เปิดดูไฟล์ต้นฉบับขนาดเต็ม</a></div>' : '';
-      Swal.fire({ title: 'ตัวอย่าง: ' + title, imageUrl: imageUrl, imageAlt: title, footer: footerHtml, confirmButtonText: 'ปิดหน้าต่าง', confirmButtonColor: '#3b82f6', customClass: { image: 'rounded shadow-sm' } });
+    function showExample(title, imageUrl) {
+      Swal.fire({ title: 'ตัวอย่าง: ' + title, imageUrl: imageUrl, imageAlt: title, confirmButtonText: 'ปิดหน้าต่าง', confirmButtonColor: '#3b82f6', customClass: { image: 'rounded shadow-sm' } });
     }
 
     function requireAdminPassword() {
@@ -552,11 +528,11 @@
       formModal.show();
     }
 
-    // 🛡️ ตรวจสอบรหัสความปลอดภัย PIN ก่อนแก้ไข
+    // 🛡️ ตรวจสอบรหัสความปลอดภัย PIN 4 หลัก ก่อนให้แก้ไข
     function promptEditPin(rowIndex) {
       Swal.fire({
         title: 'ยืนยันรหัสความปลอดภัย',
-        html: 'กรุณากรอกรหัส 4 หลัก ที่คุณได้รับตอนส่งคำร้อง เพื่อเข้าสู่โหมดแก้ไข',
+        html: 'กรุณากรอกรหัส 4 หลัก ที่คุณได้รับตอนส่งคำร้อง เพื่อเข้าสู่โหมดแก้ไขข้อมูลและอัปโหลดไฟล์ใหม่',
         input: 'text',
         inputAttributes: { maxlength: 4, autocapitalize: 'off', autocorrect: 'off' },
         inputPlaceholder: 'รหัส PIN 4 หลัก...',
@@ -582,7 +558,7 @@
       let req = globalRequests.find(function(r) { return r.rowIndex === rowIndex; });
       if (!req) return;
       document.getElementById('editRowIndex').value = req.rowIndex;
-      document.getElementById('formModalLabel').innerHTML = '<i class="fas fa-pen me-2"></i> แก้ไขคำร้อง: ' + req.id;
+      document.getElementById('formModalLabel').innerHTML = '<i class="fas fa-pen me-2"></i> แก้ไขคำร้อง/ไฟล์แนบ : ' + req.id;
       document.getElementById('applicantName').value = req.applicantName;
       document.getElementById('phone').value = req.phone;
       document.getElementById('placeType').value = req.placeType;
@@ -651,11 +627,11 @@
             html: '<div class="text-start mt-2">ข้อมูลของคุณถูกบันทึกเข้าระบบเรียบร้อยแล้ว<br><br>' +
                   '<b>รหัสคำร้อง:</b> <span class="text-primary">' + res.id + '</span><br>' +
                   '<b>รหัส PIN สำหรับแก้ไข:</b> <span class="text-danger fs-3 fw-bold ms-2">' + res.pin + '</span><br><br>' +
-                  '<span class="text-muted" style="font-size: 0.9em;"><i class="fas fa-exclamation-triangle text-warning"></i> <b>โปรดแคปหน้าจอหรือจดรหัสนี้ไว้!</b> คุณต้องใช้รหัส 4 หลักนี้ หากต้องการเข้ามาแก้ไขข้อมูลในภายหลัง</span></div>',
+                  '<span class="text-muted" style="font-size: 0.9em;"><i class="fas fa-exclamation-triangle text-warning"></i> <b>โปรดแคปหน้าจอหรือจดรหัสนี้ไว้!</b> คุณต้องใช้รหัส 4 หลักนี้ หากต้องการเข้ามาแก้ไขข้อมูลและไฟล์แนบในภายหลัง</span></div>',
             icon: 'success'
           });
         } else {
-          Swal.fire('อัปเดตสำเร็จ!', 'ข้อมูลของคุณถูกแก้ไขเรียบร้อยแล้ว', 'success');
+          Swal.fire('อัปเดตสำเร็จ!', 'ข้อมูลและไฟล์แนบของคุณถูกแก้ไขเรียบร้อยแล้ว', 'success');
         }
         document.getElementById('requestForm').reset();
         loadData();
