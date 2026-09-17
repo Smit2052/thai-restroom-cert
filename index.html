@@ -220,7 +220,9 @@
     </div>
 
     <script>
+        // --- ส่วนที่ต้องตรวจสอบให้ชัวร์ ---
         const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbwUog5PKdurhZn8iWBLqdRFWTGGw71QRAyhkctjmgHzimLYWIdpYvF-URrawD8Wcx9Q/exec';
+        
         let allRequests = [];
         let systemSettings = { mode: 'open' };
 
@@ -273,9 +275,17 @@
         async function loadRequests() {
             try {
                 const response = await fetch(GAS_API_URL);
-                if (!response.ok) throw new Error("การเชื่อมต่อเครือข่ายมีปัญหา (Network Error)");
+                if (!response.ok) throw new Error("Network Error");
                 
-                const result = await response.json();
+                const text = await response.text();
+                let result;
+                
+                try {
+                    result = JSON.parse(text);
+                } catch (e) {
+                    console.error("Parse Error. Raw text:", text);
+                    throw new Error("API ส่งข้อมูลมาผิดพลาด (ไม่ใช่ JSON): " + text.substring(0, 50));
+                }
                 
                 if (result.success) {
                     allRequests = result.data;
@@ -298,7 +308,7 @@
                 }
             } catch (error) {
                 console.error("Load Error:", error);
-                document.getElementById('publicTableBody').innerHTML = `<tr><td colspan="5" class="text-center text-danger py-4"><i class="fas fa-exclamation-triangle"></i> ไม่สามารถโหลดข้อมูลได้<br><small class="text-muted">โปรดตรวจสอบว่าตั้งค่า Script เป็น "ทุกคน (Anyone)" และ Deploy เป็น New Version แล้ว</small></td></tr>`;
+                document.getElementById('publicTableBody').innerHTML = `<tr><td colspan="5" class="text-center py-4"><span class="text-danger"><i class="fas fa-exclamation-triangle"></i> ไม่สามารถโหลดข้อมูลได้</span><br><small class="text-muted">${error.message}</small><br><br><small><b>วิธีแก้:</b> 1. วางโค้ด Code.gs ใหม่<br>2. กด Deploy เป็น <u>New Version (เวอร์ชันใหม่)</u> เท่านั้น!</small></td></tr>`;
                 document.getElementById('adminTableBody').innerHTML = `<tr><td colspan="5" class="text-center text-danger">ไม่สามารถโหลดข้อมูลได้: ${error.message}</td></tr>`;
             }
         }
