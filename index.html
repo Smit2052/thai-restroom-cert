@@ -248,9 +248,8 @@
                 const day = now.getDay().toString(); // 0=อาทิตย์, 1=จันทร์...
                 const allowedDays = systemSettings.allowedDays ? systemSettings.allowedDays.split(',') : [];
                 
-                if (!allowedDays.includes(day)) return false; // วันนี้ไม่อยู่ในวันที่กำหนดเปิด
+                if (!allowedDays.includes(day)) return false; 
 
-                // ดึงเวลาปัจุบัน HH:mm
                 const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
                 if (systemSettings.startTime && timeStr < systemSettings.startTime) return false;
                 if (systemSettings.endTime && timeStr > systemSettings.endTime) return false;
@@ -274,14 +273,16 @@
         async function loadRequests() {
             try {
                 const response = await fetch(GAS_API_URL);
+                if (!response.ok) throw new Error("การเชื่อมต่อเครือข่ายมีปัญหา (Network Error)");
+                
                 const result = await response.json();
+                
                 if (result.success) {
                     allRequests = result.data;
                     if (result.settings) {
                         systemSettings = result.settings;
                         document.getElementById('systemMode').value = systemSettings.mode;
                         
-                        // ตั้งค่าวันติ๊กถูกให้ตรงกับระบบ
                         const allowed = systemSettings.allowedDays ? systemSettings.allowedDays.split(',') : [];
                         document.querySelectorAll('.day-cb').forEach(cb => cb.checked = allowed.includes(cb.value));
                         
@@ -292,10 +293,13 @@
                     renderPublicTable();
                     renderAdminTable();
                     updateStats();
+                } else {
+                    throw new Error(result.message || "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์");
                 }
             } catch (error) {
                 console.error("Load Error:", error);
-                document.getElementById('publicTableBody').innerHTML = '<tr><td colspan="5" class="text-center text-danger">ไม่สามารถโหลดข้อมูลได้</td></tr>';
+                document.getElementById('publicTableBody').innerHTML = `<tr><td colspan="5" class="text-center text-danger py-4"><i class="fas fa-exclamation-triangle"></i> ไม่สามารถโหลดข้อมูลได้<br><small class="text-muted">โปรดตรวจสอบว่าตั้งค่า Script เป็น "ทุกคน (Anyone)" และ Deploy เป็น New Version แล้ว</small></td></tr>`;
+                document.getElementById('adminTableBody').innerHTML = `<tr><td colspan="5" class="text-center text-danger">ไม่สามารถโหลดข้อมูลได้: ${error.message}</td></tr>`;
             }
         }
 
@@ -421,7 +425,6 @@
             btn.disabled = true;
 
             const mode = document.getElementById('systemMode').value;
-            // ดึงค่าวันที่ติ๊กถูก มารวมกันด้วยลูกน้ำ (เช่น "1,2,3,4,5")
             const allowedDays = Array.from(document.querySelectorAll('.day-cb:checked')).map(cb => cb.value).join(',');
             const startTime = document.getElementById('startTime').value;
             const endTime = document.getElementById('endTime').value;
@@ -483,7 +486,6 @@
             }
         }
 
-        // ระบบบีบอัดภาพด้วย Canvas
         document.querySelectorAll('.file-upload').forEach(input => {
             input.addEventListener('change', async function(e) {
                 const file = e.target.files[0];
