@@ -18,6 +18,8 @@
         .bg-red-light { background-color: #ffebee; color: #d32f2f; }
         .pin-badge { background-color: #ffc107; color: #000; font-weight: bold; padding: 3px 8px; border-radius: 12px; font-size: 0.85rem; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
         .time-panel { background: #fffdf2; border: 1px solid #ffe082; padding: 15px; border-radius: 8px; }
+        /* ซ่อน error message ป้องกันเลย์เอาต์พัง */
+        #errorBanner { display: none; }
     </style>
 </head>
 <body>
@@ -37,6 +39,10 @@
 
     <div class="container mt-4">
         
+        <div id="errorBanner" class="alert alert-danger shadow-sm">
+            <strong><i class="fas fa-exclamation-triangle"></i> แจ้งเตือนจากระบบ:</strong> <span id="errorText"></span>
+        </div>
+
         <div id="adminPanel" class="card mb-4 border-danger d-none shadow-sm">
             <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
                 <h5 class="mb-0"><i class="fas fa-user-shield"></i> ระบบจัดการสำหรับเจ้าหน้าที่</h5>
@@ -184,25 +190,37 @@
 
                             <div class="col-12 mt-4">
                                 <div class="p-3 bg-light rounded border">
-                                    <h6 class="fw-bold mb-3"><i class="fas fa-paperclip"></i> เอกสารแนบ (ถ้ามี)</h6>
+                                    <h6 class="fw-bold mb-3"><i class="fas fa-paperclip"></i> เอกสารแนบ (ถ้ามี) <small class="text-muted fw-normal" style="font-size: 0.8rem;">(ถ้าแก้ข้อมูลใช้รูปเดิม ไม่ต้องเลือกใหม่)</small></h6>
                                     <div class="row g-3">
                                         <div class="col-md-6">
-                                            <label class="form-label small">ใบรับแจ้งเกี่ยวกับบ้าน <a href="javascript:void(0)" onclick="showExample('ใบรับแจ้งเกี่ยวกับบ้าน', 'https://i.ibb.co/4gwMcfyx/1.png')" class="badge bg-info text-dark text-decoration-none ms-1"><i class="fas fa-image"></i> ดูตัวอย่าง</a></label>
+                                            <label class="form-label small w-100 d-flex justify-content-between">
+                                                <span>ใบรับแจ้งเกี่ยวกับบ้าน</span> 
+                                                <a href="javascript:void(0)" onclick="showExample('ใบรับแจ้งเกี่ยวกับบ้าน', 'https://i.ibb.co/4gwMcfyx/1.png')" class="text-decoration-none text-primary"><i class="fas fa-image"></i> ตัวอย่าง</a>
+                                            </label>
                                             <input type="file" class="form-control form-control-sm file-upload" id="file1" accept="image/*">
                                             <input type="hidden" name="doc1" id="doc1">
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="form-label small">สำเนาบัตรประชาชน <a href="javascript:void(0)" onclick="showExample('สำเนาบัตรประชาชน', 'https://i.ibb.co/1Gy02ThV/2.png')" class="badge bg-info text-dark text-decoration-none ms-1"><i class="fas fa-image"></i> ดูตัวอย่าง</a></label>
+                                            <label class="form-label small w-100 d-flex justify-content-between">
+                                                <span>สำเนาบัตรประชาชน</span> 
+                                                <a href="javascript:void(0)" onclick="showExample('สำเนาบัตรประชาชน', 'https://i.ibb.co/1Gy02ThV/2.png')" class="text-decoration-none text-primary"><i class="fas fa-image"></i> ตัวอย่าง</a>
+                                            </label>
                                             <input type="file" class="form-control form-control-sm file-upload" id="file2" accept="image/*">
                                             <input type="hidden" name="doc2" id="doc2">
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="form-label small">สำเนาทะเบียนบ้าน <a href="javascript:void(0)" onclick="showExample('สำเนาทะเบียนบ้าน', 'https://i.ibb.co/8ySNp92/3.png')" class="badge bg-info text-dark text-decoration-none ms-1"><i class="fas fa-image"></i> ดูตัวอย่าง</a></label>
+                                            <label class="form-label small w-100 d-flex justify-content-between">
+                                                <span>สำเนาทะเบียนบ้าน</span> 
+                                                <a href="javascript:void(0)" onclick="showExample('สำเนาทะเบียนบ้าน', 'https://i.ibb.co/8ySNp92/3.png')" class="text-decoration-none text-primary"><i class="fas fa-image"></i> ตัวอย่าง</a>
+                                            </label>
                                             <input type="file" class="form-control form-control-sm file-upload" id="file3" accept="image/*">
                                             <input type="hidden" name="doc3" id="doc3">
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="form-label small">รูปถ่ายสถานที่ / ห้องน้ำ <a href="javascript:void(0)" onclick="showExample('รูปถ่ายตัวบ้านและห้องน้ำ', 'https://i.ibb.co/BKYqkcf4/4.png')" class="badge bg-info text-dark text-decoration-none ms-1"><i class="fas fa-image"></i> ดูตัวอย่าง</a></label>
+                                            <label class="form-label small w-100 d-flex justify-content-between">
+                                                <span>รูปถ่ายสถานที่ / ห้องน้ำ</span> 
+                                                <a href="javascript:void(0)" onclick="showExample('รูปถ่ายตัวบ้านและห้องน้ำ', 'https://i.ibb.co/BKYqkcf4/4.png')" class="text-decoration-none text-primary"><i class="fas fa-image"></i> ตัวอย่าง</a>
+                                            </label>
                                             <input type="file" class="form-control form-control-sm file-upload" id="file4" accept="image/*">
                                             <input type="hidden" name="doc4" id="doc4">
                                         </div>
@@ -220,8 +238,8 @@
     </div>
 
     <script>
-        // --- จุดที่ต้องแก้ไข ⚠️ เอาลิงก์ใหม่เอี่ยมของคุณมาวางตรงนี้ ---
-        const GAS_API_URL = 'ใส่_URL_WEB_APP_อันใหม่ของคุณที่ได้จากขั้นตอนที่_2_ที่นี่';
+        // 🚨 เอา URL ใหม่ล่าสุดของคุณมาใส่ตรงนี้
+        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbxzxD2GHNB_2wls4MybpDO8bVF8nn-uPhkutgMvgkmokeBM44n3wZezTfEHq2TeMQtG/exec';
         
         let allRequests = [];
         let systemSettings = { mode: 'open' };
@@ -248,7 +266,7 @@
             if (systemSettings.mode === 'auto') {
                 const now = new Date();
                 const day = now.getDay().toString(); // 0=อาทิตย์, 1=จันทร์...
-                const allowedDays = systemSettings.allowedDays ? systemSettings.allowedDays.split(',') : [];
+                const allowedDays = systemSettings.allowedDays ? systemSettings.allowedDays.toString().split(',') : [];
                 
                 if (!allowedDays.includes(day)) return false; 
 
@@ -273,6 +291,7 @@
         }
 
         async function loadRequests() {
+            document.getElementById('errorBanner').style.display = 'none';
             try {
                 const response = await fetch(GAS_API_URL);
                 if (!response.ok) throw new Error("Network Error");
@@ -283,17 +302,16 @@
                 try {
                     result = JSON.parse(text);
                 } catch (e) {
-                    console.error("Parse Error. Raw text:", text);
-                    throw new Error("API ส่งข้อมูลมาผิดพลาด (ไม่ใช่ JSON): " + text.substring(0, 50));
+                    throw new Error("ลิงก์ API ผิดปกติ (ยังไม่ได้กด Deploy เป็น New Version)");
                 }
                 
                 if (result.success) {
-                    allRequests = result.data;
+                    allRequests = result.data || [];
                     if (result.settings) {
                         systemSettings = result.settings;
                         document.getElementById('systemMode').value = systemSettings.mode;
                         
-                        const allowed = systemSettings.allowedDays ? systemSettings.allowedDays.split(',') : [];
+                        const allowed = systemSettings.allowedDays ? systemSettings.allowedDays.toString().split(',') : [];
                         document.querySelectorAll('.day-cb').forEach(cb => cb.checked = allowed.includes(cb.value));
                         
                         document.getElementById('startTime').value = systemSettings.startTime || '';
@@ -308,8 +326,10 @@
                 }
             } catch (error) {
                 console.error("Load Error:", error);
-                document.getElementById('publicTableBody').innerHTML = `<tr><td colspan="5" class="text-center py-4"><span class="text-danger"><i class="fas fa-exclamation-triangle"></i> ไม่สามารถโหลดข้อมูลได้</span><br><small class="text-muted">${error.message}</small><br><br><small><b>วิธีแก้:</b> 1. วางโค้ด Code.gs ใหม่<br>2. กด Deploy เป็น <u>New Version (เวอร์ชันใหม่)</u> เท่านั้น!</small></td></tr>`;
-                document.getElementById('adminTableBody').innerHTML = `<tr><td colspan="5" class="text-center text-danger">ไม่สามารถโหลดข้อมูลได้: ${error.message}</td></tr>`;
+                document.getElementById('errorBanner').style.display = 'block';
+                document.getElementById('errorText').innerText = error.message;
+                document.getElementById('publicTableBody').innerHTML = `<tr><td colspan="5" class="text-center py-4"><span class="text-danger"><i class="fas fa-exclamation-triangle"></i> ไม่สามารถโหลดข้อมูลได้</span></td></tr>`;
+                document.getElementById('adminTableBody').innerHTML = `<tr><td colspan="5" class="text-center text-danger">ไม่สามารถโหลดข้อมูลได้</td></tr>`;
             }
         }
 
@@ -393,6 +413,8 @@
             document.getElementById('stat-incomplete').innerText = allRequests.filter(r => r.status === 'เอกสารไม่ครบ').length;
         }
 
+        const cleanVal = (val) => (!val || val === 'undefined' || val === 'null' || val === '-') ? '' : val;
+
         async function requestEdit(reqId) {
             const req = allRequests.find(r => r.reqId === reqId);
             if (!req) return;
@@ -414,12 +436,12 @@
                     document.getElementById('rowIndex').value = req.rowIndex;
                     document.getElementById('editPin').value = pin;
                     
-                    document.getElementById('name').value = req.name || '';
-                    document.getElementById('phone').value = req.phone || '';
-                    document.getElementById('placeType').value = req.placeType || '';
-                    document.getElementById('toiletCount').value = req.toiletCount || '';
-                    document.getElementById('address').value = req.address || '';
-                    document.getElementById('landmark').value = req.landmark || '';
+                    document.getElementById('name').value = cleanVal(req.name);
+                    document.getElementById('phone').value = cleanVal(req.phone);
+                    document.getElementById('placeType').value = cleanVal(req.placeType);
+                    document.getElementById('toiletCount').value = cleanVal(req.toiletCount);
+                    document.getElementById('address').value = cleanVal(req.address);
+                    document.getElementById('landmark').value = cleanVal(req.landmark);
 
                     document.getElementById('modalTitle').innerHTML = `<i class="fas fa-pen"></i> แก้ไขคำร้อง : ${reqId}`;
                     new bootstrap.Modal(document.getElementById('requestModal')).show();
