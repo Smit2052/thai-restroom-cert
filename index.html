@@ -80,7 +80,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-3 mt-4">
       <h4 class="mb-0 fw-bold section-title">แผงควบคุมและรายการคำร้อง</h4>
-      <button class="btn btn-primary btn-new-request shadow-sm" style="background-color: #3b82f6; border: none; border-radius: 8px;" onclick="openFormModal()">
+      <button id="btnNewRequest" class="btn btn-primary btn-new-request shadow-sm" style="background-color: #3b82f6; border: none; border-radius: 8px;" onclick="openFormModal()">
         <i class="fas fa-plus"></i> ยื่นคำร้องใหม่
       </button>
     </div>
@@ -153,6 +153,7 @@
       </div>
     </div>
 
+    <!-- Admin Panel -->
     <div class="card card-custom p-3 p-md-4 mt-4 bg-white shadow-lg" id="adminPanel" style="display: none; border-top: 5px solid #dc3545;">
       <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-2">
         <h5 class="mb-0 text-danger fw-bold section-title"><i class="fas fa-user-shield me-2"></i> ระบบจัดการสำหรับเจ้าหน้าที่</h5>
@@ -162,6 +163,34 @@
           <button class="btn btn-outline-secondary btn-sm flex-fill" onclick="document.getElementById('adminPanel').style.display='none'"><i class="fas fa-times"></i> ปิด</button>
         </div>
       </div>
+
+      <!-- แผงตั้งค่าเปิด-ปิดระบบ -->
+      <div class="card bg-light border-warning mb-3 shadow-sm">
+        <div class="card-body p-3">
+          <h6 class="text-dark fw-bold mb-3"><i class="fas fa-cogs text-secondary"></i> ตั้งค่าการเปิด-ปิด ระบบรับคำร้อง</h6>
+          <div class="row g-2 align-items-center">
+            <div class="col-12 col-md-3">
+              <select class="form-select form-select-sm" id="sysMode" onchange="toggleSysDateInputs()">
+                <option value="open">🟢 เปิดรับคำร้องตลอดเวลา</option>
+                <option value="closed">🔴 ปิดรับคำร้อง</option>
+                <option value="auto">⏳ กำหนดวันและเวลาเปิด-ปิด</option>
+              </select>
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label mb-0" style="font-size:0.8em;">เวลาเปิดระบบ</label>
+              <input type="datetime-local" class="form-control form-control-sm" id="sysStart" disabled>
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label mb-0" style="font-size:0.8em;">เวลาปิดระบบ</label>
+              <input type="datetime-local" class="form-control form-control-sm" id="sysEnd" disabled>
+            </div>
+            <div class="col-12 col-md-3 mt-md-4">
+              <button class="btn btn-warning btn-sm w-100 fw-bold" onclick="saveSystemConfig()"><i class="fas fa-save"></i> บันทึกการตั้งค่า</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="table-responsive">
         <table class="table table-bordered align-middle" style="font-size: 0.9em; min-width: 850px;">
           <thead class="table-dark">
@@ -322,7 +351,10 @@
         if(indicator) indicator.classList.remove('d-none');
         callAPI('getRequests').then(res => {
           if(indicator) indicator.classList.add('d-none');
-          if (res && res.success) renderData(res.data, true);
+          if (res && res.success) {
+            renderData(res.data, true);
+            if (res.config) applySystemConfig(res.config);
+          }
         });
       }, 15000);
     };
@@ -330,7 +362,10 @@
     function loadData() {
       document.getElementById('userTableBody').innerHTML = "<tr><td colspan='5' class='text-center py-5'><div class='spinner-border spinner-border-sm text-primary me-2' role='status'></div>กำลังโหลดข้อมูล...</td></tr>";
       callAPI('getRequests').then(res => {
-        if (res.success) { renderData(res.data, false); } 
+        if (res.success) { 
+          renderData(res.data, false); 
+          if (res.config) applySystemConfig(res.config);
+        } 
         else {
           document.getElementById('userTableBody').innerHTML = `
             <tr><td colspan='5' class='text-center text-danger py-5'>
@@ -443,6 +478,75 @@
       Swal.fire({ title: 'ตัวอย่าง: ' + title, imageUrl: imageUrl, imageAlt: title, confirmButtonText: 'ปิดหน้าต่าง', confirmButtonColor: '#3b82f6', customClass: { image: 'rounded shadow-sm' } });
     }
 
+    // ฟังก์ชันจัดการเปิด-ปิดระบบ
+    function applySystemConfig(config) {
+      var sysModeEl = document.getElementById('sysMode');
+      var sysStartEl = document.getElementById('sysStart');
+      var sysEndEl = document.getElementById('sysEnd');
+      
+      if (sysModeEl && document.activeElement !== sysModeEl) sysModeEl.value = config.mode;
+      if (sysStartEl && document.activeElement !== sysStartEl) sysStartEl.value = config.start;
+      if (sysEndEl && document.activeElement !== sysEndEl) sysEndEl.value = config.end;
+      toggleSysDateInputs();
+
+      var isOpen = true;
+      if (config.mode === 'closed') isOpen = false;
+      else if (config.mode === 'auto') {
+        var now = new Date();
+        var offset = now.getTimezoneOffset() * 60000;
+        var localISOTime = (new Date(now - offset)).toISOString().slice(0, 16); 
+        if (config.start && localISOTime < config.start) isOpen = false;
+        if (config.end && localISOTime > config.end) isOpen = false;
+      }
+
+      var btn = document.getElementById('btnNewRequest');
+      if (btn) {
+        if (isOpen) {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fas fa-plus"></i> ยื่นคำร้องใหม่';
+          btn.classList.remove('btn-secondary');
+          btn.classList.add('btn-primary');
+          btn.style.backgroundColor = '#3b82f6';
+        } else {
+          btn.disabled = true;
+          btn.innerHTML = '<i class="fas fa-lock"></i> ระบบปิดรับคำร้อง';
+          btn.classList.remove('btn-primary');
+          btn.classList.add('btn-secondary');
+          btn.style.backgroundColor = '#6c757d';
+        }
+      }
+    }
+
+    function toggleSysDateInputs() {
+      var mode = document.getElementById('sysMode').value;
+      var disabled = (mode !== 'auto');
+      document.getElementById('sysStart').disabled = disabled;
+      document.getElementById('sysEnd').disabled = disabled;
+    }
+
+    function saveSystemConfig() {
+      var mode = document.getElementById('sysMode').value;
+      var start = document.getElementById('sysStart').value;
+      var end = document.getElementById('sysEnd').value;
+
+      if (mode === 'auto' && (!start || !end)) {
+        Swal.fire('ข้อมูลไม่ครบ', 'กรุณาระบุทั้งเวลาเปิดและเวลาปิดให้ครบถ้วน', 'warning'); return;
+      }
+      if (mode === 'auto' && start > end) {
+        Swal.fire('ข้อมูลไม่ถูกต้อง', 'เวลาปิดต้องอยู่หลังเวลาเปิด', 'warning'); return;
+      }
+
+      Swal.fire({ title: 'กำลังบันทึกการตั้งค่า...', allowOutsideClick: false });
+      Swal.showLoading();
+
+      callAPI('updateSystemConfig', { mode: mode, start: start, end: end }).then(res => {
+        if (res.success) {
+          Swal.fire('สำเร็จ!', res.message, 'success');
+          loadData(); 
+        } else { Swal.fire('ผิดพลาด', res.error, 'error'); }
+      });
+    }
+
     function requireAdminPassword() {
       let panel = document.getElementById('adminPanel');
       if (panel.style.display === 'block') { panel.style.display = 'none'; return; }
@@ -526,6 +630,11 @@
     }
 
     function openFormModal() {
+      var btn = document.getElementById('btnNewRequest');
+      if (btn && btn.disabled) {
+        Swal.fire('ระบบปิดรับคำร้อง', 'ขออภัย ขณะนี้ระบบได้ปิดรับคำร้องชั่วคราว หรืออยู่นอกช่วงเวลาทำการ', 'info');
+        return;
+      }
       document.getElementById('requestForm').reset();
       document.getElementById('editRowIndex').value = '';
       document.getElementById('formModalLabel').innerHTML = '<i class="fas fa-edit me-2"></i> ยื่นคำร้องใบรับรองมาตรฐานห้องน้ำ';
