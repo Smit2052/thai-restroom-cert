@@ -18,7 +18,6 @@
         .bg-red-light { background-color: #ffebee; color: #d32f2f; }
         .pin-badge { background-color: #ffc107; color: #000; font-weight: bold; padding: 3px 8px; border-radius: 12px; font-size: 0.85rem; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
         .time-panel { background: #fffdf2; border: 1px solid #ffe082; padding: 15px; border-radius: 8px; }
-        /* ซ่อน error message ป้องกันเลย์เอาต์พัง */
         #errorBanner { display: none; }
     </style>
 </head>
@@ -238,7 +237,7 @@
     </div>
 
     <script>
-        // 🚨 เอา URL ใหม่ล่าสุดของคุณมาใส่ตรงนี้
+        // 🚨 ลิงก์ API ใหม่ของคุณถูกฝังไว้ตรงนี้เรียบร้อยครับ
         const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbxzxD2GHNB_2wls4MybpDO8bVF8nn-uPhkutgMvgkmokeBM44n3wZezTfEHq2TeMQtG/exec';
         
         let allRequests = [];
@@ -265,7 +264,9 @@
             if (systemSettings.mode === 'close') return false;
             if (systemSettings.mode === 'auto') {
                 const now = new Date();
-                const day = now.getDay().toString(); // 0=อาทิตย์, 1=จันทร์...
+                let day = now.getDay().toString(); // 0=อาทิตย์, 1=จันทร์...
+                if(day === '0') day = '0'; // ปรับวันอาทิตย์
+                
                 const allowedDays = systemSettings.allowedDays ? systemSettings.allowedDays.toString().split(',') : [];
                 
                 if (!allowedDays.includes(day)) return false; 
@@ -302,7 +303,7 @@
                 try {
                     result = JSON.parse(text);
                 } catch (e) {
-                    throw new Error("ลิงก์ API ผิดปกติ (ยังไม่ได้กด Deploy เป็น New Version)");
+                    throw new Error("ลิงก์ API ผิดปกติ หรือส่งข้อมูลมาไม่ถูกต้อง");
                 }
                 
                 if (result.success) {
@@ -413,7 +414,11 @@
             document.getElementById('stat-incomplete').innerText = allRequests.filter(r => r.status === 'เอกสารไม่ครบ').length;
         }
 
-        const cleanVal = (val) => (!val || val === 'undefined' || val === 'null' || val === '-') ? '' : val;
+        // ตัวกรองเพื่อลบคำว่า undefined หรือค่าว่าง
+        const cleanVal = (val) => {
+            if (val === undefined || val === null || String(val).toLowerCase() === 'undefined' || String(val).toLowerCase() === 'null' || val === '-') return '';
+            return val;
+        };
 
         async function requestEdit(reqId) {
             const req = allRequests.find(r => r.reqId === reqId);
@@ -485,7 +490,7 @@
                     Swal.fire('ผิดพลาด', result.message || 'เกิดข้อผิดพลาดในการบันทึก', 'error');
                 }
             } catch (error) {
-                Swal.fire('เชื่อมต่อล้มเหลว', 'โปรด Deploy เป็น New version ใน Google Apps Script', 'error');
+                Swal.fire('เชื่อมต่อล้มเหลว', 'มีข้อผิดพลาด โปรดตรวจสอบการตั้งค่า Deploy ฝั่ง GAS', 'error');
             } finally {
                 btn.innerHTML = '<i class="fas fa-save"></i> บันทึกการตั้งค่าระบบ';
                 btn.disabled = false;
@@ -518,6 +523,7 @@
             }
         }
 
+        // การจัดการไฟล์และบีบอัดภาพ
         document.querySelectorAll('.file-upload').forEach(input => {
             input.addEventListener('change', async function(e) {
                 const file = e.target.files[0];
@@ -566,7 +572,7 @@
                     Swal.fire('ผิดพลาด', result.message || 'เกิดข้อผิดพลาดในการบันทึก', 'error');
                 }
             } catch (error) {
-                Swal.fire('ส่งข้อมูลไม่สำเร็จ', 'สัญญาณอินเทอร์เน็ตขัดข้อง หรือไม่ได้ Deploy New Version ในระบบหลังบ้าน', 'error');
+                Swal.fire('ส่งข้อมูลไม่สำเร็จ', 'สัญญาณอินเทอร์เน็ตขัดข้อง หรือเชื่อมต่อเซิร์ฟเวอร์ไม่ได้', 'error');
             } finally {
                 btn.innerHTML = '<i class="fas fa-paper-plane"></i> บันทึกข้อมูลคำร้อง';
                 btn.disabled = false;
