@@ -37,6 +37,7 @@
 
     <div class="container mt-4">
         
+        <!-- แผงควบคุมระบบ (สำหรับเจ้าหน้าที่) -->
         <div id="adminPanel" class="card mb-4 border-danger d-none shadow-sm">
             <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
                 <h5 class="mb-0"><i class="fas fa-user-shield"></i> ระบบจัดการสำหรับเจ้าหน้าที่</h5>
@@ -137,6 +138,7 @@
         </div>
     </div>
 
+    <!-- Modal ฟอร์มยื่น/แก้ไขคำร้อง -->
     <div class="modal fade" id="requestModal" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-lg">
             <div class="modal-content border-0 shadow">
@@ -220,8 +222,8 @@
     </div>
 
     <script>
-        // --- จุดที่ต้องแก้ไข ⚠️ เอาลิงก์ใหม่เอี่ยมของคุณมาวางตรงนี้ ---
-        const GAS_API_URL = 'ใส่_URL_WEB_APP_อันใหม่ของคุณที่ได้จากขั้นตอนที่_2_ที่นี่';
+        // ลิงก์ API ล่าสุดที่คุณให้มา
+        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbwiTWd1O0ZK-whF5APkRlPqK4jM7kRvo48S2tkrIRp8ffypauvaDq6wylkg8BE51iVq/exec';
         
         let allRequests = [];
         let systemSettings = { mode: 'open' };
@@ -272,19 +274,34 @@
             new bootstrap.Modal(document.getElementById('requestModal')).show();
         }
 
+        // ฟังก์ชันทำความสะอาดข้อมูลกันคำว่า "undefined"
+        function cleanText(text) {
+            if (!text || text === 'undefined' || text === 'null') return '';
+            return text;
+        }
+
         async function loadRequests() {
             try {
+                // เช็คว่าลืมใส่ลิงก์หรือเปล่า
+                if(GAS_API_URL.includes("ใส่_ลิงก์_API_ใหม่ของคุณที่นี่") || GAS_API_URL === "") {
+                    throw new Error("คุณยังไม่ได้เอาลิงก์ API ไปใส่ในบรรทัด GAS_API_URL ครับ");
+                }
+
                 const response = await fetch(GAS_API_URL);
-                if (!response.ok) throw new Error("Network Error");
-                
                 const text = await response.text();
-                let result;
                 
+                let result;
                 try {
                     result = JSON.parse(text);
                 } catch (e) {
-                    console.error("Parse Error. Raw text:", text);
-                    throw new Error("API ส่งข้อมูลมาผิดพลาด (ไม่ใช่ JSON): " + text.substring(0, 50));
+                    // ตัวสแกนหาสาเหตุ Error
+                    if(text.includes("API is running")) {
+                        throw new Error("ยังเป็น API เวอร์ชันเก่าอยู่ครับ <br><b>วิธีแก้:</b> ไปที่ Google Apps Script กด Deploy > New version ใหม่ครับ");
+                    } else if (text.includes("<html") || text.includes("Exception") || text.includes("error")) {
+                        throw new Error("Google บล็อกการเข้าถึง <br><b>วิธีแก้:</b> ตอน Deploy ให้ตั้งค่า <u>ทำงานในฐานะ: ฉัน (Me)</u> และ <u>ผู้มีสิทธิ์เข้าถึง: ทุกคน (Anyone)</u> เท่านั้นครับ");
+                    } else {
+                        throw new Error("ข้อมูลผิดปกติ: " + text.substring(0, 50));
+                    }
                 }
                 
                 if (result.success) {
@@ -308,8 +325,8 @@
                 }
             } catch (error) {
                 console.error("Load Error:", error);
-                document.getElementById('publicTableBody').innerHTML = `<tr><td colspan="5" class="text-center py-4"><span class="text-danger"><i class="fas fa-exclamation-triangle"></i> ไม่สามารถโหลดข้อมูลได้</span><br><small class="text-muted">${error.message}</small><br><br><small><b>วิธีแก้:</b> 1. วางโค้ด Code.gs ใหม่<br>2. กด Deploy เป็น <u>New Version (เวอร์ชันใหม่)</u> เท่านั้น!</small></td></tr>`;
-                document.getElementById('adminTableBody').innerHTML = `<tr><td colspan="5" class="text-center text-danger">ไม่สามารถโหลดข้อมูลได้: ${error.message}</td></tr>`;
+                document.getElementById('publicTableBody').innerHTML = `<tr><td colspan="5" class="text-center py-4"><span class="text-danger"><i class="fas fa-exclamation-triangle"></i> ไม่สามารถโหลดข้อมูลได้</span><br><br><div class="alert alert-danger d-inline-block text-start"><b class="text-dark">สาเหตุที่พบ:</b><br>${error.message}</div></td></tr>`;
+                document.getElementById('adminTableBody').innerHTML = `<tr><td colspan="5" class="text-center text-danger">ไม่สามารถโหลดข้อมูลได้</td></tr>`;
             }
         }
 
@@ -332,12 +349,12 @@
                     ? `<button class="btn btn-sm btn-outline-warning rounded-pill px-3 fw-bold shadow-sm" onclick="requestEdit('${req.reqId}')"><i class="fas fa-pen"></i> แก้ไข</button>`
                     : `<button class="btn btn-sm btn-light rounded-pill px-3 text-muted border shadow-sm" disabled><i class="fas fa-lock"></i> ล็อค</button>`;
 
-                let noteHtml = req.adminNote ? `<div class="small text-danger mt-1"><i class="fas fa-info-circle"></i> ${req.adminNote}</div>` : '';
+                let noteHtml = cleanText(req.adminNote) ? `<div class="small text-danger mt-1"><i class="fas fa-info-circle"></i> ${cleanText(req.adminNote)}</div>` : '';
 
                 return `
                     <tr>
                         <td class="ps-4 fw-bold text-primary">${req.reqId}</td>
-                        <td>${req.name || '-'}</td>
+                        <td>${cleanText(req.name) || '-'}</td>
                         <td>${req.date ? new Date(req.date).toLocaleDateString('th-TH') : '-'}</td>
                         <td><span class="badge ${badgeClass} rounded-pill px-3 py-2">${req.status}</span>${noteHtml}</td>
                         <td class="text-end pe-4">${actionBtn}</td>
@@ -358,15 +375,15 @@
                     <td>
                         <div class="fw-bold">${req.reqId}</div>
                         <div class="small text-muted">${req.date ? new Date(req.date).toLocaleString('th-TH') : '-'}</div>
-                        <div class="mt-2"><span class="pin-badge"><i class="fas fa-key"></i> PIN: ${req.pin || '-'}</span></div>
+                        <div class="mt-2"><span class="pin-badge"><i class="fas fa-key"></i> PIN: ${cleanText(req.pin) || '-'}</span></div>
                     </td>
                     <td>
-                        <div><i class="fas fa-user text-secondary"></i> ${req.name || '-'}</div>
-                        <div class="small"><i class="fas fa-phone text-secondary"></i> ${req.phone || '-'}</div>
+                        <div><i class="fas fa-user text-secondary"></i> ${cleanText(req.name) || '-'}</div>
+                        <div class="small"><i class="fas fa-phone text-secondary"></i> ${cleanText(req.phone) || '-'}</div>
                     </td>
                     <td>
-                        <div class="fw-bold">${req.placeType || '-'}</div>
-                        <div class="small text-muted text-truncate" style="max-width: 150px;">${req.address || '-'}</div>
+                        <div class="fw-bold">${cleanText(req.placeType) || '-'}</div>
+                        <div class="small text-muted text-truncate" style="max-width: 150px;">${cleanText(req.address) || '-'}</div>
                     </td>
                     <td class="small">
                         ${req.doc1 ? '<div class="text-success"><i class="fas fa-check"></i> ใบแจ้งบ้าน</div>' : '<div class="text-muted">- ไม่มีใบแจ้งบ้าน</div>'}
@@ -379,7 +396,7 @@
                             <option value="ผ่านมาตรฐาน" ${req.status==='ผ่านมาตรฐาน'?'selected':''}>ผ่านมาตรฐาน</option>
                             <option value="เอกสารไม่ครบ" ${req.status==='เอกสารไม่ครบ'?'selected':''}>เอกสารไม่ครบ</option>
                         </select>
-                        <input type="text" class="form-control form-control-sm mb-1" id="note_${req.rowIndex}" placeholder="หมายเหตุ..." value="${req.adminNote || ''}">
+                        <input type="text" class="form-control form-control-sm mb-1" id="note_${req.rowIndex}" placeholder="หมายเหตุ..." value="${cleanText(req.adminNote)}">
                         <button class="btn btn-sm btn-success w-100" onclick="updateAdminStatus('${req.rowIndex}')"><i class="fas fa-save"></i> บันทึก</button>
                     </td>
                 </tr>
@@ -409,17 +426,17 @@
             });
 
             if (pin) {
-                if (pin === req.pin.toString()) {
+                if (pin === cleanText(req.pin)) {
                     document.getElementById('actionType').value = 'editRequest';
                     document.getElementById('rowIndex').value = req.rowIndex;
                     document.getElementById('editPin').value = pin;
                     
-                    document.getElementById('name').value = req.name || '';
-                    document.getElementById('phone').value = req.phone || '';
-                    document.getElementById('placeType').value = req.placeType || '';
-                    document.getElementById('toiletCount').value = req.toiletCount || '';
-                    document.getElementById('address').value = req.address || '';
-                    document.getElementById('landmark').value = req.landmark || '';
+                    document.getElementById('name').value = cleanText(req.name);
+                    document.getElementById('phone').value = cleanText(req.phone);
+                    document.getElementById('placeType').value = cleanText(req.placeType);
+                    document.getElementById('toiletCount').value = cleanText(req.toiletCount);
+                    document.getElementById('address').value = cleanText(req.address);
+                    document.getElementById('landmark').value = cleanText(req.landmark);
 
                     document.getElementById('modalTitle').innerHTML = `<i class="fas fa-pen"></i> แก้ไขคำร้อง : ${reqId}`;
                     new bootstrap.Modal(document.getElementById('requestModal')).show();
@@ -463,7 +480,7 @@
                     Swal.fire('ผิดพลาด', result.message || 'เกิดข้อผิดพลาดในการบันทึก', 'error');
                 }
             } catch (error) {
-                Swal.fire('เชื่อมต่อล้มเหลว', 'โปรด Deploy เป็น New version ใน Google Apps Script', 'error');
+                Swal.fire('เชื่อมต่อล้มเหลว', 'โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ต', 'error');
             } finally {
                 btn.innerHTML = '<i class="fas fa-save"></i> บันทึกการตั้งค่าระบบ';
                 btn.disabled = false;
@@ -544,7 +561,7 @@
                     Swal.fire('ผิดพลาด', result.message || 'เกิดข้อผิดพลาดในการบันทึก', 'error');
                 }
             } catch (error) {
-                Swal.fire('ส่งข้อมูลไม่สำเร็จ', 'สัญญาณอินเทอร์เน็ตขัดข้อง หรือไม่ได้ Deploy New Version ในระบบหลังบ้าน', 'error');
+                Swal.fire('ส่งข้อมูลไม่สำเร็จ', 'สัญญาณอินเทอร์เน็ตขัดข้อง', 'error');
             } finally {
                 btn.innerHTML = '<i class="fas fa-paper-plane"></i> บันทึกข้อมูลคำร้อง';
                 btn.disabled = false;
