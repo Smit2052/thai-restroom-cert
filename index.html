@@ -317,7 +317,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   
   <script>
-    // 🚨 เชื่อมต่อ API ตัวใหม่ล่าสุดของคุณที่เพิ่ง Deploy เสร็จ!
+    // ลิงก์ API ตัวล่าสุดของคุณ
     const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbz2fTnWCJFjQfrw7agXNWJX2e_cAgTdkUw7yWj0_wqnyQL5gIP3gevbknVoZIDTLy9_/exec';
     
     let globalRequests = [];
@@ -466,7 +466,14 @@
           adminHtml += `<td><strong>${cleanVal(req.id)}</strong>${pinHtml}<br><small class='text-muted'>${cleanVal(req.submitDate)}</small>${editTracker}</td>`;
           adminHtml += `<td><i class='fas fa-user text-muted'></i> ${cleanVal(req.applicantName)}<br><i class='fas fa-phone text-muted'></i> ${cleanVal(req.phone)}</td>`;
           adminHtml += `<td class='wrap-text-mobile'><strong>${cleanVal(req.placeType)}</strong><br><small class='text-muted'>${cleanVal(req.address)}</small></td>`;
-          adminHtml += `<td>${getFileLink(req.docHouse, "ใบแจ้งบ้าน")}${getFileLink(req.docIdCard, "บัตรปชช.")}${getFileLink(req.docHouseReg, "ทะเบียนบ้าน")}${getFileLink(req.docPhoto, "รูปถ่าย")}</td>`;
+          
+          // ระบบประมวลผลไฟล์แนบแบบใหม่
+          adminHtml += `<td>
+                          ${getFileLink(req, "docHouse", "ใบแจ้งบ้าน")}
+                          ${getFileLink(req, "docIdCard", "บัตรปชช.")}
+                          ${getFileLink(req, "docHouseReg", "ทะเบียนบ้าน")}
+                          ${getFileLink(req, "docPhoto", "รูปถ่าย")}
+                        </td>`;
           
           adminHtml += "<td>";
           adminHtml += `<select class='form-select form-select-sm mb-2' id='status_${req.rowIndex}'>`;
@@ -496,9 +503,34 @@
       }
     }
 
-    function getFileLink(url, label) {
+    // ฟังก์ชันสร้างปุ่มลิงก์ และแยกระหว่างไฟล์ Base64 กับไฟล์ Google Drive
+    function getFileLink(req, docKey, label) {
+      const url = req[docKey];
       if (!url) return `<span class='text-muted d-block mb-1' style='font-size:0.75em;'>- ไม่มี ${label}</span>`;
-      return `<a href='${url}' target='_blank' class='badge bg-primary text-decoration-none mb-1 d-inline-block p-2 shadow-sm'><i class='fas fa-link'></i> ${label}</a><br>`;
+      
+      // กรณีข้อมูลเก่าเป็นแบบ Base64 (เบราว์เซอร์จะไม่ให้เปิดแท็บใหม่) ให้เปิดเป็น Popup แทน
+      if (url.startsWith('data:image')) {
+        return `<a href='javascript:void(0)' onclick='previewAttachedFile(${req.rowIndex}, "${docKey}", "${label}")' class='badge bg-info text-dark text-decoration-none mb-1 d-inline-block p-2 shadow-sm'><i class='fas fa-search'></i> เปิดดู${label}</a><br>`;
+      }
+      
+      // กรณีข้อมูลใหม่เป็นลิงก์ Google Drive ให้เปิดในแท็บใหม่
+      return `<a href='${url}' target='_blank' class='badge bg-primary text-decoration-none mb-1 d-inline-block p-2 shadow-sm'><i class='fas fa-external-link-alt'></i> เปิดดู${label}</a><br>`;
+    }
+
+    // ฟังก์ชันสำหรับเปิด Popup รูปภาพ (กรณีเป็น Base64)
+    function previewAttachedFile(rowIndex, docKey, label) {
+      const req = globalRequests.find(r => r.rowIndex === rowIndex);
+      if (req && req[docKey]) {
+        Swal.fire({
+          title: 'รูปแนบ: ' + label,
+          imageUrl: req[docKey],
+          imageAlt: label,
+          confirmButtonText: 'ปิดหน้าต่าง',
+          confirmButtonColor: '#3b82f6',
+          customClass: { image: 'rounded shadow-sm' },
+          width: '80%'
+        });
+      }
     }
 
     function showContactModal() {
