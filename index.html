@@ -376,7 +376,7 @@
 
     async function loadData(isBackground = false) {
       try {
-        // เพิ่ม ?_v=... เพื่อป้องกันเบราว์เซอร์จำข้อมูลเก่า (Cache Buster)
+        // เพิ่ม Cache-Buster เพื่อทะลวงแคชเก่า (ป้องกันปัญหาไม่ดึงลิงก์ใหม่)
         const cacheBuster = "?_v=" + new Date().getTime();
         const response = await fetch(GAS_API_URL + cacheBuster);
         const text = await response.text();
@@ -500,36 +500,48 @@
       }
     }
 
+    // 💡 ปรับปรุงปุ่มให้กดเปิด Popup กลางจอแทนการเปิดแท็บใหม่เสมอ
     function getFileLink(req, docKey, label) {
-      // ดึงลิงก์และตรวจสอบความถูกต้อง
       const url = String(req[docKey] || '').trim();
-      
-      // ถ้าช่องว่างเปล่า, undefined หรือ null ให้แสดงว่าไม่มีไฟล์
       if (!url || url.toLowerCase() === 'undefined' || url.toLowerCase() === 'null') {
         return `<span class='text-muted d-block mb-1' style='font-size:0.75em;'>- ไม่มี ${label}</span>`;
       }
-      
-      // ถ้ารูปแบบเก่าเป็น base64 ให้กดเด้งโชว์หน้าจอ
-      if (url.startsWith('data:image')) {
-        return `<a href='javascript:void(0)' onclick='previewAttachedFile(${req.rowIndex}, "${docKey}", "${label}")' class='badge bg-info text-dark text-decoration-none mb-1 d-inline-block p-2 shadow-sm'><i class='fas fa-search'></i> เปิดดู${label}</a><br>`;
-      }
-      
-      // รูปแบบใหม่จาก Drive จะเป็นลิงก์ URL (https://)
-      return `<a href='${url}' target='_blank' class='badge bg-primary text-decoration-none mb-1 d-inline-block p-2 shadow-sm'><i class='fas fa-external-link-alt'></i> เปิดดู${label}</a><br>`;
+      return `<a href='javascript:void(0)' onclick='previewAttachedFile(${req.rowIndex}, "${docKey}", "${label}")' class='badge bg-primary text-white text-decoration-none mb-1 d-inline-block p-2 shadow-sm'><i class='fas fa-search'></i> เปิดดู${label}</a><br>`;
     }
 
+    // 💡 ฟังก์ชันเปิดหน้าต่าง Preview (รองรับทั้งรูปเก่า Base64 และลิงก์ Drive แบบ Iframe)
     function previewAttachedFile(rowIndex, docKey, label) {
       const req = globalRequests.find(r => r.rowIndex === rowIndex);
       if (req && req[docKey]) {
-        Swal.fire({
-          title: 'รูปแนบ: ' + label,
-          imageUrl: req[docKey],
-          imageAlt: label,
-          confirmButtonText: 'ปิดหน้าต่าง',
-          confirmButtonColor: '#3b82f6',
-          customClass: { image: 'rounded shadow-sm' },
-          width: '80%'
-        });
+        const url = req[docKey];
+        
+        if (url.startsWith('data:image')) {
+          // ถ้าเป็นระบบเก่า (รูป Base64) โชว์ด้วย SweetAlert แบบรูปภาพ
+          Swal.fire({
+            title: 'รูปแนบ: ' + label,
+            imageUrl: url,
+            imageAlt: label,
+            confirmButtonText: 'ปิดหน้าต่าง',
+            confirmButtonColor: '#3b82f6',
+            customClass: { image: 'rounded shadow-sm' },
+            width: '80%'
+          });
+        } else {
+          // ถ้าเป็นระบบใหม่ (ลิงก์ Google Drive) ดึงมาโชว์ใน Iframe กลางจอ
+          let embedUrl = url;
+          if(url.includes('/view')) {
+            embedUrl = url.replace(/\/view.*$/, '/preview'); // เปลี่ยนโหมดให้ฝังลงเว็บได้
+          }
+          
+          Swal.fire({
+            title: 'ไฟล์แนบ: ' + label,
+            html: `<iframe src="${embedUrl}" style="width: 100%; height: 70vh; border: none; border-radius: 8px; background-color: #f8f9fa; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);"></iframe>`,
+            width: '85%',
+            showCloseButton: true,
+            confirmButtonText: 'ปิดหน้าต่าง',
+            confirmButtonColor: '#3b82f6'
+          });
+        }
       }
     }
 
