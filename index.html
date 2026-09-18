@@ -163,9 +163,9 @@
         </div>
       </div>
 
-      <!-- แผงตั้งค่าเวลา -->
+      <!-- แผงตั้งค่าเวลาและโฟลเดอร์ -->
       <div class="p-3 mb-4 rounded border border-warning shadow-sm" style="background-color: #fffdf5;">
-        <h6 class="fw-bold mb-3 text-dark"><i class="fas fa-cogs text-secondary"></i> ตั้งค่าระบบวันและเวลาเปิดรับคำร้อง</h6>
+        <h6 class="fw-bold mb-3 text-dark"><i class="fas fa-cogs text-secondary"></i> การตั้งค่าระบบ (เวลาทำการ & โฟลเดอร์เก็บไฟล์)</h6>
         
         <div id="currentSettingsDisplay" class="alert py-2 mb-3 shadow-sm d-flex align-items-center" style="background-color: #e3f2fd; color: #0d47a1; border: 1px solid #bbdefb;">
             <i class="fas fa-info-circle fs-5 me-2"></i> 
@@ -201,9 +201,19 @@
             <label class="form-label small fw-bold">เวลาปิด (เช่น 16:30)</label>
             <input type="time" id="closeTime" class="form-control">
           </div>
-          <div class="col-12 text-end mt-2">
-            <button class="btn btn-warning fw-bold shadow-sm px-4" id="btnSaveSettings" onclick="saveSystemSettings()"><i class="fas fa-save"></i> บันทึกการตั้งค่าระบบ</button>
+        </div>
+
+        <!-- กล่องเปลี่ยนโฟลเดอร์ Google Drive -->
+        <div class="row g-3 mt-1">
+          <div class="col-12 border-top border-warning pt-3">
+            <label class="form-label small fw-bold text-primary"><i class="fas fa-folder-open"></i> ลิงก์โฟลเดอร์ Google Drive (สำหรับเก็บไฟล์แนบทั้งหมด)</label>
+            <input type="text" id="driveFolderUrl" class="form-control border-primary bg-white" placeholder="วางลิงก์โฟลเดอร์ Google Drive ที่นี่...">
+            <small class="text-muted">เพียงวางลิงก์เต็มๆ ของโฟลเดอร์ (เช่น https://drive.google.com/drive/folders/1jq-7bq...) ระบบจะดึงรหัสไปใช้งานให้เองครับ</small>
           </div>
+        </div>
+
+        <div class="text-end mt-3">
+          <button class="btn btn-warning fw-bold shadow-sm px-4" id="btnSaveSettings" onclick="saveSystemSettings()"><i class="fas fa-save"></i> บันทึกการตั้งค่าระบบ</button>
         </div>
       </div>
 
@@ -313,8 +323,8 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   
   <script>
-    // 🔗 ลิงก์ API ล่าสุดของคุณ
-    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzFjhRYo8ABDJI4vOzzThhbr7G32AmZ1-laT-Lvl-Kt8N6l5rEpeUEkxEJCXDY0jCsu/exec';
+    // 🔗 ลิงก์ API ล่าสุด
+    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbwl2tgO7tAFdMp8kaRUZqcuxzKvJArYoVxBSXYUTF0wQiQgQdvm806-e56p9ELKIef3/exec';
     
     let globalRequests = [];
     let systemSettings = { mode: 'open' };
@@ -376,7 +386,6 @@
 
     async function loadData(isBackground = false) {
       try {
-        // เพิ่ม Cache-Buster เพื่อทะลวงแคชเก่า (ป้องกันปัญหาไม่ดึงลิงก์ใหม่)
         const cacheBuster = "?_v=" + new Date().getTime();
         const response = await fetch(GAS_API_URL + cacheBuster);
         const text = await response.text();
@@ -385,7 +394,7 @@
         try {
           result = JSON.parse(text);
         } catch (e) {
-          throw new Error("API ส่งข้อมูลผิดพลาด: " + text.substring(0, 50));
+          throw new Error("API ส่งข้อมูลผิดพลาด");
         }
 
         let indicator = document.getElementById('syncIndicator');
@@ -403,6 +412,10 @@
               
               document.getElementById('openTime').value = systemSettings.openTime || '';
               document.getElementById('closeTime').value = systemSettings.closeTime || '';
+              
+              // เซ็ตค่าลิงก์โฟลเดอร์ลงในช่อง Input
+              const currentFolderId = systemSettings.driveFolderId || '1jq-7bq_3H-_bq-c4Ao0iNNd8zgv8gY2F';
+              document.getElementById('driveFolderUrl').value = 'https://drive.google.com/drive/folders/' + currentFolderId;
               
               toggleTimeInputs();
             }
@@ -500,7 +513,6 @@
       }
     }
 
-    // 💡 ปรับปรุงปุ่มให้กดเปิด Popup กลางจอแทนการเปิดแท็บใหม่เสมอ
     function getFileLink(req, docKey, label) {
       const url = String(req[docKey] || '').trim();
       if (!url || url.toLowerCase() === 'undefined' || url.toLowerCase() === 'null') {
@@ -509,37 +521,23 @@
       return `<a href='javascript:void(0)' onclick='previewAttachedFile(${req.rowIndex}, "${docKey}", "${label}")' class='badge bg-primary text-white text-decoration-none mb-1 d-inline-block p-2 shadow-sm'><i class='fas fa-search'></i> เปิดดู${label}</a><br>`;
     }
 
-    // 💡 ฟังก์ชันเปิดหน้าต่าง Preview (รองรับทั้งรูปเก่า Base64 และลิงก์ Drive แบบ Iframe)
     function previewAttachedFile(rowIndex, docKey, label) {
       const req = globalRequests.find(r => r.rowIndex === rowIndex);
       if (req && req[docKey]) {
         const url = req[docKey];
-        
         if (url.startsWith('data:image')) {
-          // ถ้าเป็นระบบเก่า (รูป Base64) โชว์ด้วย SweetAlert แบบรูปภาพ
           Swal.fire({
-            title: 'รูปแนบ: ' + label,
-            imageUrl: url,
-            imageAlt: label,
-            confirmButtonText: 'ปิดหน้าต่าง',
-            confirmButtonColor: '#3b82f6',
-            customClass: { image: 'rounded shadow-sm' },
-            width: '80%'
+            title: 'รูปแนบ: ' + label, imageUrl: url, imageAlt: label, confirmButtonText: 'ปิดหน้าต่าง', confirmButtonColor: '#3b82f6', customClass: { image: 'rounded shadow-sm' }, width: '80%'
           });
         } else {
-          // ถ้าเป็นระบบใหม่ (ลิงก์ Google Drive) ดึงมาโชว์ใน Iframe กลางจอ
           let embedUrl = url;
           if(url.includes('/view')) {
-            embedUrl = url.replace(/\/view.*$/, '/preview'); // เปลี่ยนโหมดให้ฝังลงเว็บได้
+            embedUrl = url.replace(/\/view.*$/, '/preview'); 
           }
-          
           Swal.fire({
             title: 'ไฟล์แนบ: ' + label,
             html: `<iframe src="${embedUrl}" style="width: 100%; height: 70vh; border: none; border-radius: 8px; background-color: #f8f9fa; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);"></iframe>`,
-            width: '85%',
-            showCloseButton: true,
-            confirmButtonText: 'ปิดหน้าต่าง',
-            confirmButtonColor: '#3b82f6'
+            width: '85%', showCloseButton: true, confirmButtonText: 'ปิดหน้าต่าง', confirmButtonColor: '#3b82f6'
           });
         }
       }
@@ -565,13 +563,8 @@
 
       const { value: password } = await Swal.fire({
         title: 'เข้าสู่ระบบเจ้าหน้าที่',
-        input: 'password',
-        inputPlaceholder: 'รหัสผ่านของคุณ...',
-        showCancelButton: true,
-        confirmButtonText: 'เข้าสู่ระบบ',
-        cancelButtonText: 'ยกเลิก',
-        confirmButtonColor: '#dc3545',
-        showLoaderOnConfirm: true,
+        input: 'password', inputPlaceholder: 'รหัสผ่านของคุณ...',
+        showCancelButton: true, confirmButtonText: 'เข้าสู่ระบบ', cancelButtonText: 'ยกเลิก', confirmButtonColor: '#dc3545', showLoaderOnConfirm: true,
         preConfirm: async (pwd) => {
           try {
             let fd = new FormData(); fd.append('action', 'verifyPassword'); fd.append('pwd', pwd);
@@ -603,6 +596,14 @@
       const allowedDays = Array.from(document.querySelectorAll('.day-cb:checked')).map(cb => cb.value).join(',');
       const openTime = document.getElementById('openTime').value;
       const closeTime = document.getElementById('closeTime').value;
+      
+      // การดึงค่าและตัดเอาเฉพาะรหัส Folder ID
+      const rawFolderUrl = document.getElementById('driveFolderUrl').value;
+      let finalFolderId = rawFolderUrl;
+      const matchId = rawFolderUrl.match(/[-\w]{25,}/); 
+      if (matchId) {
+          finalFolderId = matchId[0]; // ดึงเฉพาะรหัสความยาว 25 ตัวอักษรขึ้นไป
+      }
 
       if (mode === 'auto' && !allowedDays) {
           Swal.fire('ข้อมูลไม่ครบ', 'กรุณาเลือกวันทำการอย่างน้อย 1 วัน', 'warning');
@@ -615,12 +616,13 @@
       fd.append('allowedDays', allowedDays); 
       fd.append('openTime', openTime); 
       fd.append('closeTime', closeTime);
+      fd.append('folderId', finalFolderId); // ส่ง ID ไปให้หลังบ้าน
 
       try {
           const res = await fetch(GAS_API_URL, { method: 'POST', body: fd });
           const result = await res.json();
           if (result.success) { 
-              Swal.fire('สำเร็จ', 'บันทึกการตั้งค่าวัน-เวลาทำการเรียบร้อยแล้ว', 'success'); 
+              Swal.fire('สำเร็จ', 'บันทึกการตั้งค่าระบบและโฟลเดอร์เรียบร้อยแล้ว', 'success'); 
               loadData(); 
           } 
           else { Swal.fire('ผิดพลาด', result.message, 'error'); }
