@@ -314,7 +314,7 @@
   
   <script>
     // 🔗 ลิงก์ API ล่าสุดของคุณ
-    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbxt8G5La-xgLmzzkFczdM1GGPy15VjpYR3jRhyDQBonp68_0ZpGND8nKqAw0C7pQ5SO/exec';
+    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbxzVhWNCA0BVMHHAtFB3Dh7iGRn4dv0HZ6S80w74hJUEIqDIPXs8kWiYdRKMIyYU6FV/exec';
     
     let globalRequests = [];
     let systemSettings = { mode: 'open' };
@@ -502,26 +502,7 @@
       const url = req[docKey];
       if (!url) return `<span class='text-muted d-block mb-1' style='font-size:0.75em;'>- ไม่มี ${label}</span>`;
       
-      if (url.startsWith('data:image')) {
-        return `<a href='javascript:void(0)' onclick='previewAttachedFile(${req.rowIndex}, "${docKey}", "${label}")' class='badge bg-info text-dark text-decoration-none mb-1 d-inline-block p-2 shadow-sm'><i class='fas fa-search'></i> เปิดดู${label}</a><br>`;
-      }
-      
       return `<a href='${url}' target='_blank' class='badge bg-primary text-decoration-none mb-1 d-inline-block p-2 shadow-sm'><i class='fas fa-external-link-alt'></i> เปิดดู${label}</a><br>`;
-    }
-
-    function previewAttachedFile(rowIndex, docKey, label) {
-      const req = globalRequests.find(r => r.rowIndex === rowIndex);
-      if (req && req[docKey]) {
-        Swal.fire({
-          title: 'รูปแนบ: ' + label,
-          imageUrl: req[docKey],
-          imageAlt: label,
-          confirmButtonText: 'ปิดหน้าต่าง',
-          confirmButtonColor: '#3b82f6',
-          customClass: { image: 'rounded shadow-sm' },
-          width: '80%'
-        });
-      }
     }
 
     function showContactModal() {
@@ -734,7 +715,7 @@
       const btn = document.getElementById('submitBtn');
       btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> กำลังส่งข้อมูล...'; btn.disabled = true;
 
-      Swal.fire({ title: 'กำลังส่งข้อมูล...', html: 'กรุณารอสักครู่ (อาจใช้เวลา 10-20 วินาที หากมีรูปภาพ)', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+      Swal.fire({ title: 'กำลังส่งข้อมูล...', html: 'กรุณารอสักครู่ (กำลังบันทึกรูปลง Google Drive...)', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
       
       try {
         let fd = new FormData();
