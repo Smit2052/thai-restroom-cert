@@ -1,583 +1,872 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thai Restroom Cert - ระบบรับคำร้อง</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-        body { background-color: #f8f9fa; font-family: 'Sarabun', sans-serif; }
-        .navbar { background-color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .stats-card { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); text-align: center; }
-        .stats-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; }
-        .bg-blue-light { background-color: #e3f2fd; color: #1976d2; }
-        .bg-yellow-light { background-color: #fff3e0; color: #f57c00; }
-        .bg-green-light { background-color: #e8f5e9; color: #388e3c; }
-        .bg-red-light { background-color: #ffebee; color: #d32f2f; }
-        .pin-badge { background-color: #ffc107; color: #000; font-weight: bold; padding: 3px 8px; border-radius: 12px; font-size: 0.85rem; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
-        .time-panel { background: #fffdf2; border: 1px solid #ffe082; padding: 15px; border-radius: 8px; }
-        #errorBanner { display: none; }
-    </style>
+  <meta charset="UTF-8">
+  <title>Thai Restroom Cert - รับรองมาตรฐานห้องน้ำ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <style>
+    body { font-family: 'Sarabun', sans-serif; background-color: #f8f9fa; color: #333; }
+    .header-bar { background-color: white; border-bottom: 1px solid #e0e0e0; padding: 15px 0; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+    .logo-box { background-color: #4285f4; color: white; width: 45px; height: 45px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-right: 15px; flex-shrink: 0; }
+    .app-title { font-weight: 700; color: #1a73e8; margin: 0; font-size: 1.25rem; line-height: 1.2; }
+    .app-subtitle { color: #5f6368; font-size: 0.9rem; margin: 0; }
+    
+    .card-custom { border-radius: 12px; border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
+    .status-badge { padding: 6px 12px; border-radius: 20px; font-weight: 500; font-size: 0.85rem; display: inline-block; text-align: center; white-space: nowrap; }
+    .bg-pending { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+    .bg-processing { background-color: #cce5ff; color: #004085; border: 1px solid #b8daff; }
+    .bg-approved { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .bg-incomplete { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    
+    .floating-contact { position: fixed; bottom: 25px; right: 25px; background-color: #28a745; color: white; border-radius: 50px; padding: 12px 20px; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 12px rgba(40,167,69,0.4); cursor: pointer; z-index: 1000; transition: all 0.3s ease; }
+    .floating-contact:hover { background-color: #218838; transform: translateY(-3px); }
+
+    .table-responsive { -webkit-overflow-scrolling: touch; }
+    .table th { white-space: nowrap; }
+    .table td { vertical-align: middle; }
+    
+    @media (max-width: 575.98px) {
+      .header-bar { padding: 10px 0; margin-bottom: 15px; }
+      .logo-box { width: 35px; height: 35px; font-size: 1.2rem; margin-right: 10px; }
+      .app-title { font-size: 1.1rem; }
+      .app-subtitle { font-size: 0.75rem; }
+      .btn-admin-login { padding: 5px 10px; font-size: 0.8rem; }
+      .card-custom { padding: 15px !important; margin-bottom: 15px; }
+      .alert-heading { font-size: 1.1rem; }
+      .alert ul { padding-left: 1rem; font-size: 0.9rem; }
+      .dashboard-icon { width: 40px !important; height: 40px !important; font-size: 1.1rem !important; }
+      .dashboard-title { font-size: 0.8rem !important; }
+      .dashboard-number { font-size: 1.4rem !important; }
+      .section-title { font-size: 1.1rem; }
+      .btn-new-request { padding: 8px 12px; font-size: 0.9rem; }
+      .floating-contact { padding: 10px 15px; font-size: 0.9rem; bottom: 15px; right: 15px; }
+      .wrap-text-mobile { min-width: 150px; white-space: normal; }
+    }
+  </style>
 </head>
 <body>
-
-    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="#">
-                <div class="bg-primary text-white rounded p-2 me-2"><i class="fas fa-building"></i></div>
-                <div>
-                    <h5 class="mb-0 text-primary fw-bold">Thai Restroom Cert</h5>
-                    <small class="text-muted" style="font-size: 0.75rem;">ระบบรับคำร้องใบรับรองมาตรฐานห้องน้ำ</small>
-                </div>
-            </a>
-            <button class="btn btn-light border btn-sm" onclick="toggleAdmin()"><i class="fas fa-lock text-secondary"></i> สำหรับเจ้าหน้าที่</button>
+  <div class="header-bar">
+    <div class="container d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center">
+        <div class="logo-box"><i class="fas fa-building"></i></div>
+        <div>
+          <h1 class="app-title">Thai Restroom Cert</h1>
+          <p class="app-subtitle">ระบบรับคำร้องใบรับรองมาตรฐานห้องน้ำ</p>
         </div>
-    </nav>
+      </div>
+      <button class="btn btn-light border rounded-pill text-secondary fw-bold btn-admin-login" onclick="requireAdminPassword()">
+        <i class="fas fa-lock me-1"></i> <span class="d-none d-sm-inline">สำหรับเจ้าหน้าที่</span>
+      </button>
+    </div>
+  </div>
 
-    <div class="container mt-4">
-        
-        <div id="errorBanner" class="alert alert-danger shadow-sm">
-            <strong><i class="fas fa-exclamation-triangle"></i> แจ้งเตือนจากระบบ:</strong> <span id="errorText"></span>
-        </div>
-
-        <div id="adminPanel" class="card mb-4 border-danger d-none shadow-sm">
-            <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0"><i class="fas fa-user-shield"></i> ระบบจัดการสำหรับเจ้าหน้าที่</h5>
-                <button class="btn btn-sm btn-light" onclick="toggleAdmin()">ปิดแผงควบคุม</button>
-            </div>
-            <div class="card-body">
-                
-                <div class="time-panel mb-4 shadow-sm">
-                    <h6 class="fw-bold mb-3"><i class="fas fa-cogs text-secondary"></i> ตั้งค่าระบบวันและเวลาเปิดรับคำร้อง</h6>
-                    <div class="row g-3 align-items-start">
-                        <div class="col-md-3">
-                            <label class="form-label small fw-bold">โหมดการทำงาน</label>
-                            <select id="systemMode" class="form-select border-warning" onchange="toggleTimeInputs()">
-                                <option value="open">🟢 เปิดรับตลอดเวลา (24 ชม.)</option>
-                                <option value="close">🔴 ปิดรับคำร้องทั้งหมด</option>
-                                <option value="auto">⏳ กำหนดวันและเวลาทำการ</option>
-                            </select>
-                        </div>
-                        
-                        <div class="col-md-9 time-inputs" style="display:none;">
-                            <label class="form-label small fw-bold">วันทำการ (เลือกวันที่อนุญาตให้ประชาชนยื่นคำร้องได้)</label>
-                            <div class="d-flex flex-wrap gap-2">
-                                <input type="checkbox" class="btn-check day-cb" id="day1" value="1"><label class="btn btn-outline-primary btn-sm" for="day1">จันทร์</label>
-                                <input type="checkbox" class="btn-check day-cb" id="day2" value="2"><label class="btn btn-outline-primary btn-sm" for="day2">อังคาร</label>
-                                <input type="checkbox" class="btn-check day-cb" id="day3" value="3"><label class="btn btn-outline-primary btn-sm" for="day3">พุธ</label>
-                                <input type="checkbox" class="btn-check day-cb" id="day4" value="4"><label class="btn btn-outline-primary btn-sm" for="day4">พฤหัสฯ</label>
-                                <input type="checkbox" class="btn-check day-cb" id="day5" value="5"><label class="btn btn-outline-primary btn-sm" for="day5">ศุกร์</label>
-                                <input type="checkbox" class="btn-check day-cb" id="day6" value="6"><label class="btn btn-outline-secondary btn-sm" for="day6">เสาร์</label>
-                                <input type="checkbox" class="btn-check day-cb" id="day0" value="0"><label class="btn btn-outline-secondary btn-sm" for="day0">อาทิตย์</label>
-                            </div>
-                        </div>
-
-                        <div class="col-md-3 time-inputs" style="display:none;">
-                            <label class="form-label small fw-bold">เวลาเริ่มเปิดรับ (เช่น 08:30)</label>
-                            <input type="time" id="startTime" class="form-control">
-                        </div>
-                        <div class="col-md-3 time-inputs" style="display:none;">
-                            <label class="form-label small fw-bold">เวลาปิดรับ (เช่น 16:30)</label>
-                            <input type="time" id="endTime" class="form-control">
-                        </div>
-
-                        <div class="col-12 text-end mt-3">
-                            <button class="btn btn-warning px-4 fw-bold shadow-sm" onclick="saveSystemSettings()"><i class="fas fa-save"></i> บันทึกการตั้งค่าระบบ</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover" style="font-size: 0.9rem;">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>รหัส/วันที่</th>
-                                <th>ข้อมูลผู้ยื่น</th>
-                                <th>สถานที่/พิกัด</th>
-                                <th>ไฟล์แนบ</th>
-                                <th width="200">จัดการสถานะ</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminTableBody">
-                            <tr><td colspan="5" class="text-center">กำลังโหลดข้อมูล...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="mb-0 fw-bold">แผงควบคุมและรายการคำร้อง</h5>
-            <button class="btn btn-primary shadow-sm" onclick="openNewRequestForm()"><i class="fas fa-plus"></i> ยื่นคำร้องใหม่</button>
-        </div>
-
-        <div class="row g-3 mb-4">
-            <div class="col-6 col-md-3"><div class="stats-card"><div class="stats-icon bg-blue-light"><i class="fas fa-file-alt"></i></div><small class="text-muted">คำร้องทั้งหมด</small><h4 class="mb-0 fw-bold" id="stat-total">0</h4></div></div>
-            <div class="col-6 col-md-3"><div class="stats-card"><div class="stats-icon bg-yellow-light"><i class="fas fa-clock"></i></div><small class="text-muted">รอตรวจสอบ</small><h4 class="mb-0 fw-bold" id="stat-pending">0</h4></div></div>
-            <div class="col-6 col-md-3"><div class="stats-card"><div class="stats-icon bg-blue-light"><i class="fas fa-spinner"></i></div><small class="text-muted">กำลังดำเนินการ</small><h4 class="mb-0 fw-bold" id="stat-process">0</h4></div></div>
-            <div class="col-6 col-md-3"><div class="stats-card"><div class="stats-icon bg-red-light"><i class="fas fa-exclamation-circle"></i></div><small class="text-muted">เอกสารไม่ครบ</small><h4 class="mb-0 fw-bold text-danger" id="stat-incomplete">0</h4></div></div>
-        </div>
-
-        <div class="card shadow-sm border-0">
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0 align-middle">
-                        <thead class="bg-light text-secondary">
-                            <tr>
-                                <th class="ps-4">รหัสคำร้อง</th>
-                                <th>ชื่อผู้ยื่น</th>
-                                <th>วันที่ยื่น</th>
-                                <th>สถานะ/หมายเหตุ</th>
-                                <th class="text-end pe-4">การจัดการ</th>
-                            </tr>
-                        </thead>
-                        <tbody id="publicTableBody">
-                            <tr><td colspan="5" class="text-center py-4">กำลังโหลดข้อมูล...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+  <div class="container">
+    <div class="alert alert-warning card-custom" role="alert" style="background-color: #fff8e1; border-color: #ffecb3;">
+      <h5 class="alert-heading text-warning-emphasis"><i class="fas fa-info-circle"></i> เอกสารที่สามารถเตรียมมาแนบได้ (ถ้ามี)</h5>
+      <ul class="mb-0 text-dark" style="line-height: 1.8;">
+        <li>
+          ใบรับแจ้งเกี่ยวกับบ้าน จำนวน 1 ฉบับ 
+          <a href="javascript:void(0)" onclick="showExample('ใบรับแจ้งเกี่ยวกับบ้าน', 'https://i.ibb.co/4gwMcfyx/1.png')" class="badge bg-info text-dark text-decoration-none ms-1">
+            <i class="fas fa-image"></i> ดูตัวอย่าง
+          </a>
+        </li>
+        <li>
+          สำเนาบัตรประชาชน จำนวน 1 ฉบับ 
+          <a href="javascript:void(0)" onclick="showExample('สำเนาบัตรประชาชน', 'https://i.ibb.co/1Gy02ThV/2.png')" class="badge bg-info text-dark text-decoration-none ms-1">
+            <i class="fas fa-image"></i> ดูตัวอย่าง
+          </a>
+        </li>
+        <li>
+          สำเนาทะเบียนบ้าน จำนวน 1 ฉบับ 
+          <a href="javascript:void(0)" onclick="showExample('สำเนาทะเบียนบ้าน', 'https://i.ibb.co/8ySNp92/3.png')" class="badge bg-info text-dark text-decoration-none ms-1">
+            <i class="fas fa-image"></i> ดูตัวอย่าง
+          </a>
+        </li>
+        <li>
+          รูปถ่ายตัวบ้านและห้องน้ำ จำนวน 1 แผ่น 
+          <a href="javascript:void(0)" onclick="showExample('รูปถ่ายตัวบ้านและห้องน้ำ', 'https://i.ibb.co/BKYqkcf4/4.png')" class="badge bg-info text-dark text-decoration-none ms-1">
+            <i class="fas fa-image"></i> ดูตัวอย่าง
+          </a>
+        </li>
+      </ul>
+      <hr style="border-color: #ffe082;">
+      <p class="mb-0 text-muted" style="font-size: 0.9em;"><i class="fas fa-lightbulb text-warning"></i> <strong>หมายเหตุ:</strong> หากยังไม่สะดวกแนบไฟล์ สามารถกดยื่นคำร้องโดยไม่แนบไฟล์ได้ครับ และทางเจ้าหน้าที่จะประสานขอเพิ่มเติมในภายหลัง</p>
     </div>
 
-    <div class="modal fade" id="requestModal" tabindex="-1" data-bs-backdrop="static">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="modalTitle"><i class="fas fa-edit"></i> ยื่นคำร้องใหม่</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <form id="requestForm">
-                        <input type="hidden" id="actionType" name="action" value="">
-                        <input type="hidden" id="rowIndex" name="rowIndex" value="">
-                        <input type="hidden" id="editPin" name="pin" value="">
-
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">ชื่อ-นามสกุล ผู้ยื่นคำร้องขอบ้านเลขที่ <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="name" id="name" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">เบอร์โทรศัพท์ติดต่อ <span class="text-danger">*</span></label>
-                                <input type="tel" class="form-control" name="phone" id="phone" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">ประเภทสถานที่ <span class="text-danger">*</span></label>
-                                <select class="form-select" name="placeType" id="placeType" required>
-                                    <option value="">-- เลือกประเภท --</option>
-                                    <option value="บ้านพักอาศัย">บ้านพักอาศัย</option>
-                                    <option value="ร้านอาหาร">ร้านอาหาร</option>
-                                    <option value="สถานประกอบการ">สถานประกอบการ</option>
-                                    <option value="อื่นๆ">อื่นๆ</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">จำนวนห้องน้ำ (ห้อง) <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control" name="toiletCount" id="toiletCount" required min="1">
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label fw-bold">ที่อยู่ของบ้านที่จะขอเลขที่ / หมู่ที่ <span class="text-danger">*</span></label>
-                                <textarea class="form-control" name="address" id="address" rows="2" required></textarea>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label fw-bold">จุดสังเกตใกล้เคียง</label>
-                                <input type="text" class="form-control" name="landmark" id="landmark">
-                            </div>
-
-                            <div class="col-12 mt-4">
-                                <div class="p-3 bg-light rounded border">
-                                    <h6 class="fw-bold mb-3"><i class="fas fa-paperclip"></i> เอกสารแนบ (ถ้ามี) <small class="text-muted fw-normal" style="font-size: 0.8rem;">(ถ้าแก้ข้อมูลใช้รูปเดิม ไม่ต้องเลือกใหม่)</small></h6>
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
-                                            <label class="form-label small w-100 d-flex justify-content-between">
-                                                <span>ใบรับแจ้งเกี่ยวกับบ้าน</span> 
-                                                <a href="javascript:void(0)" onclick="showExample('ใบรับแจ้งเกี่ยวกับบ้าน', 'https://i.ibb.co/4gwMcfyx/1.png')" class="text-decoration-none text-primary"><i class="fas fa-image"></i> ตัวอย่าง</a>
-                                            </label>
-                                            <input type="file" class="form-control form-control-sm file-upload" id="file1" accept="image/*">
-                                            <input type="hidden" name="doc1" id="doc1">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label small w-100 d-flex justify-content-between">
-                                                <span>สำเนาบัตรประชาชน</span> 
-                                                <a href="javascript:void(0)" onclick="showExample('สำเนาบัตรประชาชน', 'https://i.ibb.co/1Gy02ThV/2.png')" class="text-decoration-none text-primary"><i class="fas fa-image"></i> ตัวอย่าง</a>
-                                            </label>
-                                            <input type="file" class="form-control form-control-sm file-upload" id="file2" accept="image/*">
-                                            <input type="hidden" name="doc2" id="doc2">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label small w-100 d-flex justify-content-between">
-                                                <span>สำเนาทะเบียนบ้าน</span> 
-                                                <a href="javascript:void(0)" onclick="showExample('สำเนาทะเบียนบ้าน', 'https://i.ibb.co/8ySNp92/3.png')" class="text-decoration-none text-primary"><i class="fas fa-image"></i> ตัวอย่าง</a>
-                                            </label>
-                                            <input type="file" class="form-control form-control-sm file-upload" id="file3" accept="image/*">
-                                            <input type="hidden" name="doc3" id="doc3">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label small w-100 d-flex justify-content-between">
-                                                <span>รูปถ่ายสถานที่ / ห้องน้ำ</span> 
-                                                <a href="javascript:void(0)" onclick="showExample('รูปถ่ายตัวบ้านและห้องน้ำ', 'https://i.ibb.co/BKYqkcf4/4.png')" class="text-decoration-none text-primary"><i class="fas fa-image"></i> ตัวอย่าง</a>
-                                            </label>
-                                            <input type="file" class="form-control form-control-sm file-upload" id="file4" accept="image/*">
-                                            <input type="hidden" name="doc4" id="doc4">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mt-4">
-                            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold" id="submitBtn"><i class="fas fa-paper-plane"></i> บันทึกข้อมูลคำร้อง</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+    <div class="d-flex justify-content-between align-items-center mb-3 mt-4">
+      <h4 class="mb-0 fw-bold section-title">แผงควบคุมและรายการคำร้อง</h4>
+      <button class="btn btn-primary btn-new-request shadow-sm" style="background-color: #3b82f6; border: none; border-radius: 8px;" onclick="openFormModal()">
+        <i class="fas fa-plus"></i> ยื่นคำร้องใหม่
+      </button>
     </div>
 
-    <script>
-        // 🚨 ลิงก์ API ใหม่ของคุณถูกฝังไว้ตรงนี้เรียบร้อยครับ
-        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbxzxD2GHNB_2wls4MybpDO8bVF8nn-uPhkutgMvgkmokeBM44n3wZezTfEHq2TeMQtG/exec';
-        
-        let allRequests = [];
-        let systemSettings = { mode: 'open' };
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-4 col-lg">
+        <div class="card card-custom p-3 text-center h-100 d-flex flex-column flex-sm-row align-items-center justify-content-center gap-2 gap-sm-3 mb-0">
+          <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center dashboard-icon" style="width: 55px; height: 55px; font-size: 1.4rem;"><i class="fas fa-file-alt"></i></div>
+          <div class="text-center text-sm-start">
+            <h6 class="text-muted mb-1 dashboard-title" style="font-size: 0.9rem;">คำร้องทั้งหมด</h6>
+            <h3 class="mb-0 fw-bold dashboard-number" id="countAll">0</h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg">
+        <div class="card card-custom p-3 text-center h-100 d-flex flex-column flex-sm-row align-items-center justify-content-center gap-2 gap-sm-3 mb-0">
+          <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-flex align-items-center justify-content-center dashboard-icon" style="width: 55px; height: 55px; font-size: 1.4rem;"><i class="fas fa-clock"></i></div>
+          <div class="text-center text-sm-start">
+            <h6 class="text-muted mb-1 dashboard-title" style="font-size: 0.9rem;">รอตรวจสอบ</h6>
+            <h3 class="mb-0 fw-bold dashboard-number" id="countPending">0</h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg">
+        <div class="card card-custom p-3 text-center h-100 d-flex flex-column flex-sm-row align-items-center justify-content-center gap-2 gap-sm-3 mb-0">
+          <div class="bg-info bg-opacity-10 text-info rounded-circle d-flex align-items-center justify-content-center dashboard-icon" style="width: 55px; height: 55px; font-size: 1.4rem;"><i class="fas fa-spinner"></i></div>
+          <div class="text-center text-sm-start">
+            <h6 class="text-muted mb-1 dashboard-title" style="font-size: 0.9rem;">กำลังดำเนินการ</h6>
+            <h3 class="mb-0 fw-bold dashboard-number" id="countProcessing">0</h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg">
+        <div class="card card-custom p-3 text-center h-100 d-flex flex-column flex-sm-row align-items-center justify-content-center gap-2 gap-sm-3 mb-0">
+          <div class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center dashboard-icon" style="width: 55px; height: 55px; font-size: 1.4rem;"><i class="fas fa-check-circle"></i></div>
+          <div class="text-center text-sm-start">
+            <h6 class="text-muted mb-1 dashboard-title" style="font-size: 0.9rem;">ผ่านมาตรฐาน</h6>
+            <h3 class="mb-0 fw-bold dashboard-number" id="countApproved">0</h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-4 col-lg">
+        <div class="card card-custom p-3 text-center h-100 d-flex flex-column flex-sm-row align-items-center justify-content-center gap-2 gap-sm-3 mb-0">
+          <div class="bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center dashboard-icon" style="width: 55px; height: 55px; font-size: 1.4rem;"><i class="fas fa-exclamation-circle"></i></div>
+          <div class="text-center text-sm-start">
+            <h6 class="text-muted mb-1 dashboard-title" style="font-size: 0.9rem;">เอกสารไม่ครบ</h6>
+            <h3 class="mb-0 fw-bold dashboard-number text-danger" id="countIncomplete">0</h3>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        window.onload = loadRequests;
+    <div class="card card-custom p-3 p-md-4" id="userTableView">
+      <h5 class="mb-3 fw-bold text-secondary section-title">รายการคำร้องล่าสุด <span id="syncIndicator" class="spinner-border spinner-border-sm text-primary ms-2 d-none" role="status"></span></h5>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th class="text-secondary fw-normal py-2">รหัสคำร้อง</th>
+              <th class="text-secondary fw-normal py-2">ชื่อผู้ยื่น</th>
+              <th class="text-secondary fw-normal py-2">วันที่ยื่น</th>
+              <th class="text-secondary fw-normal py-2">สถานะ/หมายเหตุ</th>
+              <th class="text-secondary fw-normal py-2">การจัดการ</th>
+            </tr>
+          </thead>
+          <tbody id="userTableBody">
+            <tr><td colspan="5" class="text-center text-muted py-5">กำลังโหลดข้อมูล...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-        function showExample(title, imageUrl) {
-            Swal.fire({ title: 'ตัวอย่าง: ' + title, imageUrl: imageUrl, imageAlt: title, confirmButtonText: 'ปิดหน้าต่าง', confirmButtonColor: '#3b82f6', customClass: { image: 'rounded shadow-sm' } });
-        }
+    <div class="card card-custom p-3 p-md-4 mt-4 bg-white shadow" id="adminPanel" style="display: none; border-top: 4px solid #dc3545;">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-2">
+        <h5 class="mb-0 text-danger fw-bold section-title"><i class="fas fa-user-shield me-2"></i> ระบบจัดการสำหรับเจ้าหน้าที่</h5>
+        <div class="d-flex flex-wrap gap-2 w-100 w-md-auto">
+          <button class="btn btn-success btn-sm flex-fill" onclick="exportCSV()"><i class="fas fa-file-csv"></i> Export CSV</button>
+          <button class="btn btn-warning btn-sm flex-fill" onclick="showChangePassword()"><i class="fas fa-key"></i> เปลี่ยนรหัส</button>
+          <button class="btn btn-outline-secondary btn-sm flex-fill" onclick="document.getElementById('adminPanel').style.display='none'"><i class="fas fa-times"></i> ปิด</button>
+        </div>
+      </div>
+      
+      <!-- ส่วนตั้งค่าเปิด-ปิดระบบ -->
+      <div class="p-3 mb-4 rounded border border-warning" style="background-color: #fffdf5;">
+        <h6 class="fw-bold mb-3 text-dark"><i class="fas fa-cogs text-secondary"></i> ตั้งค่าระบบวันและเวลาเปิดรับคำร้อง</h6>
+        <div class="row g-3">
+          <div class="col-md-3">
+            <label class="form-label small fw-bold">โหมดการทำงาน</label>
+            <select id="systemMode" class="form-select border-warning" onchange="toggleTimeInputs()">
+              <option value="open">🟢 เปิดรับตลอดเวลา</option>
+              <option value="close">🔴 ปิดรับคำร้อง</option>
+              <option value="auto">⏳ กำหนดวันและเวลา</option>
+            </select>
+          </div>
+          
+          <div class="col-md-9 time-inputs" style="display:none;">
+            <label class="form-label small fw-bold">วันทำการ (อนุญาตให้ยื่นได้)</label>
+            <div class="d-flex flex-wrap gap-2">
+              <input type="checkbox" class="btn-check day-cb" id="day1" value="1"><label class="btn btn-outline-primary btn-sm" for="day1">จันทร์</label>
+              <input type="checkbox" class="btn-check day-cb" id="day2" value="2"><label class="btn btn-outline-primary btn-sm" for="day2">อังคาร</label>
+              <input type="checkbox" class="btn-check day-cb" id="day3" value="3"><label class="btn btn-outline-primary btn-sm" for="day3">พุธ</label>
+              <input type="checkbox" class="btn-check day-cb" id="day4" value="4"><label class="btn btn-outline-primary btn-sm" for="day4">พฤหัสฯ</label>
+              <input type="checkbox" class="btn-check day-cb" id="day5" value="5"><label class="btn btn-outline-primary btn-sm" for="day5">ศุกร์</label>
+              <input type="checkbox" class="btn-check day-cb" id="day6" value="6"><label class="btn btn-outline-secondary btn-sm" for="day6">เสาร์</label>
+              <input type="checkbox" class="btn-check day-cb" id="day0" value="0"><label class="btn btn-outline-secondary btn-sm" for="day0">อาทิตย์</label>
+            </div>
+          </div>
 
-        function toggleAdmin() {
-            const panel = document.getElementById('adminPanel');
-            panel.classList.toggle('d-none');
-            if (!panel.classList.contains('d-none') && allRequests.length === 0) loadRequests();
-        }
+          <div class="col-md-3 time-inputs" style="display:none;">
+            <label class="form-label small fw-bold">เวลาเปิด (เช่น 08:30)</label>
+            <input type="time" id="openTime" class="form-control">
+          </div>
+          <div class="col-md-3 time-inputs" style="display:none;">
+            <label class="form-label small fw-bold">เวลาปิด (เช่น 16:30)</label>
+            <input type="time" id="closeTime" class="form-control">
+          </div>
+          <div class="col-12 text-end mt-2">
+            <button class="btn btn-warning fw-bold shadow-sm px-4" id="btnSaveSettings" onclick="saveSystemSettings()"><i class="fas fa-save"></i> บันทึกการตั้งค่า</button>
+          </div>
+        </div>
+      </div>
 
-        function toggleTimeInputs() {
-            const mode = document.getElementById('systemMode').value;
-            document.querySelectorAll('.time-inputs').forEach(el => el.style.display = (mode === 'auto') ? 'block' : 'none');
-        }
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle" style="font-size: 0.9em; min-width: 850px;">
+          <thead class="table-dark">
+            <tr>
+              <th width="15%">รหัส/วันที่</th>
+              <th width="20%">ข้อมูลผู้ยื่น</th>
+              <th width="25%">สถานที่/พิกัด</th>
+              <th width="20%">ไฟล์แนบ</th>
+              <th width="20%">อัปเดตสถานะ</th>
+            </tr>
+          </thead>
+          <tbody id="adminTableBody">
+             <tr><td colspan="5" class="text-center text-muted">กำลังโหลดข้อมูล...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
-        function checkSystemStatus() {
-            if (systemSettings.mode === 'close') return false;
-            if (systemSettings.mode === 'auto') {
-                const now = new Date();
-                let day = now.getDay().toString(); // 0=อาทิตย์, 1=จันทร์...
-                if(day === '0') day = '0'; // ปรับวันอาทิตย์
-                
-                const allowedDays = systemSettings.allowedDays ? systemSettings.allowedDays.toString().split(',') : [];
-                
-                if (!allowedDays.includes(day)) return false; 
+  <div class="floating-contact" onclick="showContactModal()">
+    <i class="fas fa-phone-volume"></i> <span class="d-none d-sm-inline">ติดต่อรพ.โพนสวรรค์</span><span class="d-inline d-sm-none">ติดต่อเรา</span>
+  </div>
 
-                const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
-                if (systemSettings.startTime && timeStr < systemSettings.startTime) return false;
-                if (systemSettings.endTime && timeStr > systemSettings.endTime) return false;
-            }
-            return true;
-        }
-
-        function openNewRequestForm() {
-            if (!checkSystemStatus()) {
-                Swal.fire('ระบบปิดรับคำร้อง', 'ขณะนี้อยู่นอกวันและเวลาทำการ หรือเจ้าหน้าที่ได้ปิดระบบชั่วคราว', 'warning');
-                return;
-            }
-            document.getElementById('requestForm').reset();
-            document.getElementById('actionType').value = '';
-            document.getElementById('rowIndex').value = '';
-            document.getElementById('editPin').value = '';
-            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-file-alt"></i> ยื่นคำร้องใหม่';
-            new bootstrap.Modal(document.getElementById('requestModal')).show();
-        }
-
-        async function loadRequests() {
-            document.getElementById('errorBanner').style.display = 'none';
-            try {
-                const response = await fetch(GAS_API_URL);
-                if (!response.ok) throw new Error("Network Error");
-                
-                const text = await response.text();
-                let result;
-                
-                try {
-                    result = JSON.parse(text);
-                } catch (e) {
-                    throw new Error("ลิงก์ API ผิดปกติ หรือส่งข้อมูลมาไม่ถูกต้อง");
-                }
-                
-                if (result.success) {
-                    allRequests = result.data || [];
-                    if (result.settings) {
-                        systemSettings = result.settings;
-                        document.getElementById('systemMode').value = systemSettings.mode;
-                        
-                        const allowed = systemSettings.allowedDays ? systemSettings.allowedDays.toString().split(',') : [];
-                        document.querySelectorAll('.day-cb').forEach(cb => cb.checked = allowed.includes(cb.value));
-                        
-                        document.getElementById('startTime').value = systemSettings.startTime || '';
-                        document.getElementById('endTime').value = systemSettings.endTime || '';
-                        toggleTimeInputs();
-                    }
-                    renderPublicTable();
-                    renderAdminTable();
-                    updateStats();
-                } else {
-                    throw new Error(result.message || "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์");
-                }
-            } catch (error) {
-                console.error("Load Error:", error);
-                document.getElementById('errorBanner').style.display = 'block';
-                document.getElementById('errorText').innerText = error.message;
-                document.getElementById('publicTableBody').innerHTML = `<tr><td colspan="5" class="text-center py-4"><span class="text-danger"><i class="fas fa-exclamation-triangle"></i> ไม่สามารถโหลดข้อมูลได้</span></td></tr>`;
-                document.getElementById('adminTableBody').innerHTML = `<tr><td colspan="5" class="text-center text-danger">ไม่สามารถโหลดข้อมูลได้</td></tr>`;
-            }
-        }
-
-        function renderPublicTable() {
-            const tbody = document.getElementById('publicTableBody');
-            if (allRequests.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">ยังไม่มีข้อมูลคำร้อง</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = allRequests.map(req => {
-                let badgeClass = 'bg-secondary';
-                if (req.status === 'รอตรวจสอบ') badgeClass = 'bg-warning text-dark';
-                else if (req.status === 'กำลังดำเนินการ') badgeClass = 'bg-info text-dark';
-                else if (req.status === 'ผ่านมาตรฐาน') badgeClass = 'bg-success';
-                else if (req.status === 'เอกสารไม่ครบ') badgeClass = 'bg-danger';
-
-                const canEdit = (req.status === 'รอตรวจสอบ' || req.status === 'เอกสารไม่ครบ');
-                const actionBtn = canEdit 
-                    ? `<button class="btn btn-sm btn-outline-warning rounded-pill px-3 fw-bold shadow-sm" onclick="requestEdit('${req.reqId}')"><i class="fas fa-pen"></i> แก้ไข</button>`
-                    : `<button class="btn btn-sm btn-light rounded-pill px-3 text-muted border shadow-sm" disabled><i class="fas fa-lock"></i> ล็อค</button>`;
-
-                let noteHtml = req.adminNote ? `<div class="small text-danger mt-1"><i class="fas fa-info-circle"></i> ${req.adminNote}</div>` : '';
-
-                return `
-                    <tr>
-                        <td class="ps-4 fw-bold text-primary">${req.reqId}</td>
-                        <td>${req.name || '-'}</td>
-                        <td>${req.date ? new Date(req.date).toLocaleDateString('th-TH') : '-'}</td>
-                        <td><span class="badge ${badgeClass} rounded-pill px-3 py-2">${req.status}</span>${noteHtml}</td>
-                        <td class="text-end pe-4">${actionBtn}</td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        function renderAdminTable() {
-            const tbody = document.getElementById('adminTableBody');
-            if (allRequests.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center">ไม่มีข้อมูล</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = allRequests.map(req => `
-                <tr>
-                    <td>
-                        <div class="fw-bold">${req.reqId}</div>
-                        <div class="small text-muted">${req.date ? new Date(req.date).toLocaleString('th-TH') : '-'}</div>
-                        <div class="mt-2"><span class="pin-badge"><i class="fas fa-key"></i> PIN: ${req.pin || '-'}</span></div>
-                    </td>
-                    <td>
-                        <div><i class="fas fa-user text-secondary"></i> ${req.name || '-'}</div>
-                        <div class="small"><i class="fas fa-phone text-secondary"></i> ${req.phone || '-'}</div>
-                    </td>
-                    <td>
-                        <div class="fw-bold">${req.placeType || '-'}</div>
-                        <div class="small text-muted text-truncate" style="max-width: 150px;">${req.address || '-'}</div>
-                    </td>
-                    <td class="small">
-                        ${req.doc1 ? '<div class="text-success"><i class="fas fa-check"></i> ใบแจ้งบ้าน</div>' : '<div class="text-muted">- ไม่มีใบแจ้งบ้าน</div>'}
-                        ${req.doc2 ? '<div class="text-success"><i class="fas fa-check"></i> บัตรปชช.</div>' : '<div class="text-muted">- ไม่มีบัตรปชช.</div>'}
-                    </td>
-                    <td>
-                        <select class="form-select form-select-sm mb-1" id="status_${req.rowIndex}">
-                            <option value="รอตรวจสอบ" ${req.status==='รอตรวจสอบ'?'selected':''}>รอตรวจสอบ</option>
-                            <option value="กำลังดำเนินการ" ${req.status==='กำลังดำเนินการ'?'selected':''}>กำลังดำเนินการ</option>
-                            <option value="ผ่านมาตรฐาน" ${req.status==='ผ่านมาตรฐาน'?'selected':''}>ผ่านมาตรฐาน</option>
-                            <option value="เอกสารไม่ครบ" ${req.status==='เอกสารไม่ครบ'?'selected':''}>เอกสารไม่ครบ</option>
-                        </select>
-                        <input type="text" class="form-control form-control-sm mb-1" id="note_${req.rowIndex}" placeholder="หมายเหตุ..." value="${req.adminNote || ''}">
-                        <button class="btn btn-sm btn-success w-100" onclick="updateAdminStatus('${req.rowIndex}')"><i class="fas fa-save"></i> บันทึก</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function updateStats() {
-            document.getElementById('stat-total').innerText = allRequests.length;
-            document.getElementById('stat-pending').innerText = allRequests.filter(r => r.status === 'รอตรวจสอบ').length;
-            document.getElementById('stat-process').innerText = allRequests.filter(r => r.status === 'กำลังดำเนินการ').length;
-            document.getElementById('stat-incomplete').innerText = allRequests.filter(r => r.status === 'เอกสารไม่ครบ').length;
-        }
-
-        // ตัวกรองเพื่อลบคำว่า undefined หรือค่าว่าง
-        const cleanVal = (val) => {
-            if (val === undefined || val === null || String(val).toLowerCase() === 'undefined' || String(val).toLowerCase() === 'null' || val === '-') return '';
-            return val;
-        };
-
-        async function requestEdit(reqId) {
-            const req = allRequests.find(r => r.reqId === reqId);
-            if (!req) return;
-
-            const { value: pin } = await Swal.fire({
-                title: 'ยืนยันตัวตน',
-                input: 'password',
-                inputLabel: 'กรุณาใส่รหัส PIN 4 หลักที่ได้รับตอนยื่นคำร้อง',
-                inputPlaceholder: 'รหัส PIN',
-                showCancelButton: true,
-                confirmButtonText: 'ยืนยัน',
-                cancelButtonText: 'ยกเลิก',
-                inputAttributes: { maxlength: 4, autocapitalize: 'off', autocorrect: 'off' }
-            });
-
-            if (pin) {
-                if (pin === req.pin.toString()) {
-                    document.getElementById('actionType').value = 'editRequest';
-                    document.getElementById('rowIndex').value = req.rowIndex;
-                    document.getElementById('editPin').value = pin;
-                    
-                    document.getElementById('name').value = cleanVal(req.name);
-                    document.getElementById('phone').value = cleanVal(req.phone);
-                    document.getElementById('placeType').value = cleanVal(req.placeType);
-                    document.getElementById('toiletCount').value = cleanVal(req.toiletCount);
-                    document.getElementById('address').value = cleanVal(req.address);
-                    document.getElementById('landmark').value = cleanVal(req.landmark);
-
-                    document.getElementById('modalTitle').innerHTML = `<i class="fas fa-pen"></i> แก้ไขคำร้อง : ${reqId}`;
-                    new bootstrap.Modal(document.getElementById('requestModal')).show();
-                } else {
-                    Swal.fire('ผิดพลาด', 'รหัส PIN ไม่ถูกต้อง', 'error');
-                }
-            }
-        }
-
-        async function saveSystemSettings() {
-            const btn = document.querySelector('#adminPanel .btn-warning');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> กำลังบันทึก...';
-            btn.disabled = true;
-
-            const mode = document.getElementById('systemMode').value;
-            const allowedDays = Array.from(document.querySelectorAll('.day-cb:checked')).map(cb => cb.value).join(',');
-            const startTime = document.getElementById('startTime').value;
-            const endTime = document.getElementById('endTime').value;
-
-            if (mode === 'auto' && !allowedDays) {
-                Swal.fire('ข้อมูลไม่ครบ', 'กรุณาเลือกวันทำการอย่างน้อย 1 วัน', 'warning');
-                btn.innerHTML = '<i class="fas fa-save"></i> บันทึกการตั้งค่าระบบ';
-                btn.disabled = false;
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append('action', 'saveSettings');
-            formData.append('mode', mode);
-            formData.append('allowedDays', allowedDays);
-            formData.append('startTime', startTime);
-            formData.append('endTime', endTime);
-
-            try {
-                const response = await fetch(GAS_API_URL, { method: 'POST', body: formData });
-                const result = await response.json();
-                if (result.success) {
-                    Swal.fire('สำเร็จ', 'บันทึกการตั้งค่าวัน-เวลาทำการเรียบร้อยแล้ว', 'success');
-                    loadRequests(); 
-                } else {
-                    Swal.fire('ผิดพลาด', result.message || 'เกิดข้อผิดพลาดในการบันทึก', 'error');
-                }
-            } catch (error) {
-                Swal.fire('เชื่อมต่อล้มเหลว', 'มีข้อผิดพลาด โปรดตรวจสอบการตั้งค่า Deploy ฝั่ง GAS', 'error');
-            } finally {
-                btn.innerHTML = '<i class="fas fa-save"></i> บันทึกการตั้งค่าระบบ';
-                btn.disabled = false;
-            }
-        }
-
-        async function updateAdminStatus(rowIndex) {
-            const status = document.getElementById(`status_${rowIndex}`).value;
-            const note = document.getElementById(`note_${rowIndex}`).value;
+  <div class="modal fade" id="formModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header text-white" style="background-color: #3b82f6;">
+          <h5 class="modal-title fw-bold" id="formModalLabel"><i class="fas fa-edit me-2"></i> ยื่นคำร้องใบรับรองมาตรฐานห้องน้ำ</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-3 p-md-4">
+          <form id="requestForm" onsubmit="handleFormSubmit(event)">
+            <input type="hidden" id="editRowIndex" value="">
+            <input type="hidden" id="editPin" value="">
             
-            const formData = new FormData();
-            formData.append('action', 'updateStatus');
-            formData.append('rowIndex', rowIndex);
-            formData.append('status', status);
-            formData.append('note', note);
+            <div class="row mb-3 g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-bold">ชื่อ-นามสกุล ผู้ยื่นคำร้องขอบ้านเลขที่ <span class="text-danger">*</span></label>
+                <input type="text" class="form-control bg-light" id="applicantName" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">เบอร์โทรศัพท์ติดต่อ <span class="text-danger">*</span></label>
+                <input type="tel" class="form-control bg-light" id="phone" required>
+              </div>
+            </div>
 
-            Swal.fire({ title: 'กำลังบันทึก...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+            <div class="row mb-3 g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-bold">ประเภทสถานที่ <span class="text-danger">*</span></label>
+                <select class="form-select bg-light" id="placeType" required>
+                  <option value="">-- เลือกประเภท --</option>
+                  <option value="บ้านพักอาศัย">บ้านพักอาศัย</option>
+                  <option value="ร้านอาหาร">ร้านอาหาร</option>
+                  <option value="สถานที่สาธารณะ">สถานที่สาธารณะ</option>
+                  <option value="อื่นๆ">อื่นๆ</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">จำนวนห้องน้ำ (ห้อง) <span class="text-danger">*</span></label>
+                <input type="number" class="form-control bg-light" id="toiletCount" min="1" required>
+              </div>
+            </div>
 
-            try {
-                const response = await fetch(GAS_API_URL, { method: 'POST', body: formData });
-                const result = await response.json();
-                if (result.success) {
-                    Swal.fire('สำเร็จ', 'อัปเดตสถานะแล้ว', 'success');
-                    loadRequests();
-                } else {
-                    Swal.fire('ผิดพลาด', result.message, 'error');
-                }
-            } catch (error) {
-                Swal.fire('เชื่อมต่อล้มเหลว', 'โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ต', 'error');
-            }
+            <div class="mb-3">
+              <label class="form-label fw-bold">ที่อยู่ของบ้านที่จะขอเลขที่ / หมู่ที่ <span class="text-danger">*</span></label>
+              <textarea class="form-control bg-light" id="address" rows="2" placeholder="ระบุบ้านเลขที่ (ถ้ามี) หรือหมู่ที่ ของสถานที่ที่ต้องการใบรับรอง" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold">จุดสังเกตใกล้เคียง</label>
+              <input type="text" class="form-control bg-light" id="nearbyLocation" placeholder="เช่น ใกล้โรงเรียน, วัด, หรือร้านค้า">
+            </div>
+
+            <div class="p-3 mt-4 mb-2 rounded" style="background-color: #f1f5f9;">
+              <h6 class="fw-bold mb-3"><i class="fas fa-paperclip text-secondary"></i> เอกสารแนบ (ถ้ามี) <br><small class="text-muted fw-normal mt-1 d-block">- หากแก้ไขและใช้รูปเดิม ไม่ต้องเลือกไฟล์ใหม่</small></h6>
+              <div class="row g-2">
+                <div class="col-12 col-md-6">
+                  <label class="form-label text-muted mb-1 w-100 d-flex justify-content-between" style="font-size:0.85em;">
+                    <span>ใบรับแจ้งเกี่ยวกับบ้าน</span>
+                    <a href="javascript:void(0)" onclick="showExample('ใบรับแจ้งเกี่ยวกับบ้าน', 'https://i.ibb.co/4gwMcfyx/1.png')" class="text-primary text-decoration-none"><i class="fas fa-image"></i> ตัวอย่าง</a>
+                  </label>
+                  <input type="file" class="form-control form-control-sm" id="docHouse" accept="image/*,application/pdf">
+                </div>
+                <div class="col-12 col-md-6">
+                  <label class="form-label text-muted mb-1 w-100 d-flex justify-content-between" style="font-size:0.85em;">
+                    <span>สำเนาบัตรประชาชน</span>
+                    <a href="javascript:void(0)" onclick="showExample('สำเนาบัตรประชาชน', 'https://i.ibb.co/1Gy02ThV/2.png')" class="text-primary text-decoration-none"><i class="fas fa-image"></i> ตัวอย่าง</a>
+                  </label>
+                  <input type="file" class="form-control form-control-sm" id="docIdCard" accept="image/*,application/pdf">
+                </div>
+                <div class="col-12 col-md-6">
+                  <label class="form-label text-muted mb-1 w-100 d-flex justify-content-between" style="font-size:0.85em;">
+                    <span>สำเนาทะเบียนบ้าน</span>
+                    <a href="javascript:void(0)" onclick="showExample('สำเนาทะเบียนบ้าน', 'https://i.ibb.co/8ySNp92/3.png')" class="text-primary text-decoration-none"><i class="fas fa-image"></i> ตัวอย่าง</a>
+                  </label>
+                  <input type="file" class="form-control form-control-sm" id="docHouseReg" accept="image/*,application/pdf">
+                </div>
+                <div class="col-12 col-md-6">
+                  <label class="form-label text-muted mb-1 w-100 d-flex justify-content-between" style="font-size:0.85em;">
+                    <span>รูปถ่ายสถานที่ / ห้องน้ำ</span>
+                    <a href="javascript:void(0)" onclick="showExample('รูปถ่ายตัวบ้านและห้องน้ำ', 'https://i.ibb.co/BKYqkcf4/4.png')" class="text-primary text-decoration-none"><i class="fas fa-image"></i> ตัวอย่าง</a>
+                  </label>
+                  <input type="file" class="form-control form-control-sm" id="docPhoto" accept="image/*,application/pdf">
+                </div>
+              </div>
+            </div>
+
+            <div class="d-grid mt-4">
+              <button type="submit" class="btn btn-primary" style="background-color: #3b82f6; border:none; padding: 12px;" id="submitBtn"><i class="fas fa-paper-plane me-2"></i> บันทึกข้อมูลคำร้อง</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    // 🚨 เชื่อมต่อ API ของคุณ (ใช้ Vercel fetch)
+    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbxzxD2GHNB_2wls4MybpDO8bVF8nn-uPhkutgMvgkmokeBM44n3wZezTfEHq2TeMQtG/exec';
+    
+    let globalRequests = [];
+    let systemSettings = { mode: 'open' };
+    const formModal = new bootstrap.Modal(document.getElementById('formModal'));
+
+    window.onload = function() { 
+      loadData(); 
+      setInterval(function() {
+        let indicator = document.getElementById('syncIndicator');
+        if(indicator) indicator.classList.remove('d-none');
+        loadData(true);
+      }, 15000); // อัปเดตอัตโนมัติทุก 15 วิ
+    };
+
+    // เปิดปิด UI ตั้งค่าวัน-เวลา
+    function toggleTimeInputs() {
+      const mode = document.getElementById('systemMode').value;
+      document.querySelectorAll('.time-inputs').forEach(el => el.style.display = (mode === 'auto') ? 'block' : 'none');
+    }
+
+    // ตรวจสอบว่าระบบเปิดหรือปิดอยู่ (ฝั่ง Frontend)
+    function checkSystemStatus() {
+      if (systemSettings.mode === 'close') return false;
+      if (systemSettings.mode === 'auto') {
+          const now = new Date();
+          let day = now.getDay().toString();
+          const allowedDays = systemSettings.allowedDays ? systemSettings.allowedDays.toString().split(',') : [];
+          if (!allowedDays.includes(day)) return false; 
+          const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+          if (systemSettings.openTime && timeStr < systemSettings.openTime) return false;
+          if (systemSettings.closeTime && timeStr > systemSettings.closeTime) return false;
+      }
+      return true;
+    }
+
+    async function loadData(isBackground = false) {
+      try {
+        const response = await fetch(GAS_API_URL);
+        const text = await response.text();
+        let result;
+        try {
+          result = JSON.parse(text);
+        } catch (e) {
+          throw new Error("ลิงก์ API ผิดปกติ (ลืมกด Deploy เป็น New Version หรือเปล่า?)");
         }
 
-        // การจัดการไฟล์และบีบอัดภาพ
-        document.querySelectorAll('.file-upload').forEach(input => {
-            input.addEventListener('change', async function(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                
-                const hiddenInputId = this.id.replace('file', 'doc');
-                const hiddenInput = document.getElementById(hiddenInputId);
-                
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const img = new Image();
-                    img.onload = function() {
-                        const canvas = document.createElement('canvas');
-                        const ctx = canvas.getContext('2d');
-                        const maxWidth = 1000;
-                        const scale = Math.min(maxWidth / img.width, 1);
-                        canvas.width = img.width * scale;
-                        canvas.height = img.height * scale;
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        hiddenInput.value = canvas.toDataURL('image/jpeg', 0.7);
-                    };
-                    img.src = event.target.result;
-                };
-                reader.readAsDataURL(file);
-            });
-        });
+        let indicator = document.getElementById('syncIndicator');
+        if(indicator) indicator.classList.add('d-none');
 
-        document.getElementById('requestForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> กำลังส่งข้อมูล...';
-            btn.disabled = true;
-
-            const formData = new FormData(e.target);
-            try {
-                const response = await fetch(GAS_API_URL, { method: 'POST', body: formData });
-                const result = await response.json();
-
-                if (result.success) {
-                    let msg = result.reqId ? `บันทึกข้อมูลเรียบร้อย<br><b class="text-danger">โปรดจดรหัส PIN: ${result.pin}</b> เพื่อใช้แก้ไขข้อมูล` : 'อัปเดตข้อมูลเรียบร้อย';
-                    Swal.fire('สำเร็จ', msg, 'success').then(() => {
-                        bootstrap.Modal.getInstance(document.getElementById('requestModal')).hide();
-                        loadRequests();
-                    });
-                } else {
-                    Swal.fire('ผิดพลาด', result.message || 'เกิดข้อผิดพลาดในการบันทึก', 'error');
-                }
-            } catch (error) {
-                Swal.fire('ส่งข้อมูลไม่สำเร็จ', 'สัญญาณอินเทอร์เน็ตขัดข้อง หรือเชื่อมต่อเซิร์ฟเวอร์ไม่ได้', 'error');
-            } finally {
-                btn.innerHTML = '<i class="fas fa-paper-plane"></i> บันทึกข้อมูลคำร้อง';
-                btn.disabled = false;
+        if (result.success) {
+          if (result.settings) {
+            systemSettings = result.settings;
+            if (!isBackground) {
+              document.getElementById('systemMode').value = systemSettings.mode;
+              const allowed = systemSettings.allowedDays ? systemSettings.allowedDays.toString().split(',') : [];
+              document.querySelectorAll('.day-cb').forEach(cb => cb.checked = allowed.includes(cb.value));
+              document.getElementById('openTime').value = systemSettings.openTime || '';
+              document.getElementById('closeTime').value = systemSettings.closeTime || '';
+              toggleTimeInputs();
             }
+          }
+          renderData(result.data, isBackground);
+        }
+      } catch (error) {
+        console.error("Load Error:", error);
+        if(!isBackground) {
+          document.getElementById('userTableBody').innerHTML = '<tr><td colspan="5" class="text-center text-danger py-4"><i class="fas fa-exclamation-triangle"></i> ไม่สามารถโหลดข้อมูลได้: ' + error.message + '</td></tr>';
+        }
+      }
+    }
+
+    // ฟังก์ชันทำความสะอาดค่า undefined
+    const cleanVal = (val) => {
+        if (val === undefined || val === null || String(val).toLowerCase() === 'undefined' || String(val).toLowerCase() === 'null') return '';
+        return val;
+    };
+
+    function renderData(data, isBackground) {
+      globalRequests = data || [];
+      let userHtml = "";
+      let adminHtml = "";
+      
+      let countAll = globalRequests.length;
+      let countPending = 0;
+      let countProcessing = 0;
+      let countApproved = 0;
+      let countIncomplete = 0;
+
+      if(globalRequests.length === 0) {
+        userHtml = "<tr><td colspan='5' class='text-center py-4 text-muted'>ยังไม่มีข้อมูลคำร้อง...</td></tr>";
+        adminHtml = "<tr><td colspan='5' class='text-center py-4 text-muted'>ยังไม่มีข้อมูลคำร้อง...</td></tr>";
+      } else {
+        globalRequests.forEach(function(req) {
+          if(req.status === 'รอตรวจสอบ' || req.status === 'pending') countPending++;
+          if(req.status === 'กำลังดำเนินการ' || req.status === 'processing') countProcessing++;
+          if(req.status === 'ผ่านมาตรฐาน' || req.status === 'approved') countApproved++;
+          if(req.status === 'เอกสารไม่ครบ' || req.status === 'incomplete') countIncomplete++;
+
+          let badgeClass = 'bg-secondary';
+          if (req.status === 'รอตรวจสอบ') badgeClass = 'bg-pending';
+          else if (req.status === 'กำลังดำเนินการ') badgeClass = 'bg-processing';
+          else if (req.status === 'ผ่านมาตรฐาน') badgeClass = 'bg-approved';
+          else if (req.status === 'เอกสารไม่ครบ') badgeClass = 'bg-incomplete';
+
+          let remarkHtml = req.remark ? "<div class='text-muted mt-2 wrap-text-mobile' style='font-size: 0.85em;'><i class='fas fa-info-circle text-primary'></i> " + req.remark + "</div>" : "";
+          
+          let editBtn = "";
+          if (req.status === 'รอตรวจสอบ' || req.status === 'เอกสารไม่ครบ') {
+            editBtn = "<button class='btn btn-sm btn-outline-warning rounded-pill px-3 mt-1 fw-bold shadow-sm' onclick='promptEditPin(" + req.rowIndex + ")'><i class='fas fa-pen'></i> แก้ไข</button>";
+          } else {
+            editBtn = "<button class='btn btn-sm btn-light rounded-pill px-3 mt-1 text-muted border shadow-sm' disabled><i class=" + '"fas fa-lock"' + "></i> ล็อค</button>";
+          }
+
+          userHtml += "<tr>";
+          userHtml += "<td class='fw-bold text-secondary'>" + cleanVal(req.id) + "</td>";
+          userHtml += "<td class='wrap-text-mobile'>" + cleanVal(req.applicantName) + "</td>";
+          userHtml += "<td><span class='d-block d-sm-inline'>" + cleanVal(req.submitDate).split(' ')[0] + "</span></td>";
+          userHtml += "<td><span class='status-badge " + badgeClass + "'>" + cleanVal(req.status) + "</span>" + remarkHtml + "</td>";
+          userHtml += "<td>" + editBtn + "</td>";
+          userHtml += "</tr>";
+
+          let editTracker = req.editCount > 0 ? "<br><span class='badge bg-warning text-dark mt-2' style='font-size: 0.8em; white-space: normal;'><i class='fas fa-history'></i> แก้ไข " + req.editCount + " ครั้ง<br>(" + cleanVal(req.lastEditTime) + ")</span>" : "";
+          let pinHtml = req.pin ? "<br><span class='badge bg-warning text-dark mt-1 shadow-sm' style='padding: 3px 8px;'><i class='fas fa-key'></i> PIN: " + req.pin + "</span>" : "";
+
+          adminHtml += "<tr>";
+          adminHtml += "<td><strong>" + cleanVal(req.id) + "</strong>" + pinHtml + "<br><small class='text-muted'>" + cleanVal(req.submitDate) + "</small>" + editTracker + "</td>";
+          adminHtml += "<td><i class='fas fa-user text-muted'></i> " + cleanVal(req.applicantName) + "<br><i class='fas fa-phone text-muted'></i> " + cleanVal(req.phone) + "</td>";
+          adminHtml += "<td class='wrap-text-mobile'><strong>" + cleanVal(req.placeType) + "</strong><br><small class='text-muted'>" + cleanVal(req.address) + "</small></td>";
+          adminHtml += "<td>" + getFileLink(req.docHouse, "ใบแจ้งบ้าน") + getFileLink(req.docIdCard, "บัตรปชช.") + getFileLink(req.docHouseReg, "ทะเบียนบ้าน") + getFileLink(req.docPhoto, "รูปถ่าย") + "</td>";
+          
+          adminHtml += "<td>";
+          adminHtml += "<select class='form-select form-select-sm mb-2' id='status_" + req.rowIndex + "'>";
+          adminHtml += "<option value='รอตรวจสอบ' " + (req.status === 'รอตรวจสอบ' ? 'selected' : '') + ">รอตรวจสอบ</option>";
+          adminHtml += "<option value='กำลังดำเนินการ' " + (req.status === 'กำลังดำเนินการ' ? 'selected' : '') + ">กำลังดำเนินการ</option>";
+          adminHtml += "<option value='ผ่านมาตรฐาน' " + (req.status === 'ผ่านมาตรฐาน' ? 'selected' : '') + ">ผ่านมาตรฐาน</option>";
+          adminHtml += "<option value='เอกสารไม่ครบ' " + (req.status === 'เอกสารไม่ครบ' ? 'selected' : '') + ">เอกสารไม่ครบ</option>";
+          adminHtml += "</select>";
+          
+          adminHtml += "<input type='text' class='form-control form-control-sm mb-2' id='remark_" + req.rowIndex + "' placeholder='หมายเหตุ...' value='" + cleanVal(req.remark) + "'>";
+          adminHtml += "<button class='btn btn-success btn-sm w-100' onclick='confirmUpdateStatus(" + req.rowIndex + ")'><i class='fas fa-save'></i> บันทึก</button>";
+          adminHtml += "</td>";
+          adminHtml += "</tr>";
         });
-    </script>
+      }
+
+      document.getElementById('userTableBody').innerHTML = userHtml;
+      
+      document.getElementById('countAll').innerText = countAll;
+      document.getElementById('countPending').innerText = countPending;
+      document.getElementById('countProcessing').innerText = countProcessing;
+      document.getElementById('countApproved').innerText = countApproved;
+      document.getElementById('countIncomplete').innerText = countIncomplete;
+
+      let adminPanel = document.getElementById('adminPanel');
+      if (!isBackground || adminPanel.style.display !== 'none') {
+        document.getElementById('adminTableBody').innerHTML = adminHtml;
+      }
+    }
+
+    function getFileLink(url, label) {
+      if (!url) return "<span class='text-muted d-block mb-1' style='font-size:0.75em;'>- ไม่มี " + label + "</span>";
+      if (url === 'mock-url') return "<span class='badge bg-info text-dark mb-1 d-inline-block p-1'>[ไฟล์จำลอง] " + label + "</span><br>";
+      return "<a href='" + url + "' target='_blank' class='badge bg-primary text-decoration-none mb-1 d-inline-block p-2 shadow-sm'><i class='fas fa-link'></i> " + label + "</a><br>";
+    }
+
+    function showContactModal() {
+      Swal.fire({
+        title: '<strong>ข้อมูลติดต่อ รพ.โพนสวรรค์</strong>',
+        icon: 'info',
+        html: '<div style="text-align: left; margin-top: 15px; font-size: 1rem; line-height: 1.8;"><i class="fas fa-phone-alt text-success"></i> <b>เบอร์โทรศัพท์:</b> 042 595 064 ต่อ 301<br><i class="fab fa-facebook text-primary"></i> <b>Facebook:</b> <a href="https://www.facebook.com/pcu.pswh" target="_blank">PCU โพนสวรรค์</a><br><i class="fas fa-map-marker-alt text-danger"></i> <b>ที่อยู่:</b> 276 ม.12 โพธิ์ศรี ต.โพนสวรรค์ จ.นครพนม 48190</div>',
+        confirmButtonText: 'ปิดหน้าต่าง',
+        confirmButtonColor: '#0d6efd'
+      });
+    }
+
+    function showExample(title, imageUrl, originalUrl) {
+      let footerHtml = originalUrl ? '<div class="text-center w-100 mt-2"><a href="' + originalUrl + '" target="_blank" class="btn btn-sm btn-outline-primary"><i class="fas fa-external-link-alt me-1"></i> เปิดดูไฟล์ต้นฉบับขนาดเต็ม</a></div>' : '';
+      Swal.fire({ title: 'ตัวอย่าง: ' + title, imageUrl: imageUrl, imageAlt: title, footer: footerHtml, confirmButtonText: 'ปิดหน้าต่าง', confirmButtonColor: '#3b82f6', customClass: { image: 'rounded shadow-sm' } });
+    }
+
+    async function requireAdminPassword() {
+      let panel = document.getElementById('adminPanel');
+      if (panel.style.display === 'block') { panel.style.display = 'none'; return; }
+
+      const { value: password } = await Swal.fire({
+        title: 'เข้าสู่ระบบเจ้าหน้าที่',
+        input: 'password',
+        inputPlaceholder: 'รหัสผ่านของคุณ...',
+        showCancelButton: true,
+        confirmButtonText: 'เข้าสู่ระบบ',
+        cancelButtonText: 'ยกเลิก',
+        confirmButtonColor: '#dc3545',
+        showLoaderOnConfirm: true,
+        preConfirm: async (pwd) => {
+          try {
+            const formData = new FormData();
+            formData.append('action', 'verifyPassword');
+            formData.append('pwd', pwd);
+            const response = await fetch(GAS_API_URL, { method: 'POST', body: formData });
+            const result = await response.json();
+            if (!result.success) throw new Error();
+            return true;
+          } catch (e) {
+            Swal.showValidationMessage('รหัสผ่านไม่ถูกต้อง หรือเน็ตหลุด!');
+            return false;
+          }
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+      });
+
+      if (password) {
+        panel.style.display = 'block';
+        panel.scrollIntoView({ behavior: 'smooth' });
+        loadData();
+        Swal.fire({ icon: 'success', title: 'เข้าสู่ระบบสำเร็จ', showConfirmButton: false, timer: 1500 });
+      }
+    }
+
+    async function showChangePassword() {
+      const { value: formValues } = await Swal.fire({
+        title: 'เปลี่ยนรหัสผ่าน',
+        html:
+          '<input id="oldPwd" class="swal2-input" placeholder="รหัสผ่านเดิม" type="password">' +
+          '<input id="newPwd" class="swal2-input" placeholder="รหัสผ่านใหม่" type="password">' +
+          '<input id="confirmPwd" class="swal2-input" placeholder="ยืนยันรหัสผ่านใหม่" type="password">',
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: 'บันทึก',
+        cancelButtonText: 'ยกเลิก',
+        preConfirm: () => {
+          return [
+            document.getElementById('oldPwd').value,
+            document.getElementById('newPwd').value,
+            document.getElementById('confirmPwd').value
+          ]
+        }
+      });
+
+      if (formValues) {
+        const [oldPwd, newPwd, confirmPwd] = formValues;
+        if (!oldPwd || !newPwd || !confirmPwd) return Swal.fire('ผิดพลาด', 'กรุณากรอกข้อมูลให้ครบ', 'error');
+        if (newPwd !== confirmPwd) return Swal.fire('ผิดพลาด', 'รหัสผ่านใหม่ไม่ตรงกัน!', 'error');
+
+        Swal.fire({ title: 'กำลังเปลี่ยนรหัส...', didOpen: () => Swal.showLoading() });
+        const formData = new FormData();
+        formData.append('action', 'changeAdminPassword');
+        formData.append('oldPwd', oldPwd);
+        formData.append('newPwd', newPwd);
+
+        try {
+          const res = await fetch(GAS_API_URL, { method: 'POST', body: formData });
+          const json = await res.json();
+          if(json.success) Swal.fire('สำเร็จ!', json.message, 'success');
+          else Swal.fire('ผิดพลาด', json.message, 'error');
+        } catch(e) { Swal.fire('เชื่อมต่อล้มเหลว', '', 'error'); }
+      }
+    }
+
+    async function saveSystemSettings() {
+      const btn = document.getElementById('btnSaveSettings');
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> กำลังบันทึก...';
+      btn.disabled = true;
+
+      const mode = document.getElementById('systemMode').value;
+      const allowedDays = Array.from(document.querySelectorAll('.day-cb:checked')).map(cb => cb.value).join(',');
+      const openTime = document.getElementById('openTime').value;
+      const closeTime = document.getElementById('closeTime').value;
+
+      if (mode === 'auto' && !allowedDays) {
+          Swal.fire('ข้อมูลไม่ครบ', 'กรุณาเลือกวันทำการอย่างน้อย 1 วัน', 'warning');
+          btn.innerHTML = '<i class="fas fa-save"></i> บันทึกการตั้งค่าระบบ';
+          btn.disabled = false;
+          return;
+      }
+
+      const formData = new FormData();
+      formData.append('action', 'saveSettings');
+      formData.append('mode', mode);
+      formData.append('allowedDays', allowedDays);
+      formData.append('openTime', openTime);
+      formData.append('closeTime', closeTime);
+
+      try {
+          const response = await fetch(GAS_API_URL, { method: 'POST', body: formData });
+          const result = await response.json();
+          if (result.success) {
+              Swal.fire('สำเร็จ', 'บันทึกการตั้งค่าวัน-เวลาทำการเรียบร้อยแล้ว', 'success');
+              loadData(); 
+          } else {
+              Swal.fire('ผิดพลาด', result.message || 'เกิดข้อผิดพลาดในการบันทึก', 'error');
+          }
+      } catch (error) {
+          Swal.fire('เชื่อมต่อล้มเหลว', 'โปรดตรวจสอบการตั้งค่า Deploy ฝั่ง GAS', 'error');
+      } finally {
+          btn.innerHTML = '<i class="fas fa-save"></i> บันทึกการตั้งค่าระบบ';
+          btn.disabled = false;
+      }
+    }
+
+    function exportCSV() {
+      if (!globalRequests || globalRequests.length === 0) {
+        Swal.fire('ไม่มีข้อมูล', 'ยังไม่มีข้อมูลคำร้องให้ดาวน์โหลด', 'info');
+        return;
+      }
+      const headers = ['รหัสคำร้อง', 'รหัส PIN', 'ชื่อผู้ยื่น', 'เบอร์โทร', 'ประเภทสถานที่', 'จำนวนห้องน้ำ', 'ที่อยู่', 'จุดสังเกต', 'สถานะ', 'หมายเหตุ', 'วันที่ยื่น', 'เวลาแก้ไขล่าสุด', 'จำนวนครั้งที่แก้ไข'];
+      
+      let csvContent = '\uFEFF' + headers.join(',') + '\n';
+      
+      globalRequests.forEach(req => {
+        let row = [
+          req.id, req.pin || '-', `"${(cleanVal(req.applicantName)).replace(/"/g, '""')}"`, `"${(cleanVal(req.phone)).replace(/"/g, '""')}"`,
+          `"${(cleanVal(req.placeType)).replace(/"/g, '""')}"`, req.toiletCount, `"${(cleanVal(req.address)).replace(/"/g, '""')}"`,
+          `"${(cleanVal(req.nearbyLocation)).replace(/"/g, '""')}"`, req.status,
+          `"${(cleanVal(req.remark)).replace(/"/g, '""')}"`, `"${(cleanVal(req.submitDate)).replace(/"/g, '""')}"`,
+          `"${(cleanVal(req.lastEditTime)).replace(/"/g, '""')}"`, req.editCount || 0
+        ];
+        csvContent += row.join(',') + '\n';
+      });
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      const today = new Date().toISOString().slice(0, 10);
+      link.setAttribute("download", `รายการคำร้องห้องน้ำ_${today}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function openFormModal() {
+      if (!checkSystemStatus()) {
+          Swal.fire('ระบบปิดรับคำร้อง', 'ขณะนี้อยู่นอกวันและเวลาทำการ หรือเจ้าหน้าที่ได้ปิดระบบชั่วคราว', 'warning');
+          return;
+      }
+      document.getElementById('requestForm').reset();
+      document.getElementById('editRowIndex').value = '';
+      document.getElementById('editPin').value = '';
+      document.getElementById('formModalLabel').innerHTML = '<i class="fas fa-edit me-2"></i> ยื่นคำร้องใบรับรองมาตรฐานห้องน้ำ';
+      formModal.show();
+    }
+
+    async function promptEditPin(rowIndex) {
+      let req = globalRequests.find(r => r.rowIndex === rowIndex);
+      
+      const { value: pin } = await Swal.fire({
+        title: 'ยืนยันรหัสความปลอดภัย',
+        html: 'กรุณากรอกรหัส 4 หลัก ที่คุณได้รับตอนส่งคำร้อง เพื่อเข้าสู่โหมดแก้ไข',
+        input: 'text',
+        inputAttributes: { maxlength: 4, autocapitalize: 'off', autocorrect: 'off' },
+        inputPlaceholder: 'รหัส PIN 4 หลัก...',
+        showCancelButton: true,
+        confirmButtonText: 'ยืนยัน',
+        cancelButtonText: 'ยกเลิก',
+        confirmButtonColor: '#f59e0b',
+        showLoaderOnConfirm: true,
+        preConfirm: async (inputPin) => {
+          if (!inputPin || inputPin.length !== 4) { Swal.showValidationMessage('กรุณากรอกรหัส PIN 4 หลักให้ครบถ้วน'); return false; }
+          
+          const formData = new FormData();
+          formData.append('action', 'verifyEditPin');
+          formData.append('rowIndex', rowIndex);
+          formData.append('pin', inputPin);
+
+          try {
+            const res = await fetch(GAS_API_URL, { method: 'POST', body: formData });
+            const json = await res.json();
+            if (!json.success) throw new Error();
+            return inputPin;
+          } catch(e) {
+            Swal.showValidationMessage('รหัส PIN ไม่ถูกต้อง!');
+            return false;
+          }
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+      });
+
+      if (pin) editRequest(rowIndex, pin);
+    }
+
+    function editRequest(rowIndex, pin) {
+      let req = globalRequests.find(function(r) { return r.rowIndex === rowIndex; });
+      if (!req) return;
+      document.getElementById('editRowIndex').value = req.rowIndex;
+      document.getElementById('editPin').value = pin;
+      document.getElementById('formModalLabel').innerHTML = '<i class="fas fa-pen me-2"></i> แก้ไขคำร้อง: ' + req.id;
+      document.getElementById('applicantName').value = cleanVal(req.applicantName);
+      document.getElementById('phone').value = cleanVal(req.phone);
+      document.getElementById('placeType').value = cleanVal(req.placeType);
+      document.getElementById('toiletCount').value = cleanVal(req.toiletCount);
+      document.getElementById('address').value = cleanVal(req.address);
+      document.getElementById('nearbyLocation').value = cleanVal(req.nearbyLocation);
+      formModal.show();
+    }
+
+    function confirmUpdateStatus(rowIndex) {
+      var statusValue = document.getElementById('status_' + rowIndex).value;
+      var remarkValue = document.getElementById('remark_' + rowIndex).value;
+
+      Swal.fire({
+        title: 'ยืนยันการบันทึก?',
+        text: "คุณต้องการอัปเดตสถานะและหมายเหตุของคำร้องนี้?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#28a745',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'ยืนยัน',
+        cancelButtonText: 'ยกเลิก'
+      }).then(async function(result) {
+        if (result.isConfirmed) {
+          Swal.fire({ title: 'กำลังอัปเดตข้อมูล...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+          
+          const formData = new FormData();
+          formData.append('action', 'updateStatus');
+          formData.append('rowIndex', rowIndex);
+          formData.append('status', statusValue);
+          formData.append('note', remarkValue);
+
+          try {
+            const res = await fetch(GAS_API_URL, { method: 'POST', body: formData });
+            const json = await res.json();
+            if(json.success) { Swal.fire('สำเร็จ!', 'อัปเดตสถานะเรียบร้อยแล้ว', 'success'); loadData(); } 
+            else { Swal.fire('ผิดพลาด', json.message, 'error'); }
+          } catch(e) { Swal.fire('เกิดข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้', 'error'); }
+        }
+      });
+    }
+
+    async function handleFormSubmit(event) {
+      event.preventDefault();
+      
+      const btn = document.getElementById('submitBtn');
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> กำลังส่งข้อมูล...';
+      btn.disabled = true;
+
+      Swal.fire({ title: 'กำลังส่งข้อมูล...', html: 'กรุณารอสักครู่ (อาจใช้เวลา 10-20 วินาที หากมีรูปภาพ)', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+      
+      try {
+        let formData = new FormData();
+        let editRowIndex = document.getElementById('editRowIndex').value;
+        
+        formData.append('action', editRowIndex ? 'updateRequest' : 'submitRequest');
+        if (editRowIndex) {
+            formData.append('rowIndex', editRowIndex);
+            formData.append('pin', document.getElementById('editPin').value);
+        }
+
+        formData.append('name', document.getElementById('applicantName').value);
+        formData.append('phone', document.getElementById('phone').value);
+        formData.append('placeType', document.getElementById('placeType').value);
+        formData.append('toiletCount', document.getElementById('toiletCount').value);
+        formData.append('address', document.getElementById('address').value);
+        formData.append('landmark', document.getElementById('nearbyLocation').value);
+        
+        let f1 = document.getElementById('docHouse').files[0];
+        let f2 = document.getElementById('docIdCard').files[0];
+        let f3 = document.getElementById('docHouseReg').files[0];
+        let f4 = document.getElementById('docPhoto').files[0];
+
+        if (f1) formData.append('doc1', await convertFile(f1));
+        if (f2) formData.append('doc2', await convertFile(f2));
+        if (f3) formData.append('doc3', await convertFile(f3));
+        if (f4) formData.append('doc4', await convertFile(f4));
+
+        const res = await fetch(GAS_API_URL, { method: 'POST', body: formData });
+        const json = await res.json();
+        submitSuccess(json, !editRowIndex);
+
+      } catch (e) {
+        Swal.fire('ส่งข้อมูลไม่สำเร็จ', 'สัญญาณอินเทอร์เน็ตขัดข้อง หรือเซิร์ฟเวอร์ตอบสนองช้า', 'error');
+      } finally {
+        btn.innerHTML = '<i class="fas fa-paper-plane me-2"></i> บันทึกข้อมูลคำร้อง';
+        btn.disabled = false;
+      }
+    }
+
+    function submitSuccess(res, isNew) {
+      if(res.success) {
+        formModal.hide();
+        
+        if (isNew) {
+          Swal.fire({
+            title: 'ส่งคำร้องสำเร็จ!',
+            html: '<div class="text-start mt-2">' +
+                  'ข้อมูลของคุณถูกบันทึกเข้าระบบเรียบร้อยแล้ว<br><br>' +
+                  '<b>รหัสคำร้อง:</b> <span class="text-primary fs-5">' + res.reqId + '</span><br>' +
+                  '<b>รหัส PIN สำหรับแก้ไข:</b> <span class="text-danger fs-3 fw-bold ms-2 bg-warning p-1 rounded">' + res.pin + '</span><br><br>' +
+                  '<span class="text-muted" style="font-size: 0.9em;"><i class="fas fa-exclamation-triangle text-warning"></i> <b>โปรดแคปหน้าจอหรือจดรหัสนี้ไว้!</b> คุณต้องใช้รหัส 4 หลักนี้ หากต้องการเข้ามาแก้ไขข้อมูลในภายหลัง</span>' +
+                  '</div>',
+            icon: 'success'
+          });
+        } else {
+          Swal.fire('อัปเดตสำเร็จ!', 'ข้อมูลของคุณถูกแก้ไขเรียบร้อยแล้ว', 'success');
+        }
+        
+        document.getElementById('requestForm').reset();
+        loadData();
+      } else { Swal.fire('เกิดข้อผิดพลาด', res.message, 'error'); }
+    }
+
+    function convertFile(file) {
+      return new Promise(function(resolve) {
+        if (!file.type.startsWith('image/')) {
+          let reader = new FileReader();
+          reader.onload = function(e) { resolve(e.target.result); };
+          reader.readAsDataURL(file); return;
+        }
+        let reader = new FileReader();
+        reader.onload = function(event) {
+          let img = new Image();
+          img.onload = function() {
+            let canvas = document.createElement('canvas');
+            let maxW = 1200, maxH = 1200, width = img.width, height = img.height;
+            if (width > height && width > maxW) { height *= maxW / width; width = maxW; } 
+            else if (height > maxW) { width *= maxH / height; height = maxH; }
+            canvas.width = width; canvas.height = height;
+            canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', 0.6));
+          }
+          img.src = event.target.result;
+        }
+        reader.readAsDataURL(file);
+      });
+    }
+  </script>
 </body>
 </html>
