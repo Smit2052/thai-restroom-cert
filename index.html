@@ -313,8 +313,8 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   
   <script>
-    // อัปเดตลิงก์ API ล่าสุดที่คุณได้รับมาแล้ว
-    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbwbKRreT6-HM2C2EO16ovJaK5USTklJ2IxJAuW7YZhB74eoAMq2T6lV6uVec3QIZosX/exec';
+    // 🔗 ลิงก์ API ล่าสุดของคุณ
+    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbxt8G5La-xgLmzzkFczdM1GGPy15VjpYR3jRhyDQBonp68_0ZpGND8nKqAw0C7pQ5SO/exec';
     
     let globalRequests = [];
     let systemSettings = { mode: 'open' };
@@ -463,7 +463,6 @@
           adminHtml += `<td><i class='fas fa-user text-muted'></i> ${cleanVal(req.applicantName)}<br><i class='fas fa-phone text-muted'></i> ${cleanVal(req.phone)}</td>`;
           adminHtml += `<td class='wrap-text-mobile'><strong>${cleanVal(req.placeType)}</strong><br><small class='text-muted'>${cleanVal(req.address)}</small></td>`;
           
-          // ระบบกดดูรูปภาพ Base64
           adminHtml += `<td>
                           ${getFileLink(req, "docHouse", "ใบแจ้งบ้าน")}
                           ${getFileLink(req, "docIdCard", "บัตรปชช.")}
@@ -740,8 +739,13 @@
       try {
         let fd = new FormData();
         let editRowIndex = document.getElementById('editRowIndex').value;
-        fd.append('action', editRowIndex ? 'updateRequest' : 'submitRequest');
-        if (editRowIndex) { fd.append('rowIndex', editRowIndex); fd.append('pin', document.getElementById('editPin').value); }
+        let isNewRequest = !editRowIndex;
+        
+        fd.append('action', isNewRequest ? 'submitRequest' : 'updateRequest');
+        if (!isNewRequest) { 
+          fd.append('rowIndex', editRowIndex); 
+          fd.append('pin', document.getElementById('editPin').value); 
+        }
 
         fd.append('name', document.getElementById('applicantName').value);
         fd.append('phone', document.getElementById('phone').value);
@@ -758,7 +762,7 @@
 
         const res = await fetch(GAS_API_URL, { method: 'POST', body: fd });
         const json = await res.json();
-        submitSuccess(json, !editRowIndex);
+        submitSuccess(json, isNewRequest);
       } catch (e) {
         Swal.fire('ส่งข้อมูลไม่สำเร็จ', 'สัญญาณอินเทอร์เน็ตขัดข้อง หรือเซิร์ฟเวอร์ตอบสนองช้า', 'error');
       } finally {
@@ -768,6 +772,14 @@
 
     function submitSuccess(res, isNew) {
       if(res.success) {
+        if (!res.id && isNew) {
+           Swal.fire('ข้อมูลเข้าสู่ระบบแล้ว!', 'บันทึกข้อมูลสำเร็จ แต่ระบบแสดงผลช้า โปรดรีเฟรชหน้าเว็บเพื่อดูรหัสคำร้องของคุณในตาราง', 'info');
+           document.getElementById('requestForm').reset();
+           formModal.hide();
+           loadData();
+           return;
+        }
+        
         formModal.hide();
         if (isNew) {
           Swal.fire({
