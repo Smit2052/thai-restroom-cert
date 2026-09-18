@@ -133,7 +133,6 @@
       </div>
     </div>
 
-    <!-- ส่วนตารางผู้ใช้ทั่วไป -->
     <div class="card card-custom p-3 p-md-4" id="userTableView">
       <h5 class="mb-3 fw-bold text-secondary section-title">รายการคำร้องล่าสุด <span id="syncIndicator" class="spinner-border spinner-border-sm text-primary ms-2 d-none" role="status"></span></h5>
       <div class="table-responsive">
@@ -154,7 +153,6 @@
       </div>
     </div>
 
-    <!-- ส่วน Admin Panel -->
     <div class="card card-custom p-3 p-md-4 mt-4 bg-white" id="adminPanel" style="display: none; border-top: 4px solid #dc3545;">
       <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-2">
         <h5 class="mb-0 text-danger fw-bold section-title"><i class="fas fa-user-shield me-2"></i> ระบบจัดการสำหรับเจ้าหน้าที่</h5>
@@ -165,14 +163,20 @@
         </div>
       </div>
 
-      <!-- แผงตั้งค่าเวลา (ใหม่) -->
-      <div class="p-3 mb-4 rounded border border-warning" style="background-color: #fffdf5;">
+      <!-- โชว์สถานะตั้งค่าปัจจุบัน -->
+      <div id="currentSettingsDisplay" class="alert py-2 mb-3 shadow-sm d-flex align-items-center" style="background-color: #e3f2fd; color: #0d47a1; border: 1px solid #bbdefb;">
+          <i class="fas fa-info-circle fs-5 me-2"></i> 
+          <div><strong>สถานะระบบปัจจุบัน: </strong><span id="currentStatusText">กำลังโหลด...</span></div>
+      </div>
+
+      <!-- แผงตั้งค่าเวลา -->
+      <div class="p-3 mb-4 rounded border border-warning shadow-sm" style="background-color: #fffdf5;">
         <h6 class="fw-bold mb-3 text-dark"><i class="fas fa-cogs text-secondary"></i> ตั้งค่าระบบวันและเวลาเปิดรับคำร้อง</h6>
         <div class="row g-3">
           <div class="col-md-3">
             <label class="form-label small fw-bold">โหมดการทำงาน</label>
             <select id="systemMode" class="form-select border-warning" onchange="toggleTimeInputs()">
-              <option value="open">🟢 เปิดรับตลอดเวลา</option>
+              <option value="open">🟢 เปิดรับตลอดเวลา (24 ชม.)</option>
               <option value="close">🔴 ปิดรับคำร้อง</option>
               <option value="auto">⏳ กำหนดวันและเวลา</option>
             </select>
@@ -198,7 +202,7 @@
             <input type="time" id="closeTime" class="form-control">
           </div>
           <div class="col-12 text-end mt-2">
-            <button class="btn btn-warning fw-bold shadow-sm px-4" id="btnSaveSettings" onclick="saveSystemSettings()"><i class="fas fa-save"></i> บันทึกการตั้งค่า</button>
+            <button class="btn btn-warning fw-bold shadow-sm px-4" id="btnSaveSettings" onclick="saveSystemSettings()"><i class="fas fa-save"></i> บันทึกการตั้งค่าระบบ</button>
           </div>
         </div>
       </div>
@@ -211,7 +215,7 @@
               <th width="20%">ข้อมูลผู้ยื่น</th>
               <th width="25%">สถานที่/พิกัด</th>
               <th width="20%">ไฟล์แนบ</th>
-              <th width="20%">อัปเดตสถานะ</th>
+              <th width="20%">จัดการสถานะ</th>
             </tr>
           </thead>
           <tbody id="adminTableBody">
@@ -226,34 +230,33 @@
     <i class="fas fa-phone-volume"></i> <span class="d-none d-sm-inline">ติดต่อรพ.โพนสวรรค์</span><span class="d-inline d-sm-none">ติดต่อเรา</span>
   </div>
 
-  <!-- Modal -->
   <div class="modal fade" id="formModal" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content border-0 shadow">
         <div class="modal-header text-white" style="background-color: #3b82f6;">
-          <h5 class="modal-title fw-bold" id="formModalLabel"><i class="fas fa-edit me-2"></i> ยื่นคำร้องขอบ้านเลขที่</h5>
+          <h5 class="modal-title fw-bold" id="formModalLabel"><i class="fas fa-edit me-2"></i> ยื่นคำร้องใบรับรองมาตรฐานห้องน้ำ</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body p-3 p-md-4">
           <form id="requestForm" onsubmit="handleFormSubmit(event)">
-            <input type="hidden" id="editRowIndex" name="rowIndex" value="">
-            <input type="hidden" id="editPin" name="pin" value="">
+            <input type="hidden" id="editRowIndex" value="">
+            <input type="hidden" id="editPin" value="">
             
             <div class="row mb-3 g-3">
               <div class="col-md-6">
                 <label class="form-label fw-bold">ชื่อ-นามสกุล ผู้ยื่นคำร้องขอบ้านเลขที่ <span class="text-danger">*</span></label>
-                <input type="text" class="form-control bg-light" id="applicantName" name="name" required>
+                <input type="text" class="form-control bg-light" id="applicantName" required>
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold">เบอร์โทรศัพท์ติดต่อ <span class="text-danger">*</span></label>
-                <input type="tel" class="form-control bg-light" id="phone" name="phone" required>
+                <input type="tel" class="form-control bg-light" id="phone" required>
               </div>
             </div>
 
             <div class="row mb-3 g-3">
               <div class="col-md-6">
                 <label class="form-label fw-bold">ประเภทสถานที่ <span class="text-danger">*</span></label>
-                <select class="form-select bg-light" id="placeType" name="placeType" required>
+                <select class="form-select bg-light" id="placeType" required>
                   <option value="">-- เลือกประเภท --</option>
                   <option value="บ้านพักอาศัย">บ้านพักอาศัย</option>
                   <option value="ร้านอาหาร">ร้านอาหาร</option>
@@ -263,17 +266,17 @@
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold">จำนวนห้องน้ำ (ห้อง) <span class="text-danger">*</span></label>
-                <input type="number" class="form-control bg-light" id="toiletCount" name="toiletCount" min="1" required>
+                <input type="number" class="form-control bg-light" id="toiletCount" min="1" required>
               </div>
             </div>
 
             <div class="mb-3">
               <label class="form-label fw-bold">ที่อยู่ของบ้านที่จะขอเลขที่ / หมู่ที่ <span class="text-danger">*</span></label>
-              <textarea class="form-control bg-light" id="address" name="address" rows="2" required></textarea>
+              <textarea class="form-control bg-light" id="address" rows="2" placeholder="ระบุบ้านเลขที่ (ถ้ามี) หรือหมู่ที่ ของสถานที่ที่ต้องการใบรับรอง" required></textarea>
             </div>
             <div class="mb-3">
               <label class="form-label fw-bold">จุดสังเกตใกล้เคียง</label>
-              <input type="text" class="form-control bg-light" id="nearbyLocation" name="landmark">
+              <input type="text" class="form-control bg-light" id="nearbyLocation" placeholder="เช่น ใกล้โรงเรียน, วัด, หรือร้านค้า">
             </div>
 
             <div class="p-3 mt-4 mb-2 rounded" style="background-color: #f1f5f9;">
@@ -310,8 +313,8 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   
   <script>
-    // 🚨 เชื่อมต่อ API ของคุณผ่าน Vercel Fetch (เปลี่ยนลิงก์ล่าสุดแล้ว)
-    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzOHUNZNhi5yrRrHt_Kk-BjlYpi7-iYT1iFKdlJ5fq03D0-EeOpCMtdIsVwdjx8Zzw/exec';
+    // 🚨 เชื่อมต่อ API ล่าสุดของคุณ
+    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbxDNcrirJngm-Gm7cwG5PqD-q_8bVe2O9PLyblSbDj_ZDGxF29N3m34noCikHtvgr1B/exec';
     
     let globalRequests = [];
     let systemSettings = { mode: 'open' };
@@ -329,6 +332,26 @@
     function toggleTimeInputs() {
       const mode = document.getElementById('systemMode').value;
       document.querySelectorAll('.time-inputs').forEach(el => el.style.display = (mode === 'auto') ? 'block' : 'none');
+    }
+
+    function updateCurrentSettingsDisplay() {
+        let text = "";
+        let colorClass = "";
+        if (systemSettings.mode === 'open') {
+            text = "เปิดรับคำร้องตลอดเวลา (24 ชม.)";
+            colorClass = "#0d47a1"; // Blue
+        } else if (systemSettings.mode === 'close') {
+            text = "ระบบถูกปิดรับคำร้องชั่วคราว";
+            colorClass = "#c62828"; // Red
+        } else if (systemSettings.mode === 'auto') {
+            const daysMap = {'1':'จันทร์','2':'อังคาร','3':'พุธ','4':'พฤหัสฯ','5':'ศุกร์','6':'เสาร์','0':'อาทิตย์'};
+            let allowed = systemSettings.allowedDays ? systemSettings.allowedDays.split(',').map(d => daysMap[d]).join(', ') : 'ไม่ได้กำหนดวัน';
+            text = `เปิดแบบกำหนดเวลา | วันที่เปิด: ${allowed} | เวลาเปิด-ปิด: ${systemSettings.openTime || '-'} ถึง ${systemSettings.closeTime || '-'}`;
+            colorClass = "#e65100"; // Orange
+        }
+        const displayEl = document.getElementById('currentStatusText');
+        displayEl.innerText = text;
+        displayEl.style.color = colorClass;
     }
 
     function checkSystemStatus() {
@@ -353,14 +376,22 @@
     async function loadData(isBackground = false) {
       try {
         const response = await fetch(GAS_API_URL);
-        const result = await response.json();
-        
+        const text = await response.text();
+        let result;
+        try {
+          result = JSON.parse(text);
+        } catch (e) {
+          throw new Error("ลิงก์ API ผิดปกติ หรือลืมกด Deploy New Version");
+        }
+
         let indicator = document.getElementById('syncIndicator');
         if(indicator) indicator.classList.add('d-none');
 
         if (result.success) {
           if (result.settings) {
             systemSettings = result.settings;
+            updateCurrentSettingsDisplay(); 
+            
             if (!isBackground) {
               document.getElementById('systemMode').value = systemSettings.mode;
               const allowed = systemSettings.allowedDays ? systemSettings.allowedDays.toString().split(',') : [];
@@ -373,7 +404,7 @@
           renderData(result.data, isBackground);
         }
       } catch (error) {
-        if(!isBackground) document.getElementById('userTableBody').innerHTML = '<tr><td colspan="5" class="text-center text-danger py-4">ไม่สามารถโหลดข้อมูลได้ โปรดตรวจสอบลิงก์ API</td></tr>';
+        if(!isBackground) document.getElementById('userTableBody').innerHTML = '<tr><td colspan="5" class="text-center text-danger py-4">ไม่สามารถโหลดข้อมูลได้ โปรดตรวจสอบการ Deploy หลังบ้าน</td></tr>';
       }
     }
 
@@ -390,19 +421,20 @@
         adminHtml = "<tr><td colspan='5' class='text-center py-4 text-muted'>ยังไม่มีข้อมูลคำร้อง...</td></tr>";
       } else {
         globalRequests.forEach(function(req) {
-          if(req.status === 'รอตรวจสอบ' || req.status === 'pending') countPending++;
-          else if(req.status === 'กำลังดำเนินการ' || req.status === 'processing') countProcessing++;
-          else if(req.status === 'ผ่านมาตรฐาน' || req.status === 'approved') countApproved++;
-          else if(req.status === 'เอกสารไม่ครบ' || req.status === 'incomplete') countIncomplete++;
+          let reqStatus = cleanVal(req.status);
+          if(reqStatus === 'รอตรวจสอบ' || reqStatus === 'pending') countPending++;
+          else if(reqStatus === 'กำลังดำเนินการ' || reqStatus === 'processing') countProcessing++;
+          else if(reqStatus === 'ผ่านมาตรฐาน' || reqStatus === 'approved') countApproved++;
+          else if(reqStatus === 'เอกสารไม่ครบ' || reqStatus === 'incomplete') countIncomplete++;
 
           let badgeClass = 'bg-secondary';
-          let statusText = req.status;
+          let statusText = reqStatus;
           if (statusText === 'pending' || statusText === 'รอตรวจสอบ') { badgeClass = 'bg-pending'; statusText = 'รอตรวจสอบ'; }
           else if (statusText === 'processing' || statusText === 'กำลังดำเนินการ') { badgeClass = 'bg-processing'; statusText = 'กำลังดำเนินการ'; }
           else if (statusText === 'approved' || statusText === 'ผ่านมาตรฐาน') { badgeClass = 'bg-approved'; statusText = 'ผ่านมาตรฐาน'; }
           else if (statusText === 'incomplete' || statusText === 'เอกสารไม่ครบ') { badgeClass = 'bg-incomplete'; statusText = 'เอกสารไม่ครบ'; }
 
-          let remarkHtml = cleanVal(req.remark) ? "<div class='text-muted mt-2 wrap-text-mobile' style='font-size: 0.85em;'><i class='fas fa-info-circle text-primary'></i> " + req.remark + "</div>" : "";
+          let remarkHtml = cleanVal(req.remark) ? "<div class='text-muted mt-2 wrap-text-mobile' style='font-size: 0.85em;'><i class='fas fa-info-circle text-primary'></i> " + cleanVal(req.remark) + "</div>" : "";
           
           let editBtn = "";
           if (statusText === 'รอตรวจสอบ' || statusText === 'เอกสารไม่ครบ') {
@@ -526,12 +558,16 @@
       }
 
       let fd = new FormData();
-      fd.append('action', 'saveSettings'); fd.append('mode', mode); fd.append('allowedDays', allowedDays); fd.append('openTime', openTime); fd.append('closeTime', closeTime);
+      fd.append('action', 'saveSettings'); fd.append('mode', mode); 
+      fd.append('allowedDays', allowedDays); fd.append('openTime', openTime); fd.append('closeTime', closeTime);
 
       try {
           const res = await fetch(GAS_API_URL, { method: 'POST', body: fd });
           const result = await res.json();
-          if (result.success) { Swal.fire('สำเร็จ', 'บันทึกการตั้งค่าวัน-เวลาทำการเรียบร้อยแล้ว', 'success'); loadData(); } 
+          if (result.success) { 
+              Swal.fire('สำเร็จ', 'บันทึกการตั้งค่าวัน-เวลาทำการเรียบร้อยแล้ว', 'success'); 
+              loadData(); 
+          } 
           else { Swal.fire('ผิดพลาด', result.message, 'error'); }
       } catch (error) {
           Swal.fire('เชื่อมต่อล้มเหลว', 'โปรดตรวจสอบการตั้งค่า Deploy ฝั่ง GAS', 'error');
@@ -577,7 +613,7 @@
         let row = [
           req.id, req.pin || '-', `"${cleanVal(req.applicantName).replace(/"/g, '""')}"`, `"${cleanVal(req.phone).replace(/"/g, '""')}"`,
           `"${cleanVal(req.placeType).replace(/"/g, '""')}"`, req.toiletCount, `"${cleanVal(req.address).replace(/"/g, '""')}"`,
-          `"${cleanVal(req.nearbyLocation).replace(/"/g, '""')}"`, req.status,
+          `"${cleanVal(req.nearbyLocation).replace(/"/g, '""')}"`, cleanVal(req.status),
           `"${cleanVal(req.remark).replace(/"/g, '""')}"`, `"${cleanVal(req.submitDate).replace(/"/g, '""')}"`,
           `"${cleanVal(req.lastEditTime).replace(/"/g, '""')}"`, req.editCount || 0
         ];
