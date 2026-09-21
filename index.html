@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -164,7 +163,6 @@
         </div>
       </div>
 
-      <!-- แผงตั้งค่าเวลาและโฟลเดอร์ -->
       <div class="p-3 mb-4 rounded border border-warning shadow-sm" style="background-color: #fffdf5;">
         <h6 class="fw-bold mb-3 text-dark"><i class="fas fa-cogs text-secondary"></i> การตั้งค่าระบบ (เวลาทำการ & โฟลเดอร์เก็บไฟล์)</h6>
         
@@ -204,7 +202,6 @@
           </div>
         </div>
 
-        <!-- กล่องเปลี่ยนโฟลเดอร์ Google Drive -->
         <div class="row g-3 mt-1">
           <div class="col-12 border-top border-warning pt-3">
             <label class="form-label small fw-bold text-primary"><i class="fas fa-folder-open"></i> ลิงก์โฟลเดอร์ Google Drive (สำหรับเก็บไฟล์แนบทั้งหมด)</label>
@@ -324,8 +321,8 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   
   <script>
-    // 🔗 ลิงก์ API ล่าสุด
-    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbw_ifETJhB8-VUb7acswsZ8x9c3S4u6y1_H9xt_MUbEu7LJeu6MBAjPS261nJnR3_mD/exec';
+    // 🔗 ลิงก์ API ล่าสุด (อัปเดตเรียบร้อย)
+    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzM7j4TgTZhmw-VEBcGsffNMqVbUUVYWvpqPTOEcaDM_eROudhZJ1RtDLXnnZOKhPs/exec';
     
     let globalRequests = [];
     let systemSettings = { mode: 'open' };
@@ -387,7 +384,7 @@
 
     async function loadData(isBackground = false) {
       try {
-        const cacheBuster = "?_v=" + new Date().getTime();
+        const cacheBuster = "?_v=" + new Date().getTime(); // ทะลวงแคช
         const response = await fetch(GAS_API_URL + cacheBuster);
         const text = await response.text();
         
@@ -414,7 +411,6 @@
               document.getElementById('openTime').value = systemSettings.openTime || '';
               document.getElementById('closeTime').value = systemSettings.closeTime || '';
               
-              // เซ็ตค่าลิงก์โฟลเดอร์ลงในช่อง Input
               const currentFolderId = systemSettings.driveFolderId || '1jq-7bq_3H-_bq-c4Ao0iNNd8zgv8gY2F';
               document.getElementById('driveFolderUrl').value = 'https://drive.google.com/drive/folders/' + currentFolderId;
               
@@ -532,9 +528,7 @@
           });
         } else {
           let embedUrl = url;
-          if(url.includes('/view')) {
-            embedUrl = url.replace(/\/view.*$/, '/preview'); 
-          }
+          if(url.includes('/view')) { embedUrl = url.replace(/\/view.*$/, '/preview'); } 
           Swal.fire({
             title: 'ไฟล์แนบ: ' + label,
             html: `<iframe src="${embedUrl}" style="width: 100%; height: 70vh; border: none; border-radius: 8px; background-color: #f8f9fa; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);"></iframe>`,
@@ -598,12 +592,11 @@
       const openTime = document.getElementById('openTime').value;
       const closeTime = document.getElementById('closeTime').value;
       
-      // การดึงค่าและตัดเอาเฉพาะรหัส Folder ID
       const rawFolderUrl = document.getElementById('driveFolderUrl').value;
       let finalFolderId = rawFolderUrl;
       const matchId = rawFolderUrl.match(/[-\w]{25,}/); 
       if (matchId) {
-          finalFolderId = matchId[0]; // ดึงเฉพาะรหัสความยาว 25 ตัวอักษรขึ้นไป
+          finalFolderId = matchId[0];
       }
 
       if (mode === 'auto' && !allowedDays) {
@@ -617,7 +610,7 @@
       fd.append('allowedDays', allowedDays); 
       fd.append('openTime', openTime); 
       fd.append('closeTime', closeTime);
-      fd.append('folderId', finalFolderId); // ส่ง ID ไปให้หลังบ้าน
+      fd.append('folderId', finalFolderId);
 
       try {
           const res = await fetch(GAS_API_URL, { method: 'POST', body: fd });
@@ -758,7 +751,12 @@
       const btn = document.getElementById('submitBtn');
       btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> กำลังส่งข้อมูล...'; btn.disabled = true;
 
-      Swal.fire({ title: 'กำลังส่งข้อมูล...', html: 'กรุณารอสักครู่ (อาจใช้เวลา 10-20 วินาที หากมีรูปภาพ)', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+      Swal.fire({ 
+        title: 'กำลังส่งข้อมูล...', 
+        html: 'กรุณารอสักครู่ (หากเข้าผ่านแอป LINE/IG อาจใช้เวลา 15-30 วินาที)', 
+        allowOutsideClick: false, 
+        didOpen: () => Swal.showLoading() 
+      });
       
       try {
         let fd = new FormData();
@@ -781,18 +779,53 @@
         let f1 = document.getElementById('docHouse').files[0]; let f2 = document.getElementById('docIdCard').files[0];
         let f3 = document.getElementById('docHouseReg').files[0]; let f4 = document.getElementById('docPhoto').files[0];
 
-        if (f1) fd.append('doc1', await convertFile(f1)); if (f2) fd.append('doc2', await convertFile(f2));
-        if (f3) fd.append('doc3', await convertFile(f3)); if (f4) fd.append('doc4', await convertFile(f4));
+        if (f1) fd.append('doc1', await convertFile(f1)); 
+        if (f2) fd.append('doc2', await convertFile(f2));
+        if (f3) fd.append('doc3', await convertFile(f3)); 
+        if (f4) fd.append('doc4', await convertFile(f4));
 
-        const res = await fetch(GAS_API_URL, { method: 'POST', body: fd });
-        const json = await res.json();
+        // ส่งด้วยระบบทะลวงแอป (XHR Fallback)
+        const json = await sendDataRobust(fd);
         submitSuccess(json, isNewRequest);
       } catch (e) {
-        console.error("Error details:", e);
-        Swal.fire('ส่งข้อมูลไม่สำเร็จ', 'ไม่สามารถส่งข้อมูลได้<br><br><small class="text-danger">โปรดตรวจสอบว่าได้ตั้งค่า "Who has access (ผู้มีสิทธิ์เข้าถึง)" เป็น "Anyone (ทุกคน)" ในตอน Deploy แล้วหรือยัง</small>', 'error');
+        console.error("Submit Error Details:", e);
+        Swal.fire({
+          icon: 'error',
+          title: 'ส่งข้อมูลไม่สำเร็จ',
+          html: `ไม่สามารถส่งข้อมูลได้<br><br><small class="text-danger">โปรดตรวจสอบว่าได้ตั้งค่า "Who has access (ผู้มีสิทธิ์เข้าถึง)" เป็น "Anyone (ทุกคน)" ในตอน Deploy แล้วหรือยัง</small><br><br><small class="text-muted">Error: ${e.message}</small>`
+        });
       } finally {
         btn.innerHTML = '<i class="fas fa-paper-plane me-2"></i> บันทึกข้อมูลคำร้อง'; btn.disabled = false;
       }
+    }
+
+    // 🌟 ฟังก์ชันส่งข้อมูลแบบพิเศษ (แก้ปัญหาเปิดใน IG/Facebook/LINE แล้วโดนบล็อก)
+    function sendDataRobust(formData) {
+      return new Promise((resolve, reject) => {
+        fetch(GAS_API_URL, { method: 'POST', body: formData, redirect: 'follow' })
+          .then(async res => {
+            if(!res.ok) throw new Error("HTTP Status " + res.status);
+            return res.json();
+          })
+          .then(resolve)
+          .catch(fetchErr => {
+            console.warn("Fetch failed, trying XHR fallback...", fetchErr);
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", GAS_API_URL, true);
+            xhr.onreadystatechange = function() {
+              if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                  try { resolve(JSON.parse(xhr.responseText)); } 
+                  catch(e) { reject(new Error("เซิร์ฟเวอร์ตอบกลับผิดปกติ (ตั้งสิทธิ์ Anyone หรือยัง?)")); }
+                } else {
+                  reject(new Error("การเชื่อมต่อถูกตัด (ตั้งสิทธิ์ Anyone หรือยัง?)"));
+                }
+              }
+            };
+            xhr.onerror = function() { reject(new Error("อินเทอร์เน็ตหลุด หรือถูกบล็อกโดยแอปโซเชียล")); };
+            xhr.send(formData);
+          });
+      });
     }
 
     function submitSuccess(res, isNew) {
@@ -820,18 +853,31 @@
     function convertFile(file) {
       return new Promise(function(resolve) {
         if (!file.type.startsWith('image/')) {
-          let reader = new FileReader(); reader.onload = function(e) { resolve(e.target.result); }; reader.readAsDataURL(file); return;
+          let reader = new FileReader(); 
+          reader.onload = function(e) { resolve(e.target.result); }; 
+          reader.readAsDataURL(file); 
+          return;
         }
         let reader = new FileReader();
         reader.onload = function(event) {
           let img = new Image();
           img.onload = function() {
-            let canvas = document.createElement('canvas'); let maxW = 1200, maxH = 1200, width = img.width, height = img.height;
-            if (width > height && width > maxW) { height *= maxW / width; width = maxW; } 
-            else if (height > maxW) { width *= maxH / height; height = maxH; }
-            canvas.width = width; canvas.height = height; canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-            resolve(canvas.toDataURL('image/jpeg', 0.6));
+            try {
+              let canvas = document.createElement('canvas'); 
+              let maxW = 800, maxH = 800; // ลดเหลือ 800px ป้องกันแอปจำพวก IG/FB ค้าง
+              let width = img.width, height = img.height;
+              
+              if (width > height && width > maxW) { height *= maxW / width; width = maxW; } 
+              else if (height > maxW) { width *= maxH / height; height = maxH; }
+              
+              canvas.width = width; canvas.height = height; 
+              canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+              resolve(canvas.toDataURL('image/jpeg', 0.6));
+            } catch (err) {
+              resolve(event.target.result); // ถ้าย่อพัง ให้ส่งรูปเต็มไปเลย
+            }
           }
+          img.onerror = function() { resolve(event.target.result); };
           img.src = event.target.result;
         }
         reader.readAsDataURL(file);
