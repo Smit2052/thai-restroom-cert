@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -324,7 +325,7 @@
   
   <script>
     // 🔗 ลิงก์ API ล่าสุด
-    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbySBLRC3u-1B965Z6B1GAEgsOlw_1wMkJ6qZjA0dfwrzid2CgAW1tKkYDEl50xzv5qI/exec';
+    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbw_ifETJhB8-VUb7acswsZ8x9c3S4u6y1_H9xt_MUbEu7LJeu6MBAjPS261nJnR3_mD/exec';
     
     let globalRequests = [];
     let systemSettings = { mode: 'open' };
@@ -787,7 +788,8 @@
         const json = await res.json();
         submitSuccess(json, isNewRequest);
       } catch (e) {
-        Swal.fire('ส่งข้อมูลไม่สำเร็จ', 'สัญญาณอินเทอร์เน็ตขัดข้อง หรือเซิร์ฟเวอร์ตอบสนองช้า', 'error');
+        console.error("Error details:", e);
+        Swal.fire('ส่งข้อมูลไม่สำเร็จ', 'ไม่สามารถส่งข้อมูลได้<br><br><small class="text-danger">โปรดตรวจสอบว่าได้ตั้งค่า "Who has access (ผู้มีสิทธิ์เข้าถึง)" เป็น "Anyone (ทุกคน)" ในตอน Deploy แล้วหรือยัง</small>', 'error');
       } finally {
         btn.innerHTML = '<i class="fas fa-paper-plane me-2"></i> บันทึกข้อมูลคำร้อง'; btn.disabled = false;
       }
