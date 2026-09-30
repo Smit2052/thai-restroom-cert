@@ -252,7 +252,7 @@
             
             <div class="row mb-3 g-3">
               <div class="col-md-6">
-                <label class="form-label fw-bold">ชื่อ-นามสกุล ผู้ยื่นคำร้อง <span class="text-danger">*</span></label>
+                <label class="form-label fw-bold">ชื่อ-นามสกุล ของผู้้ที่จะออกใบรับรอง <span class="text-danger">*</span></label>
                 <input type="text" class="form-control bg-light" id="applicantName" required>
               </div>
               <div class="col-md-6">
@@ -279,7 +279,7 @@
             </div>
 
             <div class="mb-3">
-              <label class="form-label fw-bold">ที่อยู่ของบ้านที่จะขอเลขที่ / หมู่ที่ <span class="text-danger">*</span></label>
+              <label class="form-label fw-bold">หมู่บ้านของบ้านที่จะขอใบรับร้อง <span class="text-danger">*</span></label>
               <textarea class="form-control bg-light" id="address" rows="2" placeholder="ระบุบ้านเลขที่ (ถ้ามี) หรือหมู่ที่ ของสถานที่ที่ต้องการใบรับรอง" required></textarea>
             </div>
             <div class="mb-3">
@@ -753,7 +753,7 @@
 
       Swal.fire({ 
         title: 'กำลังส่งข้อมูล...', 
-        html: 'กรุณารอสักครู่ (หากเข้าผ่านแอป LINE/IG อาจใช้เวลา 15-30 วินาที)', 
+        html: 'กรุณารอสักครู่ (หากเข้าผ่านแอป อาจใช้เวลา 15-30 วินาที)', 
         allowOutsideClick: false, 
         didOpen: () => Swal.showLoading() 
       });
